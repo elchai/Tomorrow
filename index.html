@@ -37,16 +37,19 @@
           <line x1="26" y1="64" x2="94" y2="64" stroke="#00e5ff" stroke-width="1" opacity="0.5"/>
           <!-- sweep -->
           <path d="M60 64 L60 38 A26 26 0 0 1 82 56 Z" fill="rgba(0,229,255,0.18)"/>
-          <text x="60" y="120" text-anchor="middle" font-family="Orbitron" font-size="9" letter-spacing="2" fill="#2b8fff">PD · UNIT</text>
         </svg>
       </div>
       <div class="login-title">TOMORROW</div>
-      <div class="login-sub">PREDICTIVE POLICING GRID · רשת ניבוי פשיעה</div>
+      <div class="login-sub">
+        <span class="login-sub-en">PREDICTIVE&nbsp;POLICING&nbsp;GRID</span>
+        <span class="login-sub-he">רשת ניבוי פשיעה</span>
+      </div>
 
       <div class="login-field">
         <label for="login-input">קוד גישה מבצעי</label>
-        <input id="login-input" type="password" autocomplete="off" data-lpignore="true" maxlength="10"
-               inputmode="numeric" placeholder="••••" aria-label="קוד גישה" />
+        <input id="login-input" type="password" autocomplete="off" autocorrect="off" spellcheck="false"
+               data-lpignore="true" data-1p-ignore data-form-type="other" name="tmrw-access" maxlength="10"
+               inputmode="numeric" placeholder="• • • •" aria-label="קוד גישה" />
       </div>
       <button id="login-btn" class="login-btn">כניסה למערכת ▸</button>
       <div id="login-error" class="login-error"></div>
