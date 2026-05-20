@@ -240,7 +240,7 @@ window.TomorrowDispatch = (function () {
       list.innerHTML = items.map(u => `
         <div class="unit-card status-${u.status}" data-cs="${u.callsign}">
           <div class="u-row">
-            <span class="u-icon">${u.icon}</span>
+            <span class="u-icon"><i data-lucide="${CONFIG.unitType(u.type).glyph}"></i></span>
             <span class="u-cs">${u.callsign}</span>
             <span class="u-led"></span>
           </div>
@@ -249,8 +249,9 @@ window.TomorrowDispatch = (function () {
         </div>`).join('');
       list.querySelectorAll('.unit-card').forEach(c => c.addEventListener('click', () => {
         const u = State.units.find(x => x.callsign === c.dataset.cs);
-        if (u) TomorrowApp.toast(`${u.icon} ${u.callsign} — ${u.text}`);
+        if (u) TomorrowApp.toast(`${u.callsign} — ${u.text}`);
       }));
+      TomorrowApp.renderIcons();
     }
     const badge = document.getElementById('units-badge');
     if (badge) badge.textContent = items.length;

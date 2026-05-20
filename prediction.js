@@ -36,6 +36,14 @@ window.TomorrowPrediction = (function () {
   let seed = 1337;
   function rng() { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; }
 
+  // Approx Tel Aviv–Jaffa Mediterranean coastline (lng as a function of lat).
+  // Anything west of this is sea → push it back inland so no hotspot lands in the water.
+  function coastLng(lat) { return 34.745 + (lat - 32.04) * 0.5; }
+  function clampToLand(lat, lng, rng) {
+    const minLng = coastLng(lat) + 0.0025;            // small buffer east of the shore
+    return lng < minLng ? minLng + rng() * 0.004 : lng; // nudge a touch further inland
+  }
+
   function scoreToRisk(score) {
     if (score >= 78) return 1;
     if (score >= 58) return 2;
@@ -92,14 +100,20 @@ window.TomorrowPrediction = (function () {
 
         const station = TomorrowApp.nearestStation(zone.lat, zone.lng);
 
+        // scatter around the zone, then keep it on land (east of the TLV coastline)
+        const jLat = zone.lat + (rng() - 0.5) * 0.012;
+        let jLng = zone.lng + (rng() - 0.5) * 0.012;
+        jLng = clampToLand(jLat, jLng, rng);
+
         list.push({
           id: id++,
           crime: crime.key,
           crime_name: crime.name,
-          icon: crime.icon,
+          code: crime.code,
+          glyph: crime.glyph,
           zone: zone.name,
-          lat: zone.lat + (rng() - 0.5) * 0.012,
-          lng: zone.lng + (rng() - 0.5) * 0.012,
+          lat: jLat,
+          lng: jLng,
           hour,
           window: `${String(hour).padStart(2, '0')}:00–${String((hour + 1) % 24).padStart(2, '0')}:00`,
           probability: Math.round(score),
@@ -141,22 +155,28 @@ window.TomorrowPrediction = (function () {
     } else {
       list.innerHTML = items.map(h => {
         const r = CONFIG.RISK[h.risk];
+        const state = h.resolved ? 'resolved' : (h.dispatched ? 'dispatched' : '');
         return `
-          <div class="forecast-card risk-${h.risk} ${h.dispatched ? 'dispatched' : ''}" data-id="${h.id}">
-            <div class="fc-top">
-              <span class="fc-icon">${h.icon}</span>
-              <span class="fc-name">${h.crime_name}</span>
-              <span class="fc-prob" style="color:${r.color}">${h.probability}%</span>
+          <div class="forecast-card risk-${h.risk} ${state}" data-id="${h.id}" style="--rc:${r.color}">
+            <div class="fc-head">
+              <span class="fc-icon"><i data-lucide="${h.glyph}"></i></span>
+              <div class="fc-headtext">
+                <span class="fc-name">${h.crime_name}</span>
+                <span class="fc-code">${h.code} · #${h.id}</span>
+              </div>
+              <span class="risk-chip">${r.label}</span>
             </div>
-            <div class="fc-zone">📍 ${h.zone}</div>
-            <div class="fc-meta">
-              <span class="fc-window">🕒 ${h.window}</span>
-              <span class="risk-tag" style="background:${r.color}22;color:${r.color};border-color:${r.color}66">${r.label}</span>
+            <div class="fc-zone"><i data-lucide="map-pin"></i><span>${h.zone}</span></div>
+            <div class="fc-readout">
+              <span class="fc-window"><i data-lucide="clock"></i>${h.window}</span>
+              <span class="fc-prob"><b>${h.probability}</b><i>%</i></span>
             </div>
+            <div class="fc-gauge"><div class="fc-gauge-fill" style="width:${h.probability}%"></div></div>
             ${h.factors.length ? `<div class="fc-factors">${h.factors.map(f => `<span class="factor">${f}</span>`).join('')}</div>` : ''}
-            <button class="fc-dispatch" data-id="${h.id}">🚓 הזנק ניידת</button>
+            <button class="fc-dispatch" data-id="${h.id}"><i data-lucide="navigation"></i><span>הזנק ניידת ליעד</span></button>
           </div>`;
       }).join('');
+      TomorrowApp.renderIcons();
 
       list.querySelectorAll('.forecast-card').forEach(card => {
         card.addEventListener('click', (e) => {

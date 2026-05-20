@@ -7,7 +7,7 @@
 window.CONFIG = (function () {
 
   // --- Storage / sync ---
-  const STORAGE_KEY = 'tomorrow_state_v1';
+  const STORAGE_KEY = 'tomorrow_state_v2';
   const SYNC_DEBOUNCE_MS = 800;
 
   // --- Access gate (cosmetic, client-side only — NOT real security.
@@ -29,27 +29,28 @@ window.CONFIG = (function () {
 
   // --- Crime categories (פשיעה) ---
   // base_rate ≈ relative frequency weight · windows = typical time-of-day risk peaks
+  // glyph = Lucide icon name (clean monochrome line icon) · code = tactical category code
   const CRIME_TYPES = [
-    { key: 'burglary',   name: 'פריצה לבית',         icon: '🏠', base_rate: 0.85, peak_hours: [1, 2, 3, 4, 22, 23], color: '#ff7a18' },
-    { key: 'auto_theft', name: 'גניבת רכב',           icon: '🚗', base_rate: 0.75, peak_hours: [0, 1, 2, 3, 4, 5],  color: '#ff7a18' },
-    { key: 'robbery',    name: 'שוד',                 icon: '💰', base_rate: 0.45, peak_hours: [20, 21, 22, 23, 0], color: '#ff1f4b' },
-    { key: 'assault',    name: 'תקיפה / אלימות',      icon: '👊', base_rate: 0.65, peak_hours: [22, 23, 0, 1, 2],   color: '#ff1f4b' },
-    { key: 'drugs',      name: 'עברות סמים',          icon: '💊', base_rate: 0.55, peak_hours: [21, 22, 23, 0, 1],  color: '#ffd000' },
-    { key: 'domestic',   name: 'אלימות במשפחה',       icon: '🏚️', base_rate: 0.50, peak_hours: [19, 20, 21, 22],    color: '#ff1f4b' },
-    { key: 'vandalism',  name: 'ונדליזם',             icon: '🎨', base_rate: 0.60, peak_hours: [0, 1, 2, 3, 23],    color: '#ffd000' },
-    { key: 'theft',      name: 'גניבה / כיסנות',      icon: '👜', base_rate: 0.80, peak_hours: [12, 13, 17, 18, 19], color: '#ffd000' },
-    { key: 'disorder',   name: 'הפרת סדר ציבורי',     icon: '📢', base_rate: 0.55, peak_hours: [22, 23, 0, 1, 2],   color: '#38e08a' },
-    { key: 'business',   name: 'התפרצות לעסק',        icon: '🏪', base_rate: 0.40, peak_hours: [2, 3, 4, 5],        color: '#ff7a18' }
+    { key: 'burglary',   name: 'פריצה לבית',         code: 'B&E',    glyph: 'door-open',    base_rate: 0.85, peak_hours: [1, 2, 3, 4, 22, 23], color: '#ff7a18' },
+    { key: 'auto_theft', name: 'גניבת רכב',           code: 'GTA',    glyph: 'car-front',    base_rate: 0.75, peak_hours: [0, 1, 2, 3, 4, 5],  color: '#ff7a18' },
+    { key: 'robbery',    name: 'שוד',                 code: 'ROB',    glyph: 'banknote',     base_rate: 0.45, peak_hours: [20, 21, 22, 23, 0], color: '#ff1f4b' },
+    { key: 'assault',    name: 'תקיפה / אלימות',      code: 'ASLT',   glyph: 'shield-alert', base_rate: 0.65, peak_hours: [22, 23, 0, 1, 2],   color: '#ff1f4b' },
+    { key: 'drugs',      name: 'עברות סמים',          code: 'NARC',   glyph: 'pill',         base_rate: 0.55, peak_hours: [21, 22, 23, 0, 1],  color: '#ffd000' },
+    { key: 'domestic',   name: 'אלימות במשפחה',       code: 'DV',     glyph: 'house',        base_rate: 0.50, peak_hours: [19, 20, 21, 22],    color: '#ff1f4b' },
+    { key: 'vandalism',  name: 'ונדליזם',             code: 'VAND',   glyph: 'spray-can',    base_rate: 0.60, peak_hours: [0, 1, 2, 3, 23],    color: '#ffd000' },
+    { key: 'theft',      name: 'גניבה / כיסנות',      code: 'THFT',   glyph: 'shopping-bag', base_rate: 0.80, peak_hours: [12, 13, 17, 18, 19], color: '#ffd000' },
+    { key: 'disorder',   name: 'הפרת סדר ציבורי',     code: 'DISORD', glyph: 'megaphone',    base_rate: 0.55, peak_hours: [22, 23, 0, 1, 2],   color: '#38e08a' },
+    { key: 'business',   name: 'התפרצות לעסק',        code: 'COMM',   glyph: 'store',        base_rate: 0.40, peak_hours: [2, 3, 4, 5],        color: '#ff7a18' }
   ];
 
   // --- Patrol / response unit types ---
   const UNIT_TYPES = [
-    { key: 'patrol',   name: 'ניידת סיור',     icon: '🚓', speed_kmh: 60, staffing: 2 },
-    { key: 'k9',       name: 'יחידת כלבנים',   icon: '🐕', speed_kmh: 55, staffing: 2 },
-    { key: 'swat',     name: 'יס"מ / מתפרצת',  icon: '🛡️', speed_kmh: 70, staffing: 6 },
-    { key: 'motor',    name: 'אופנוע סיור',    icon: '🏍️', speed_kmh: 75, staffing: 1 },
-    { key: 'undercover', name: 'בלשים סמויים', icon: '🕵️', speed_kmh: 60, staffing: 2 },
-    { key: 'command',  name: 'נייד פיקוד',     icon: '📡', speed_kmh: 55, staffing: 3 }
+    { key: 'patrol',   name: 'ניידת סיור',     glyph: 'siren',      speed_kmh: 60, staffing: 2 },
+    { key: 'k9',       name: 'יחידת כלבנים',   glyph: 'dog',        speed_kmh: 55, staffing: 2 },
+    { key: 'swat',     name: 'יס"מ / מתפרצת',  glyph: 'shield',     speed_kmh: 70, staffing: 6 },
+    { key: 'motor',    name: 'אופנוע סיור',    glyph: 'bike',       speed_kmh: 75, staffing: 1 },
+    { key: 'undercover', name: 'בלשים סמויים', glyph: 'eye-off',    speed_kmh: 60, staffing: 2 },
+    { key: 'command',  name: 'נייד פיקוד',     glyph: 'radio',      speed_kmh: 55, staffing: 3 }
   ];
 
   // --- Police stations (Tel Aviv district — representative coordinates) ---

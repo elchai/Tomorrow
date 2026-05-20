@@ -75,14 +75,14 @@ window.TomorrowMap = (function () {
     const icon = L.divIcon({
       html: `<div class="hotspot-marker risk-${h.risk} ${h.dispatched ? 'dispatched' : ''}" style="--rc:${r.color};--rg:${r.glow}">
                ${pulse}
-               <div class="hs-core">${h.icon}</div>
-               <div class="hs-prob">${h.probability}%</div>
+               <div class="hs-core"><i data-lucide="${h.glyph}"></i></div>
+               <div class="hs-prob">${h.probability}<span>%</span></div>
              </div>`,
       className: '', iconSize: [44, 44], iconAnchor: [22, 22]
     });
     const m = L.marker([h.lat, h.lng], { icon, zIndexOffset: 400 }).addTo(map);
-    m.bindPopup(popupHtml(h));
-    m.on('click', () => { /* popup auto */ });
+    m.bindPopup(popupHtml(h), { className: 'tac-popup-wrap' });
+    m.on('popupopen', () => TomorrowApp.renderIcons());
 
     hotspotRefs[h.id] = { marker: m, ring };
   }
@@ -90,18 +90,22 @@ window.TomorrowMap = (function () {
   function popupHtml(h) {
     const r = CONFIG.RISK[h.risk];
     return `
-      <div style="min-width:230px;line-height:1.5">
-        <div style="font-size:10px;color:#7f8db0;font-family:'Share Tech Mono',monospace;letter-spacing:1px">FORECAST #${h.id} · ${h.window}</div>
-        <div style="font-size:17px;font-weight:700;color:${r.color};margin-top:6px">${h.icon} ${h.crime_name}</div>
-        <div style="font-size:13px;margin-top:4px;color:#d6e0f0">📍 ${h.zone}</div>
-        <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
-          <span style="font-family:'Share Tech Mono',monospace;font-size:20px;font-weight:700;color:${r.color}">${h.probability}%</span>
-          <span style="font-size:11px;padding:2px 8px;border-radius:10px;background:${r.color}22;color:${r.color};border:1px solid ${r.color}66">סיכון ${r.label}</span>
+      <div class="tac-popup risk-${h.risk}" dir="rtl" style="--rc:${r.color}">
+        <div class="tp-code">${h.code} · FORECAST #${h.id}</div>
+        <div class="tp-name"><i data-lucide="${h.glyph}"></i><span>${h.crime_name}</span></div>
+        <div class="tp-zone"><i data-lucide="map-pin"></i><span>${h.zone}</span></div>
+        <div class="tp-row">
+          <span class="tp-window"><i data-lucide="clock"></i>${h.window}</span>
+          <span class="risk-chip">סיכון ${r.label}</span>
         </div>
-        ${h.factors.length ? `<div style="margin-top:8px;font-size:11px;color:#9aa7c8">${h.factors.map(f => '• ' + f).join('<br>')}</div>` : ''}
-        <button onclick="TomorrowDispatch.dispatchToHotspot(TomorrowState.forecast.find(x=>x.id===${h.id}))"
-          style="margin-top:10px;width:100%;padding:8px;background:#1a6dff;color:#fff;border:none;border-radius:6px;font-weight:700;cursor:pointer;font-family:inherit">
-          🚓 הזנק ניידת ליעד
+        <div class="tp-readout">
+          <span class="tp-prob"><b>${h.probability}</b><i>%</i></span>
+          <span class="tp-prob-lbl">סבירות מודל</span>
+        </div>
+        <div class="fc-gauge"><div class="fc-gauge-fill" style="width:${h.probability}%"></div></div>
+        ${h.factors.length ? `<div class="tp-factors">${h.factors.map(f => `<span class="factor">${f}</span>`).join('')}</div>` : ''}
+        <button class="tp-dispatch" onclick="TomorrowDispatch.dispatchToHotspot(TomorrowState.forecast.find(x=>x.id===${h.id}))">
+          <i data-lucide="navigation"></i><span>הזנק ניידת ליעד</span>
         </button>
       </div>`;
   }
@@ -129,6 +133,7 @@ window.TomorrowMap = (function () {
     const items = TomorrowPrediction.getVisibleForecast();
     renderHeat(items);
     items.forEach(makeHotspotMarker);
+    TomorrowApp.renderIcons();
   }
 
   function focusHotspot(h) {

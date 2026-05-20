@@ -63,6 +63,13 @@ window.TomorrowApp = (function () {
     Object.values(modules).forEach(m => { if (typeof m[method] === 'function') m[method](...args); });
   }
 
+  // ---------- Icons (Lucide) — converts any [data-lucide] into clean line SVGs ----------
+  function renderIcons() {
+    if (window.lucide && lucide.createIcons) {
+      try { lucide.createIcons(); } catch (e) { /* noop */ }
+    }
+  }
+
   // ---------- Clock ----------
   function startClock() {
     const el = document.getElementById('hud-clock');
@@ -248,7 +255,7 @@ window.TomorrowApp = (function () {
     init, saveState, loadState,
     getCurrentStation, setStation, nearestStation,
     register, broadcast,
-    toast, logEvent, renderIntelLog, updateThreatLevel,
+    toast, logEvent, renderIntelLog, updateThreatLevel, renderIcons,
     State
   };
 })();

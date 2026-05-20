@@ -37,6 +37,18 @@ state גלובלי יחיד + localStorage עם debounce, רישום מודול�
   קובע תמהיל יחידות, בוחר ניידות זמינות, מזניק במרווחים. רכב חוזר ל-available בסיום.
 - ETA ריאלי = distanceMeters / unit.speed_kmh; משך אנימציה = settings.demo_seconds.
 
+## אייקונים (Lucide) + מראה טקטי
+- אייקוני קו מונוכרום דרך Lucide CDN (UMD) במקום אמוג'י. כל crime/unit ב-config נושא `glyph` (שם Lucide) + `code` (קוד מבצעי).
+- **גוטצ'ה:** Lucide ממיר `<i data-lucide="...">` ל-SVG רק כשקוראים `lucide.createIcons()`. עוטף ב-`TomorrowApp.renderIcons()` — **חובה לקרוא אחרי כל render דינמי** (forecast list, units, hotspot markers) ובאירוע `popupopen` של Leaflet.
+- מספרים = קריאת-נתונים מונוספייס (`.fc-prob`/`.tp-prob` עם `<b>` גדול + `<i>%</i>` קטן) + מד `.fc-gauge`. פינות חדות (4px), `risk-chip` מונוספייס. כל popup `dir="rtl"` עם class `tac-popup`.
+- CSS משתמש ב-`color-mix(in srgb, var(--rc) N%, transparent)` — דורש דפדפן מודרני (Chrome 2023+).
+
+## חוף הים — אין מוקדים במים
+`prediction.js` → `coastLng(lat)=34.745+(lat-32.04)*0.5` מקרב את קו החוף של ת"א-יפו; `clampToLand()` דוחף כל lng שמערבית לחוף חזרה ליבשה. נקרא בתוך `generate()`.
+
+## גרסת State
+`STORAGE_KEY='tomorrow_state_v2'` — שינוי מבנה (glyph/code) מצריך bump כדי לזרוק forecast/units ישנים מ-localStorage.
+
 ## RTL
 `dir="rtl"`. בגריד 3 עמודות: panel-left (ראשון ב-DOM) מופיע ויזואלית מימין. תחזית=ימין, ניידות=שמאל.
 
