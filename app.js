@@ -188,12 +188,42 @@ window.TomorrowApp = (function () {
     if (dot) dot.className = `threat-dot ${cls}`;
   }
 
-  // ---------- Init ----------
-  function init() {
-    loadState();
-    renderStationChips();
-    renderIntelLog();
-    startClock();
+  // ---------- Access gate (cosmetic — see CONFIG.ACCESS_CODE) ----------
+  function showLogin(onPass) {
+    const overlay = document.getElementById('login');
+    if (!overlay) { onPass(); return; }
+    // already authenticated this browser session → skip
+    if (sessionStorage.getItem('tomorrow_auth') === '1') {
+      overlay.style.display = 'none';
+      onPass();
+      return;
+    }
+    const input = document.getElementById('login-input');
+    const btn = document.getElementById('login-btn');
+    const err = document.getElementById('login-error');
+
+    function attempt() {
+      if (window.TomorrowSounds) TomorrowSounds.uiClick();
+      if (input.value.trim() === String(CONFIG.ACCESS_CODE)) {
+        sessionStorage.setItem('tomorrow_auth', '1');
+        if (window.TomorrowSounds) TomorrowSounds.online();
+        overlay.classList.add('done');
+        setTimeout(() => { overlay.style.display = 'none'; onPass(); }, 800);
+      } else {
+        err.textContent = 'קוד גישה שגוי // ACCESS DENIED';
+        input.classList.add('error');
+        input.value = '';
+        setTimeout(() => { err.textContent = ''; input.classList.remove('error'); }, 2000);
+      }
+    }
+    if (btn) btn.addEventListener('click', attempt);
+    if (input) {
+      input.addEventListener('keydown', e => { if (e.key === 'Enter') attempt(); });
+      setTimeout(() => input.focus(), 100);
+    }
+  }
+
+  function startSystem() {
     runBoot(() => {
       // Build forecast + map + dispatch after boot
       if (window.TomorrowPrediction) TomorrowPrediction.init();
@@ -203,6 +233,15 @@ window.TomorrowApp = (function () {
       if (window.TomorrowSounds) TomorrowSounds.online();
       logEvent('system', 4, '✅ רשת הניבוי מקוונת — תחזית 24 שעות נטענה');
     });
+  }
+
+  // ---------- Init ----------
+  function init() {
+    loadState();
+    renderStationChips();
+    renderIntelLog();
+    startClock();
+    showLogin(startSystem);   // login gate → boot → modules
   }
 
   return {

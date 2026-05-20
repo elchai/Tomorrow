@@ -14,6 +14,47 @@
 </head>
 <body>
 
+  <!-- ===== Login / access gate ===== -->
+  <div id="login">
+    <div class="login-grid"></div>
+    <div class="login-scan"></div>
+    <div class="login-classification">CLASSIFIED // RESTRICTED ACCESS · גישה מסווגת</div>
+
+    <div class="login-box">
+      <div class="login-badge">
+        <svg viewBox="0 0 120 140" width="104" height="120" xmlns="http://www.w3.org/2000/svg">
+          <!-- shield -->
+          <path d="M60 6 L108 26 L108 70 Q108 112 60 134 Q12 112 12 70 L12 26 Z"
+                fill="rgba(26,109,255,0.07)" stroke="#2b8fff" stroke-width="2"/>
+          <path d="M60 18 L97 34 L97 70 Q97 102 60 120 Q23 102 23 70 L23 34 Z"
+                fill="none" stroke="#00e5ff" stroke-width="1" opacity="0.45"/>
+          <!-- radar / predictive eye -->
+          <circle cx="60" cy="64" r="26" fill="none" stroke="#00e5ff" stroke-width="1.4" opacity="0.8"/>
+          <circle cx="60" cy="64" r="16" fill="none" stroke="#00e5ff" stroke-width="1" opacity="0.5"/>
+          <circle cx="60" cy="64" r="5" fill="#ffd000"/>
+          <!-- crosshair -->
+          <line x1="60" y1="30" x2="60" y2="98" stroke="#00e5ff" stroke-width="1" opacity="0.5"/>
+          <line x1="26" y1="64" x2="94" y2="64" stroke="#00e5ff" stroke-width="1" opacity="0.5"/>
+          <!-- sweep -->
+          <path d="M60 64 L60 38 A26 26 0 0 1 82 56 Z" fill="rgba(0,229,255,0.18)"/>
+          <text x="60" y="120" text-anchor="middle" font-family="Orbitron" font-size="9" letter-spacing="2" fill="#2b8fff">PD · UNIT</text>
+        </svg>
+      </div>
+      <div class="login-title">TOMORROW</div>
+      <div class="login-sub">PREDICTIVE POLICING GRID · רשת ניבוי פשיעה</div>
+
+      <div class="login-field">
+        <label for="login-input">קוד גישה מבצעי</label>
+        <input id="login-input" type="password" autocomplete="off" data-lpignore="true" maxlength="10"
+               inputmode="numeric" placeholder="••••" aria-label="קוד גישה" />
+      </div>
+      <button id="login-btn" class="login-btn">כניסה למערכת ▸</button>
+      <div id="login-error" class="login-error"></div>
+    </div>
+
+    <div class="login-footer">נבנה ע״י אלחי פיין · TOMORROW v0.1</div>
+  </div>
+
   <!-- ===== Boot screen ===== -->
   <div id="boot">
     <div class="boot-inner">

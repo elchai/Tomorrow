@@ -10,6 +10,10 @@ window.CONFIG = (function () {
   const STORAGE_KEY = 'tomorrow_state_v1';
   const SYNC_DEBOUNCE_MS = 800;
 
+  // --- Access gate (cosmetic, client-side only — NOT real security.
+  //     For real auth use Firebase/server. Replace before any sensitive data.) ---
+  const ACCESS_CODE = '2024';
+
   // --- Map defaults (Tel Aviv metropolitan district) ---
   const MAP_CENTER = [32.0760, 34.7850];
   const MAP_ZOOM = 13;
@@ -90,7 +94,7 @@ window.CONFIG = (function () {
   };
 
   return {
-    STORAGE_KEY, SYNC_DEBOUNCE_MS,
+    STORAGE_KEY, SYNC_DEBOUNCE_MS, ACCESS_CODE,
     MAP_CENTER, MAP_ZOOM, MAP_MAX_ZOOM,
     RISK, CRIME_TYPES, UNIT_TYPES, STATIONS, RESPONSE_CARDS, ROLES,
     responseCard,

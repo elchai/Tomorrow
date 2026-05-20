@@ -62,6 +62,63 @@ body::before {
 ::-webkit-scrollbar-thumb { background: rgba(43,143,255,0.25); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(43,143,255,0.45); }
 
+/* ===================== LOGIN ===================== */
+#login {
+  position: fixed; inset: 0; z-index: 100000;
+  background: radial-gradient(ellipse at center, #08101f, #02050c);
+  display: flex; align-items: center; justify-content: center; flex-direction: column;
+  transition: opacity .8s ease;
+}
+#login.done { opacity: 0; pointer-events: none; }
+.login-grid { position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(0,229,255,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,.05) 1px, transparent 1px);
+  background-size: 42px 42px; animation: gridPulse 4s ease-in-out infinite; }
+@keyframes gridPulse { 0%,100%{opacity:.5} 50%{opacity:.9} }
+.login-scan { position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  opacity: .35; animation: scanDown 5s linear infinite; }
+@keyframes scanDown { from { top: 0 } to { top: 100% } }
+
+.login-classification { position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
+  font-family: var(--font-disp); font-size: 10px; letter-spacing: 3px; color: var(--critical);
+  text-shadow: 0 0 10px rgba(255,31,75,.4); white-space: nowrap; pointer-events: none; }
+
+.login-box { position: relative; z-index: 10; text-align: center; padding: 46px 56px;
+  border: 1px solid var(--line); border-radius: 10px; background: rgba(8,16,35,.92);
+  box-shadow: 0 0 60px rgba(43,143,255,.12), inset 0 0 40px rgba(0,0,0,.35); min-width: 360px; }
+.login-box::before { content: ''; position: absolute; top: -1px; left: -1px; right: -1px; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent); }
+.login-badge { width: 104px; height: 120px; margin: 0 auto 22px;
+  filter: drop-shadow(0 0 16px rgba(43,143,255,.5)); animation: badgePulse 3s ease-in-out infinite; }
+.login-badge svg .login-sweep { transform-origin: 60px 64px; }
+@keyframes badgePulse { 0%,100%{filter:drop-shadow(0 0 12px rgba(43,143,255,.4))} 50%{filter:drop-shadow(0 0 26px rgba(0,229,255,.7))} }
+
+.login-title { font-family: var(--font-disp); font-weight: 900; font-size: 32px; letter-spacing: 8px;
+  background: linear-gradient(90deg, var(--police-br), #fff, var(--police-br)); background-size: 200% auto;
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  animation: shimmer 3s linear infinite; margin-bottom: 8px; }
+@keyframes shimmer { to { background-position: 200% center } }
+.login-sub { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); letter-spacing: 2px; margin-bottom: 32px; }
+
+.login-field { margin-bottom: 18px; text-align: right; }
+.login-field label { display: block; font-family: var(--font-he); font-size: 11px; color: var(--text-dim); margin-bottom: 7px; }
+#login-input { width: 100%; padding: 13px 16px; background: rgba(0,0,0,.4); border: 1px solid var(--line);
+  border-radius: 5px; color: var(--cyan); font-family: var(--font-mono); font-size: 20px; letter-spacing: 10px;
+  text-align: center; outline: none; box-sizing: border-box; direction: ltr; transition: all .25s; }
+#login-input:focus { border-color: var(--cyan); box-shadow: 0 0 20px rgba(0,229,255,.2); }
+#login-input.error { border-color: var(--critical); box-shadow: 0 0 20px rgba(255,31,75,.25); animation: shake .5s ease; }
+@keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)} 40%{transform:translateX(8px)} 60%{transform:translateX(-5px)} 80%{transform:translateX(5px)} }
+
+.login-btn { width: 100%; padding: 13px; font-family: var(--font-ui); font-weight: 700; font-size: 15px; letter-spacing: 2px;
+  color: #fff; background: linear-gradient(135deg, var(--police), rgba(0,229,255,.35));
+  border: 1px solid var(--police-br); border-radius: 5px; cursor: pointer; transition: all .2s; }
+.login-btn:hover { box-shadow: 0 0 24px rgba(43,143,255,.6); }
+.login-error { font-family: var(--font-mono); font-size: 11px; color: var(--critical); height: 16px; margin-top: 10px; letter-spacing: 1px; }
+.login-footer { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+  font-family: var(--font-mono); font-size: 10px; color: var(--text-faint); pointer-events: none; white-space: nowrap; }
+
 /* ===================== BOOT ===================== */
 #boot {
   position: fixed; inset: 0; z-index: 9999;
