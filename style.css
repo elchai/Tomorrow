@@ -125,6 +125,11 @@ body::before {
 .clock { font-family: var(--font-mono); font-size: 18px; color: var(--cyan); letter-spacing: 1px; }
 .date { font-family: var(--font-ui); font-size: 11px; color: var(--text-dim); }
 
+.mute-btn { background: rgba(0,0,0,.3); border: 1px solid var(--line); border-radius: 6px;
+  width: 36px; height: 36px; font-size: 16px; cursor: pointer; transition: all .15s; }
+.mute-btn:hover { border-color: var(--police); background: rgba(43,143,255,.14); }
+.mute-btn.muted { opacity: .5; }
+
 /* ===================== LAYOUT ===================== */
 #layout {
   position: relative; z-index: 2;

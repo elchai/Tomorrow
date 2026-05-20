@@ -10,7 +10,7 @@ window.TomorrowState = {
   units: [],                  // patrol units
   intel_log: [],              // audit / activity feed
   forecast_hour: null,        // selected hour on the timeline (null = "now")
-  settings: { demo_seconds: 11 }
+  settings: { demo_seconds: 11, onscene_seconds: 7 }
 };
 
 window.TomorrowApp = (function () {
@@ -200,6 +200,7 @@ window.TomorrowApp = (function () {
       if (window.TomorrowMap) TomorrowMap.init();
       if (window.TomorrowDispatch) TomorrowDispatch.init();
       updateThreatLevel();
+      if (window.TomorrowSounds) TomorrowSounds.online();
       logEvent('system', 4, '✅ רשת הניבוי מקוונת — תחזית 24 שעות נטענה');
     });
   }

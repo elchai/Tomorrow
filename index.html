@@ -44,6 +44,7 @@
         <div id="hud-clock" class="clock">--:--:--</div>
         <div id="hud-date" class="date">—</div>
       </div>
+      <button id="btn-mute" class="mute-btn" title="קול">🔊</button>
     </div>
   </header>
 
@@ -115,6 +116,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
   <script src="config.js"></script>
+  <script src="sounds.js"></script>
   <script src="app.js"></script>
   <script src="prediction.js"></script>
   <script src="map.js"></script>
@@ -140,6 +142,11 @@
       });
       document.getElementById('btn-saturate').addEventListener('click', () => {
         if (window.TomorrowDispatch) TomorrowDispatch.saturateArea();
+      });
+      document.getElementById('btn-mute').addEventListener('click', (e) => {
+        const m = TomorrowSounds.toggle();
+        e.target.textContent = m ? '🔇' : '🔊';
+        e.target.classList.toggle('muted', m);
       });
     });
   </script>

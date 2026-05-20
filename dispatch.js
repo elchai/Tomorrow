@@ -128,18 +128,38 @@ window.TomorrowDispatch = (function () {
       if (step >= points.length - 1) {
         clearInterval(interval);
         onSceneSecure(toLatLng[0], toLatLng[1], color);
-        TomorrowApp.logEvent('status', 3, `${unit.callsign} הגיעה ליעד · ETA ריאלי ${etaMin.toFixed(0)} דק׳`);
-        // fade trail + remove marker after a beat
+        if (window.TomorrowSounds) TomorrowSounds.arrival();
+        TomorrowApp.logEvent('status', 3, `${unit.callsign} הגיעה ל${unit.dest || 'יעד'} · ETA ריאלי ${etaMin.toFixed(0)} דק׳`);
+
+        // on-scene phase: unit dwells at the target before returning available
+        unit.status = 'onscene';
+        unit.text = `בשטח · ${unit.dest || 'יעד'}`;
+        renderUnits();
+
+        // fade trail (keep the unit marker parked on scene during dwell)
         let f = 0;
         const fade = setInterval(() => {
           f++;
           line.setStyle({ opacity: Math.max(0, 0.6 - f * 0.07) });
-          marker.getElement() && (marker.getElement().style.opacity = Math.max(0, 1 - f * 0.1));
-          if (f > 9) { clearInterval(fade); map.removeLayer(line); map.removeLayer(marker); delete active[id]; }
+          if (f > 9) { clearInterval(fade); map.removeLayer(line); }
         }, 220);
-        // unit returns to available
-        unit.status = 'available'; unit.text = 'זמינה · בתחנה';
-        renderUnits();
+
+        const dwellMs = (State.settings.onscene_seconds || 7) * 1000;
+        setTimeout(() => {
+          if (marker.getElement()) marker.getElement().style.opacity = '0';
+          map.removeLayer(marker);
+          delete active[id];
+          unit.status = 'available';
+          unit.text = 'זמינה · בתחנה';
+          renderUnits();
+          // mark the hotspot as handled/secured
+          if (unit.hotspot_id != null) {
+            const h = State.forecast.find(x => x.id === unit.hotspot_id);
+            if (h) { h.resolved = true; TomorrowPrediction.renderForecastList(); }
+          }
+          TomorrowApp.logEvent('status', 4, `${unit.callsign} סיימה טיפול · חוזרת לזמינות`);
+        }, dwellMs);
+
         if (onArrive) onArrive();
       }
     }, stepMs);
@@ -184,6 +204,7 @@ window.TomorrowDispatch = (function () {
 
     h.dispatched = true;
     if (window.TomorrowMap) { TomorrowMap.markDispatched(h); TomorrowMap.focusHotspot(h); }
+    if (window.TomorrowSounds) { TomorrowSounds.alert(h.risk); setTimeout(() => TomorrowSounds.dispatch(), 700); }
 
     TomorrowApp.toast(`🚓 הזנקה: ${chosen.length} יחידות מ${station.name} → ${h.zone}`, 'success');
     TomorrowApp.logEvent('dispatch', h.risk, `הזנקת ${chosen.length} יחידות ל${h.crime_name} · ${h.zone} (${h.probability}%)`);
@@ -191,6 +212,8 @@ window.TomorrowDispatch = (function () {
     chosen.forEach((u, idx) => {
       u.status = 'dispatched';
       u.text = `בדרך ל${h.zone}`;
+      u.dest = h.zone;
+      u.hotspot_id = h.id;
       setTimeout(() => dispatchVehicle(u, from, to, r.color), idx * 1400);
     });
     renderUnits();
