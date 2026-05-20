@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TOMORROW · רשת ניבוי פשיעה</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@400;500;600;700&family=Heebo:wght@300;400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===== Boot screen ===== -->
+  <div id="boot">
+    <div class="boot-inner">
+      <div class="boot-logo">TOMORROW</div>
+      <div class="boot-sub">PREDICTIVE POLICING GRID · רשת ניבוי פשיעה</div>
+      <div class="boot-progress"><div id="boot-bar"></div></div>
+      <div id="boot-lines" class="boot-lines"></div>
+    </div>
+    <div class="scanlines"></div>
+  </div>
+
+  <!-- ===== Header HUD ===== -->
+  <header id="hud">
+    <div class="hud-left">
+      <div class="logo">
+        <span class="logo-mark">◈</span>
+        <span class="logo-text">TOMORROW</span>
+        <span class="logo-tag">v0.1</span>
+      </div>
+      <div id="station-chips" class="station-chips"></div>
+    </div>
+    <div class="hud-right">
+      <div class="threat-box">
+        <span id="threat-dot" class="threat-dot low"></span>
+        <span id="threat-level" class="threat-level">DEFCON 4 · רגיל</span>
+      </div>
+      <div class="clock-box">
+        <div id="hud-clock" class="clock">--:--:--</div>
+        <div id="hud-date" class="date">—</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== Main layout ===== -->
+  <main id="layout">
+
+    <!-- Left: forecast feed -->
+    <aside class="panel panel-left">
+      <div class="panel-head">
+        <span class="panel-title">⌖ תחזית פשיעה</span>
+        <span id="forecast-badge" class="badge">0</span>
+      </div>
+      <div class="panel-actions">
+        <button id="btn-regen" class="btn btn-ghost">🔄 הרץ מודל</button>
+        <button id="btn-saturate" class="btn btn-primary">🛡️ סיור מונע</button>
+      </div>
+      <div id="forecast-list" class="scroll-list"></div>
+    </aside>
+
+    <!-- Center: map -->
+    <section class="map-wrap">
+      <div id="map"></div>
+
+      <!-- Stat strip -->
+      <div class="stat-strip">
+        <div class="stat"><span class="stat-val" id="stat-hotspots">0</span><span class="stat-lbl">מוקדים</span></div>
+        <div class="stat"><span class="stat-val crit" id="stat-critical">0</span><span class="stat-lbl">קריטי</span></div>
+        <div class="stat"><span class="stat-val" id="stat-units">0/0</span><span class="stat-lbl">ניידות זמינות</span></div>
+      </div>
+
+      <!-- 24h timeline scrubber -->
+      <div class="timeline">
+        <div class="tl-head">
+          <span class="tl-title">🕒 ציר תחזית — 24 שעות</span>
+          <span id="tl-readout" class="tl-readout">עכשיו</span>
+        </div>
+        <input id="tl-slider" type="range" min="0" max="23" step="1" />
+        <div class="tl-marks">
+          <span>00</span><span>06</span><span>12</span><span>18</span><span>23</span>
+        </div>
+      </div>
+
+      <!-- Risk legend -->
+      <div class="legend">
+        <div class="legend-item"><span class="dot" style="background:#ff1f4b"></span>קריטי</div>
+        <div class="legend-item"><span class="dot" style="background:#ff7a18"></span>גבוה</div>
+        <div class="legend-item"><span class="dot" style="background:#ffd000"></span>בינוני</div>
+        <div class="legend-item"><span class="dot" style="background:#38e08a"></span>נמוך</div>
+      </div>
+    </section>
+
+    <!-- Right: units + intel -->
+    <aside class="panel panel-right">
+      <div class="panel-head">
+        <span class="panel-title">🚓 ניידות</span>
+        <span id="units-badge" class="badge">0</span>
+      </div>
+      <div id="units-list" class="scroll-list units-scroll"></div>
+
+      <div class="panel-head">
+        <span class="panel-title">📡 יומן מבצעי</span>
+      </div>
+      <div id="intel-feed" class="scroll-list intel-scroll"></div>
+    </aside>
+
+  </main>
+
+  <!-- ===== Scripts ===== -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+  <script src="prediction.js"></script>
+  <script src="map.js"></script>
+  <script src="dispatch.js"></script>
+
+  <!-- UI wiring (timeline + control buttons) -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const slider = document.getElementById('tl-slider');
+      const readout = document.getElementById('tl-readout');
+      const nowHour = new Date().getHours();
+      slider.value = nowHour;
+
+      slider.addEventListener('input', () => {
+        const h = parseInt(slider.value);
+        TomorrowState.forecast_hour = (h === nowHour) ? null : h;
+        readout.textContent = (h === nowHour) ? 'עכשיו' : `${String(h).padStart(2,'0')}:00`;
+        if (window.TomorrowPrediction) TomorrowPrediction.refresh();
+      });
+
+      document.getElementById('btn-regen').addEventListener('click', () => {
+        if (window.TomorrowPrediction) TomorrowPrediction.regenerate();
+      });
+      document.getElementById('btn-saturate').addEventListener('click', () => {
+        if (window.TomorrowDispatch) TomorrowDispatch.saturateArea();
+      });
+    });
+  </script>
+</body>
+</html>

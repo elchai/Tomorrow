@@ -1,0 +1,171 @@
+/* ============================================================
+   TOMORROW — Map view
+   Leaflet dark tactical map · predicted-crime heatmap ·
+   risk rings · station markers · hotspot markers · radar sweep
+   ============================================================ */
+
+window.TomorrowMap = (function () {
+
+  const State = window.TomorrowState;
+  let map;
+  let heatLayer = null;
+  const hotspotRefs = {};   // id -> { marker, ring }
+  const stationRefs = {};
+  let radarEl = null;
+
+  function init() {
+    const station = TomorrowApp.getCurrentStation();
+    const center = station ? [station.lat, station.lng] : CONFIG.MAP_CENTER;
+
+    map = L.map('map', { zoomControl: false, attributionControl: true })
+      .setView(center, station ? 14 : CONFIG.MAP_ZOOM);
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      attribution: '© OpenStreetMap · © CARTO',
+      maxZoom: CONFIG.MAP_MAX_ZOOM, subdomains: 'abcd'
+    }).addTo(map);
+
+    L.control.zoom({ position: 'topright' }).addTo(map);
+
+    placeStations();
+    renderHotspots();
+    buildRadarSweep();
+
+    TomorrowApp.register('map', { onStationChange });
+
+    // expose for dispatch overlay
+    if (window.TomorrowDispatch) TomorrowDispatch.setMap(map);
+  }
+
+  function getMap() { return map; }
+
+  // ---------- Stations ----------
+  function placeStations() {
+    Object.values(stationRefs).forEach(m => map.removeLayer(m));
+    CONFIG.STATIONS.forEach(s => {
+      const icon = L.divIcon({
+        html: `<div class="station-marker"><div class="st-shape"></div><div class="st-badge">⬡</div></div>`,
+        className: '', iconSize: [30, 30], iconAnchor: [15, 15]
+      });
+      const m = L.marker([s.lat, s.lng], { icon, zIndexOffset: 200 }).addTo(map);
+      m.bindPopup(`
+        <div style="min-width:180px">
+          <div style="font-size:10px;color:#7f8db0;font-family:'Share Tech Mono',monospace;letter-spacing:1px">POLICE STATION</div>
+          <div style="font-size:15px;font-weight:700;color:#2b8fff;margin-top:4px">⬡ ${s.name}</div>
+          <div style="font-size:12px;color:#d6e0f0;margin-top:4px">${s.region}</div>
+          <div style="font-size:11px;color:#7f8db0;margin-top:6px;font-family:'Share Tech Mono',monospace">🚓 ${s.cars} ניידות זמינות</div>
+        </div>`);
+      stationRefs[s.id] = m;
+    });
+  }
+
+  // ---------- Hotspots + heatmap ----------
+  function makeHotspotMarker(h) {
+    const r = CONFIG.RISK[h.risk];
+    const ringRadius = 90 + (100 - h.probability) * 4; // higher prob → tighter ring
+    const ring = L.circle([h.lat, h.lng], {
+      radius: ringRadius,
+      color: r.color, fillColor: r.color,
+      fillOpacity: 0.10, weight: 1.5, opacity: 0.6,
+      dashArray: '4,6', interactive: false,
+      className: `risk-ring risk-${h.risk}`
+    }).addTo(map);
+
+    const pulse = h.risk <= 2 ? '<div class="hs-pulse"></div><div class="hs-pulse"></div>' : '';
+    const icon = L.divIcon({
+      html: `<div class="hotspot-marker risk-${h.risk} ${h.dispatched ? 'dispatched' : ''}" style="--rc:${r.color};--rg:${r.glow}">
+               ${pulse}
+               <div class="hs-core">${h.icon}</div>
+               <div class="hs-prob">${h.probability}%</div>
+             </div>`,
+      className: '', iconSize: [44, 44], iconAnchor: [22, 22]
+    });
+    const m = L.marker([h.lat, h.lng], { icon, zIndexOffset: 400 }).addTo(map);
+    m.bindPopup(popupHtml(h));
+    m.on('click', () => { /* popup auto */ });
+
+    hotspotRefs[h.id] = { marker: m, ring };
+  }
+
+  function popupHtml(h) {
+    const r = CONFIG.RISK[h.risk];
+    return `
+      <div style="min-width:230px;line-height:1.5">
+        <div style="font-size:10px;color:#7f8db0;font-family:'Share Tech Mono',monospace;letter-spacing:1px">FORECAST #${h.id} · ${h.window}</div>
+        <div style="font-size:17px;font-weight:700;color:${r.color};margin-top:6px">${h.icon} ${h.crime_name}</div>
+        <div style="font-size:13px;margin-top:4px;color:#d6e0f0">📍 ${h.zone}</div>
+        <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
+          <span style="font-family:'Share Tech Mono',monospace;font-size:20px;font-weight:700;color:${r.color}">${h.probability}%</span>
+          <span style="font-size:11px;padding:2px 8px;border-radius:10px;background:${r.color}22;color:${r.color};border:1px solid ${r.color}66">סיכון ${r.label}</span>
+        </div>
+        ${h.factors.length ? `<div style="margin-top:8px;font-size:11px;color:#9aa7c8">${h.factors.map(f => '• ' + f).join('<br>')}</div>` : ''}
+        <button onclick="TomorrowDispatch.dispatchToHotspot(TomorrowState.forecast.find(x=>x.id===${h.id}))"
+          style="margin-top:10px;width:100%;padding:8px;background:#1a6dff;color:#fff;border:none;border-radius:6px;font-weight:700;cursor:pointer;font-family:inherit">
+          🚓 הזנק ניידת ליעד
+        </button>
+      </div>`;
+  }
+
+  function clearHotspots() {
+    Object.values(hotspotRefs).forEach(({ marker, ring }) => {
+      map.removeLayer(marker); map.removeLayer(ring);
+    });
+    for (const k in hotspotRefs) delete hotspotRefs[k];
+  }
+
+  function renderHeat(items) {
+    if (heatLayer) { map.removeLayer(heatLayer); heatLayer = null; }
+    if (!L.heatLayer) return; // plugin optional
+    const pts = items.map(h => [h.lat, h.lng, h.probability / 100]);
+    heatLayer = L.heatLayer(pts, {
+      radius: 38, blur: 28, maxZoom: 17, minOpacity: 0.25,
+      gradient: { 0.0: '#1a6dff', 0.4: '#38e08a', 0.6: '#ffd000', 0.8: '#ff7a18', 1.0: '#ff1f4b' }
+    }).addTo(map);
+  }
+
+  function renderHotspots() {
+    if (!map) return;
+    clearHotspots();
+    const items = TomorrowPrediction.getVisibleForecast();
+    renderHeat(items);
+    items.forEach(makeHotspotMarker);
+  }
+
+  function focusHotspot(h) {
+    if (!map) return;
+    map.flyTo([h.lat, h.lng], 16, { duration: 1 });
+    const ref = hotspotRefs[h.id];
+    if (ref) ref.marker.openPopup();
+  }
+
+  function markDispatched(h) {
+    const ref = hotspotRefs[h.id];
+    if (ref) {
+      const el = ref.marker.getElement()?.querySelector('.hotspot-marker');
+      if (el) el.classList.add('dispatched');
+    }
+  }
+
+  // ---------- Radar sweep overlay (cosmetic SWAT HUD) ----------
+  function buildRadarSweep() {
+    const wrap = document.getElementById('map').parentElement;
+    if (!wrap) return;
+    radarEl = document.createElement('div');
+    radarEl.className = 'radar-sweep';
+    radarEl.innerHTML = '<div class="radar-arm"></div>';
+    wrap.appendChild(radarEl);
+  }
+
+  function onStationChange() {
+    placeStations();
+    const station = TomorrowApp.getCurrentStation();
+    if (station) map.flyTo([station.lat, station.lng], 14, { duration: 0.8 });
+    else map.flyTo(CONFIG.MAP_CENTER, CONFIG.MAP_ZOOM, { duration: 0.8 });
+    renderHotspots();
+  }
+
+  return {
+    init, getMap, renderHotspots, focusHotspot, markDispatched,
+    placeStations, onStationChange
+  };
+})();
