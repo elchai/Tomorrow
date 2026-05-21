@@ -203,6 +203,7 @@ window.TomorrowDispatch = (function () {
     if (chosen.length === 0) { TomorrowApp.toast(`⚠ אין ניידות זמינות ב${station.name}`, 'warning'); return; }
 
     h.dispatched = true;
+    if (window.TomorrowSim) TomorrowSim.notePrevented(h);   // crime prevented if during a running shift
     if (window.TomorrowMap) { TomorrowMap.markDispatched(h); TomorrowMap.focusHotspot(h); }
     if (window.TomorrowSounds) { TomorrowSounds.alert(h.risk); setTimeout(() => TomorrowSounds.dispatch(), 700); }
 

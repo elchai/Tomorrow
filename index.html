@@ -73,9 +73,9 @@
   <header id="hud">
     <div class="hud-left">
       <div class="logo">
-        <span class="logo-mark">◈</span>
+        <span class="logo-mark"><i data-lucide="radar"></i></span>
         <span class="logo-text">TOMORROW</span>
-        <span class="logo-tag">v0.1</span>
+        <span class="logo-tag">v0.2</span>
       </div>
       <div id="station-chips" class="station-chips"></div>
     </div>
@@ -88,7 +88,7 @@
         <div id="hud-clock" class="clock">--:--:--</div>
         <div id="hud-date" class="date">—</div>
       </div>
-      <button id="btn-mute" class="mute-btn" title="קול">🔊</button>
+      <button id="btn-mute" class="icon-btn" title="קול"><i data-lucide="volume-2"></i></button>
     </div>
   </header>
 
@@ -98,12 +98,12 @@
     <!-- Left: forecast feed -->
     <aside class="panel panel-left">
       <div class="panel-head">
-        <span class="panel-title">⌖ תחזית פשיעה</span>
+        <span class="panel-title"><i data-lucide="crosshair"></i><span>תחזית פשיעה</span></span>
         <span id="forecast-badge" class="badge">0</span>
       </div>
       <div class="panel-actions">
-        <button id="btn-regen" class="btn btn-ghost">🔄 הרץ מודל</button>
-        <button id="btn-saturate" class="btn btn-primary">🛡️ סיור מונע</button>
+        <button id="btn-regen" class="btn btn-ghost"><i data-lucide="refresh-cw"></i><span>הרץ מודל</span></button>
+        <button id="btn-saturate" class="btn btn-primary"><i data-lucide="shield"></i><span>סיור מונע</span></button>
       </div>
       <div id="forecast-list" class="scroll-list"></div>
     </aside>
@@ -112,17 +112,20 @@
     <section class="map-wrap">
       <div id="map"></div>
 
-      <!-- Stat strip -->
+      <!-- Stat strip + shift score -->
       <div class="stat-strip">
         <div class="stat"><span class="stat-val" id="stat-hotspots">0</span><span class="stat-lbl">מוקדים</span></div>
         <div class="stat"><span class="stat-val crit" id="stat-critical">0</span><span class="stat-lbl">קריטי</span></div>
-        <div class="stat"><span class="stat-val" id="stat-units">0/0</span><span class="stat-lbl">ניידות זמינות</span></div>
+        <div class="stat"><span class="stat-val" id="stat-units">0/0</span><span class="stat-lbl">ניידות</span></div>
+        <div class="stat sim-stat"><span class="stat-val good" id="stat-prevented">0</span><span class="stat-lbl">נמנעו</span></div>
+        <div class="stat sim-stat"><span class="stat-val crit" id="stat-occurred">0</span><span class="stat-lbl">התרחשו</span></div>
       </div>
 
-      <!-- 24h timeline scrubber -->
+      <!-- 24h timeline scrubber + simulation control -->
       <div class="timeline">
         <div class="tl-head">
-          <span class="tl-title">🕒 ציר תחזית — 24 שעות</span>
+          <button id="btn-sim" class="sim-btn"><i data-lucide="play"></i><span>הפעל משמרת</span></button>
+          <span class="tl-title"><i data-lucide="clock"></i><span>ציר תחזית · 24 שעות</span></span>
           <span id="tl-readout" class="tl-readout">עכשיו</span>
         </div>
         <input id="tl-slider" type="range" min="0" max="23" step="1" />
@@ -143,13 +146,13 @@
     <!-- Right: units + intel -->
     <aside class="panel panel-right">
       <div class="panel-head">
-        <span class="panel-title">🚓 ניידות</span>
+        <span class="panel-title"><i data-lucide="siren"></i><span>ניידות</span></span>
         <span id="units-badge" class="badge">0</span>
       </div>
       <div id="units-list" class="scroll-list units-scroll"></div>
 
       <div class="panel-head">
-        <span class="panel-title">📡 יומן מבצעי</span>
+        <span class="panel-title"><i data-lucide="radio"></i><span>יומן מבצעי</span></span>
       </div>
       <div id="intel-feed" class="scroll-list intel-scroll"></div>
     </aside>
@@ -166,6 +169,7 @@
   <script src="prediction.js"></script>
   <script src="map.js"></script>
   <script src="dispatch.js"></script>
+  <script src="sim.js"></script>
 
   <!-- UI wiring (timeline + control buttons) -->
   <script>
@@ -190,8 +194,13 @@
       });
       document.getElementById('btn-mute').addEventListener('click', (e) => {
         const m = TomorrowSounds.toggle();
-        e.target.textContent = m ? '🔇' : '🔊';
-        e.target.classList.toggle('muted', m);
+        const btn = e.currentTarget;
+        btn.innerHTML = `<i data-lucide="${m ? 'volume-x' : 'volume-2'}"></i>`;
+        btn.classList.toggle('muted', m);
+        TomorrowApp.renderIcons();
+      });
+      document.getElementById('btn-sim').addEventListener('click', () => {
+        if (window.TomorrowSim) TomorrowSim.toggle();
       });
     });
   </script>

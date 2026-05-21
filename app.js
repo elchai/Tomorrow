@@ -10,6 +10,7 @@ window.TomorrowState = {
   units: [],                  // patrol units
   intel_log: [],              // audit / activity feed
   forecast_hour: null,        // selected hour on the timeline (null = "now")
+  sim: { prevented: 0, occurred: 0 },  // shift-simulation score
   settings: { demo_seconds: 11, onscene_seconds: 7 }
 };
 
@@ -236,7 +237,9 @@ window.TomorrowApp = (function () {
       if (window.TomorrowPrediction) TomorrowPrediction.init();
       if (window.TomorrowMap) TomorrowMap.init();
       if (window.TomorrowDispatch) TomorrowDispatch.init();
+      if (window.TomorrowSim) TomorrowSim.init();
       updateThreatLevel();
+      renderIcons();   // convert any remaining static [data-lucide] in the HUD/timeline
       if (window.TomorrowSounds) TomorrowSounds.online();
       logEvent('system', 4, '✅ רשת הניבוי מקוונת — תחזית 24 שעות נטענה');
     });

@@ -155,7 +155,7 @@ window.TomorrowPrediction = (function () {
     } else {
       list.innerHTML = items.map(h => {
         const r = CONFIG.RISK[h.risk];
-        const state = h.resolved ? 'resolved' : (h.dispatched ? 'dispatched' : '');
+        const state = h.resolved ? 'resolved' : (h.escalated ? 'escalated' : (h.dispatched ? 'dispatched' : ''));
         return `
           <div class="forecast-card risk-${h.risk} ${state}" data-id="${h.id}" style="--rc:${r.color}">
             <div class="fc-head">
