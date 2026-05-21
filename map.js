@@ -44,19 +44,26 @@ window.TomorrowMap = (function () {
     Object.values(stationRefs).forEach(m => map.removeLayer(m));
     CONFIG.STATIONS.forEach(s => {
       const icon = L.divIcon({
-        html: `<div class="station-marker"><div class="st-shape"></div><div class="st-badge">⬡</div></div>`,
-        className: '', iconSize: [30, 30], iconAnchor: [15, 15]
+        html: `<div class="station-marker">
+                 <div class="st-ring"></div>
+                 <div class="st-core"><i data-lucide="shield"></i></div>
+               </div>`,
+        className: '', iconSize: [36, 36], iconAnchor: [18, 18]
       });
       const m = L.marker([s.lat, s.lng], { icon, zIndexOffset: 200 }).addTo(map);
       m.bindPopup(`
-        <div style="min-width:180px">
-          <div style="font-size:10px;color:#7f8db0;font-family:'Share Tech Mono',monospace;letter-spacing:1px">POLICE STATION</div>
-          <div style="font-size:15px;font-weight:700;color:#2b8fff;margin-top:4px">⬡ ${s.name}</div>
-          <div style="font-size:12px;color:#d6e0f0;margin-top:4px">${s.region}</div>
-          <div style="font-size:11px;color:#7f8db0;margin-top:6px;font-family:'Share Tech Mono',monospace">🚓 ${s.cars} ניידות זמינות</div>
-        </div>`);
+        <div class="tac-popup" dir="rtl" style="--rc:#2b8fff">
+          <div class="tp-code">POLICE STATION · תחנת משטרה</div>
+          <div class="tp-name" style="color:#2b8fff"><i data-lucide="shield"></i><span>${s.name}</span></div>
+          <div class="tp-zone"><i data-lucide="map-pin"></i><span>${s.region}</span></div>
+          <div class="tp-row">
+            <span class="tp-window"><i data-lucide="car-front"></i>${s.cars} ניידות זמינות</span>
+          </div>
+        </div>`, { className: 'tac-popup-wrap' });
+      m.on('popupopen', () => TomorrowApp.renderIcons());
       stationRefs[s.id] = m;
     });
+    TomorrowApp.renderIcons();
   }
 
   // ---------- Hotspots + heatmap ----------
