@@ -164,6 +164,7 @@ window.TomorrowPrediction = (function () {
                 <span class="fc-name">${h.crime_name}</span>
                 <span class="fc-code">${h.code} · #${h.id}</span>
               </div>
+              ${h.osint ? '<span class="osint-tag" title="מאומת במקור OSINT / טלגרם"><i data-lucide="radio-tower"></i>OSINT</span>' : ''}
               <span class="risk-chip">${r.label}</span>
             </div>
             <div class="fc-zone"><i data-lucide="map-pin"></i><span>${h.zone}</span></div>

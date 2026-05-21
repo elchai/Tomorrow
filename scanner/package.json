@@ -1,0 +1,18 @@
+{
+  "name": "tomorrow-scanner",
+  "version": "0.1.0",
+  "private": true,
+  "description": "TOMORROW — always-on Telegram OSINT scanner. Listens to crime-relevant channels, classifies messages (crime type + severity + location), and pushes signals to Firebase for the Tomorrow dashboard.",
+  "type": "commonjs",
+  "scripts": {
+    "auth": "node telegram-client.js --auth",
+    "scan": "node index.js",
+    "classify:test": "node classifier.js --test"
+  },
+  "dependencies": {
+    "telegram": "^2.26.22",
+    "input": "^1.0.1",
+    "dotenv": "^16.4.5",
+    "node-fetch": "^2.7.0"
+  }
+}

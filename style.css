@@ -387,6 +387,36 @@ body::before {
 @keyframes hsPulse { 0%{transform:scale(1);opacity:.8} 100%{transform:scale(2.6);opacity:0} }
 .hotspot-marker.dispatched .hs-core { border-style: dashed; opacity: .6; }
 
+/* OSINT intel marker */
+.osint-marker { position: relative; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; }
+.os-core { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;
+  color: #04101f; background: var(--cyan); border: 1px solid #aef4ff;
+  clip-path: polygon(50% 0,100% 50%,50% 100%,0 50%); box-shadow: 0 0 12px var(--cyan); z-index: 2; }
+.os-core svg { width: 13px; height: 13px; }
+.os-ping { position: absolute; width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--cyan);
+  animation: hsPulse 2.2s infinite; }
+.os-text { margin-top: 8px; font-size: 12px; color: var(--text); line-height: 1.45;
+  border-right: 2px solid var(--cyan); padding-right: 8px; }
+
+/* OSINT layer toggle (top-left of map) */
+.osint-toggle { position: absolute; top: 12px; left: 12px; z-index: 4; display: flex; align-items: center; gap: 6px;
+  font-family: var(--font-ui); font-weight: 700; font-size: 13px; color: var(--cyan);
+  background: rgba(7,12,24,.85); border: 1px solid color-mix(in srgb, var(--cyan) 40%, transparent);
+  border-radius: 7px; padding: 7px 11px; cursor: pointer; backdrop-filter: blur(6px); transition: all .15s; }
+.osint-toggle svg { width: 15px; height: 15px; }
+.osint-toggle:hover { box-shadow: 0 0 14px color-mix(in srgb, var(--cyan) 35%, transparent); }
+.osint-toggle.off { color: var(--text-faint); border-color: var(--line); }
+.osint-badge { font-family: var(--font-mono); font-size: 11px; background: var(--cyan); color: #04101f;
+  border-radius: 8px; padding: 0 6px; font-weight: 700; }
+.osint-toggle.off .osint-badge { background: var(--text-faint); }
+
+/* OSINT verified tag on forecast cards */
+.osint-tag { display: inline-flex; align-items: center; gap: 3px; flex: 0 0 auto;
+  font-family: var(--font-mono); font-size: 9px; font-weight: 500; letter-spacing: .5px;
+  color: var(--cyan); background: color-mix(in srgb, var(--cyan) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--cyan) 45%, transparent); border-radius: 3px; padding: 2px 5px; }
+.osint-tag svg { width: 10px; height: 10px; }
+
 /* Live incident (sim escalation) */
 .live-incident { position: relative; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
 .li-core { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center;

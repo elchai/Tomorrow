@@ -16,6 +16,15 @@
 - **פיצ'ר: מצב סימולציית משמרת (sim.js)** — הזמן מתקדם אוטו', מוקדים לא-מוזנקים מתפרצים לאירוע חי (occurred++),
   הזנקה בזמן מונעת (prevented++). לוח ניקוד בסטריפ + סיכום שיעור מניעה. אומת ב-Playwright.
 
+## ✅ בוצע (v0.3 — OSINT / סריקת טלגרם, 2026-05-21)
+- **שכבת OSINT בקליינט** (osint.js): קוראת אותות פשיעה מ-Firebase (`/crime-signals`) או מדמו (`signals.sample.json`)
+  כשאין חיבור. מרקרי מודיעין על המפה + פופ-אפ + יומן + **boost לחיזוי** (אות מעלה סבירות/חומרה של מוקד קרוב ≤600מ׳).
+  טוגל OSINT עם badge. polling כל דקה כשחי.
+- **שלד סורק** (scanner/): MTProto GramJS (חשבון משתמש), classifier.js (מילות-מפתח→crime/risk/zone/lat-lng/confidence),
+  firebase.js (REST push + TTL purge), channels.js, .env.example, README. רץ always-on עם creds של המשתמש.
+- החלטות משתמש: דמו עכשיו → חי אחֽכ; הסורק על שרת always-on.
+- **TODO להפעלה חיה:** המשתמש מזין creds ב-scanner/.env, ממלא channels.js, מגדיר CONFIG.FIREBASE_URL, מריץ npm run scan.
+
 ## 🔜 פיתוח עתידי (מהמשתמש + הצעות)
 **אינטגרציית תחנות + הזנקה (ליבה הבאה):**
 - הקצאה חכמה לפי תחנה רלוונטית + ETA אמיתי לפי מרחק/מהירות יחידה (כבר יש בסיס ב-dispatch.js)

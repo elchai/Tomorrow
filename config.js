@@ -14,6 +14,16 @@ window.CONFIG = (function () {
   //     For real auth use Firebase/server. Replace before any sensitive data.) ---
   const ACCESS_CODE = '2024';
 
+  // --- OSINT / Telegram-scan data source ---
+  // When FIREBASE_URL is set, the OSINT layer reads live crime signals from
+  // `${FIREBASE_URL}/${SIGNALS_PATH}.json` (written by the always-on scanner).
+  // While empty, it falls back to the bundled demo feed (signals.sample.json).
+  const FIREBASE_URL = '';                 // e.g. 'https://tomorrow-xxxx-rtdb.firebaseio.com'
+  const SIGNALS_PATH = 'crime-signals';
+  const SIGNALS_SAMPLE = 'signals.sample.json';
+  const SIGNAL_BOOST_RADIUS_M = 600;       // a signal lifts the risk of forecast hotspots within this radius
+  const SIGNAL_REFRESH_MS = 60000;         // re-poll cadence when live
+
   // --- Map defaults (Tel Aviv metropolitan district) ---
   const MAP_CENTER = [32.0760, 34.7850];
   const MAP_ZOOM = 13;
@@ -96,6 +106,7 @@ window.CONFIG = (function () {
 
   return {
     STORAGE_KEY, SYNC_DEBOUNCE_MS, ACCESS_CODE,
+    FIREBASE_URL, SIGNALS_PATH, SIGNALS_SAMPLE, SIGNAL_BOOST_RADIUS_M, SIGNAL_REFRESH_MS,
     MAP_CENTER, MAP_ZOOM, MAP_MAX_ZOOM,
     RISK, CRIME_TYPES, UNIT_TYPES, STATIONS, RESPONSE_CARDS, ROLES,
     responseCard,

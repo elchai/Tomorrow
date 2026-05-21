@@ -242,6 +242,7 @@ window.TomorrowApp = (function () {
       renderIcons();   // convert any remaining static [data-lucide] in the HUD/timeline
       if (window.TomorrowSounds) TomorrowSounds.online();
       logEvent('system', 4, '✅ רשת הניבוי מקוונת — תחזית 24 שעות נטענה');
+      if (window.TomorrowOsint) TomorrowOsint.init();   // OSINT signals (async) — boosts forecast
     });
   }
 

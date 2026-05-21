@@ -1,0 +1,70 @@
+{
+  "_note": "Demo OSINT feed — mimics the shape the always-on Telegram scanner writes to Firebase /crime-signals. mins_ago is rendered as a relative timestamp client-side so it always looks fresh.",
+  "signals": [
+    {
+      "id": "tg-2041",
+      "source": "@telaviv_police_scanner",
+      "source_type": "telegram",
+      "text_he": "דיווח על קטטה אלימה עם מספר מעורבים סמוך לתחנה המרכזית, נשמעו צעקות וזעקות לעזרה",
+      "crime": "assault",
+      "risk": 1,
+      "zone": "נווה שאנן",
+      "lat": 32.0590, "lng": 34.7790,
+      "confidence": 0.86,
+      "mins_ago": 4,
+      "keywords": ["קטטה", "אלימות", "מעורבים"]
+    },
+    {
+      "id": "tg-2042",
+      "source": "@florentin_live",
+      "source_type": "telegram",
+      "text_he": "תושבים מדווחים על פריצה לדירה ברחוב ויטל, החשוד נמלט עם תיק",
+      "crime": "burglary",
+      "risk": 2,
+      "zone": "רובע פלורנטין",
+      "lat": 32.0570, "lng": 34.7700,
+      "confidence": 0.79,
+      "mins_ago": 12,
+      "keywords": ["פריצה", "דירה", "נמלט"]
+    },
+    {
+      "id": "tg-2043",
+      "source": "@south_tlv_news",
+      "source_type": "telegram",
+      "text_he": "פעילות חשודה של עסקת סמים סמוך למתחם התחנה, מספר דמויות מתקהלות",
+      "crime": "drugs",
+      "risk": 2,
+      "zone": "מתחם התחנה המרכזית",
+      "lat": 32.0560, "lng": 34.7820,
+      "confidence": 0.74,
+      "mins_ago": 21,
+      "keywords": ["סמים", "עסקה", "מתקהלים"]
+    },
+    {
+      "id": "tg-2044",
+      "source": "@jaffa_alerts",
+      "source_type": "telegram",
+      "text_he": "דיווח לא מאומת על שוד עוברי אורח סמוך לשוק הפשפשים ביפו",
+      "crime": "robbery",
+      "risk": 1,
+      "zone": "נמל יפו / שוק הפשפשים",
+      "lat": 32.0530, "lng": 34.7530,
+      "confidence": 0.68,
+      "mins_ago": 33,
+      "keywords": ["שוד", "עוברי אורח"]
+    },
+    {
+      "id": "tg-2045",
+      "source": "@city_watch_tlv",
+      "source_type": "telegram",
+      "text_he": "ריסוס גרפיטי והשחתת רכוש סמוך לדיזנגוף סנטר, נראו שלושה צעירים",
+      "crime": "vandalism",
+      "risk": 3,
+      "zone": "דיזנגוף סנטר",
+      "lat": 32.0760, "lng": 34.7750,
+      "confidence": 0.61,
+      "mins_ago": 47,
+      "keywords": ["גרפיטי", "השחתה", "ונדליזם"]
+    }
+  ]
+}

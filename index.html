@@ -112,6 +112,13 @@
     <section class="map-wrap">
       <div id="map"></div>
 
+      <!-- OSINT layer toggle -->
+      <button id="btn-osint" class="osint-toggle" title="שכבת מודיעין OSINT — סריקת טלגרם">
+        <i data-lucide="radio-tower"></i>
+        <span>OSINT</span>
+        <span class="osint-badge" id="osint-count">0</span>
+      </button>
+
       <!-- Stat strip + shift score -->
       <div class="stat-strip">
         <div class="stat"><span class="stat-val" id="stat-hotspots">0</span><span class="stat-lbl">מוקדים</span></div>
@@ -170,6 +177,7 @@
   <script src="map.js"></script>
   <script src="dispatch.js"></script>
   <script src="sim.js"></script>
+  <script src="osint.js"></script>
 
   <!-- UI wiring (timeline + control buttons) -->
   <script>
@@ -201,6 +209,9 @@
       });
       document.getElementById('btn-sim').addEventListener('click', () => {
         if (window.TomorrowSim) TomorrowSim.toggle();
+      });
+      document.getElementById('btn-osint').addEventListener('click', () => {
+        if (window.TomorrowOsint) TomorrowOsint.toggle();
       });
     });
   </script>
