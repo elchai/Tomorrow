@@ -8,10 +8,12 @@ Vanilla JS, ללא build, dependencies מ-CDN (Leaflet 1.9.4 + leaflet.heat, Goo
 state גלובלי יחיד + localStorage עם debounce, רישום מודולים ו-broadcast לאירועים.
 
 ## מודולים (סדר טעינה קריטי!)
-`config.js → app.js → prediction.js → map.js → dispatch.js`
+`config.js → sounds.js → app.js → prediction.js → map.js → dispatch.js → sim.js → osint.js`
 **גוטצ'ה:** prediction/map/dispatch תופסים `const State = window.TomorrowState` בזמן eval של ה-IIFE.
 `TomorrowState` מוגדר ב-app.js — לכן **app.js חייב להיטען לפני** השאר. אחרת:
 `Cannot read properties of undefined (reading 'forecast')`.
+**גוטצ'ה 2 (config IIFE):** הוספת `const X` בתוך ה-IIFE של config.js בלי להוסיף אותו ל-`return {...}`
+→ `CONFIG.X === undefined` בשקט (קרה עם ACCESS_CODE). תמיד לעדכן את ה-return.
 
 ## State + Broadcast
 - `window.TomorrowState` — current_station_id, forecast[], units[], intel_log[], forecast_hour, settings
@@ -53,5 +55,7 @@ state גלובלי יחיד + localStorage עם debounce, רישום מודול�
 `dir="rtl"`. בגריד 3 עמודות: panel-left (ראשון ב-DOM) מופיע ויזואלית מימין. תחזית=ימין, ניידות=שמאל.
 
 ## בדיקה ויזואלית
-אין build. `npx http-server -p 8777` ואז Playwright (node, `npm i playwright`).
-boot ~2.9s — לחכות ~4s לפני בדיקת DOM. אזהרת Canvas2D של leaflet.heat שפירה.
+אין build. `npx http-server -p 8777` ואז Playwright (node, `npm i playwright` + `npx playwright install chromium` — **אין Python במכונה**).
+**שער כניסה:** למלא `#login-input` ב-`2024` וללחוץ `#login-btn`, ואז להמתין ~5.5ש' (login fade 0.8 + boot ~2.9 + hide 0.7 + טעינת OSINT async) לפני בדיקת DOM.
+אזהרת Canvas2D של leaflet.heat שפירה. כפתורים מונפשים (sim/active) — `click({force:true})`.
+מנקים `_verify.mjs`/`package.json`/`node_modules` לפני commit. ראה [[patterns]] הגלובלי לפרטי הזרימה.
