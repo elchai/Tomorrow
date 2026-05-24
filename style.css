@@ -489,15 +489,115 @@ body::before {
 .toast-warning { border-right-color: var(--high); }
 .toast-info { border-right-color: var(--cyan); }
 
-/* ===================== RESPONSIVE ===================== */
-@media (max-width: 1100px) {
-  #layout { grid-template-columns: 260px 1fr 240px; }
+/* ===================== RESPONSIVE — patterns mirrored from 443 ===================== */
+@media (max-width: 1200px) {
+  #layout { grid-template-columns: 280px 1fr 260px; }
 }
-@media (max-width: 820px) {
-  #layout { grid-template-columns: 1fr; grid-template-rows: 1fr; }
-  .panel-left, .panel-right { display: none; }
+@media (max-width: 1000px) {
+  #layout { grid-template-columns: 240px 1fr 220px; }
+  .station-chips { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; max-width: 100%; }
+  .station-chip { flex-shrink: 0; }
 }
+
+/* ===== Mobile (≤768px) — stack the dashboard, sticky compact HUD ===== */
+@media (max-width: 768px) {
+  /* allow page scroll on mobile (desktop locks body to hidden) */
+  html, body { overflow-y: auto; overflow-x: hidden; height: auto; }
+  body { min-height: 100vh; min-height: 100dvh; }
+
+  /* prevent iOS auto-zoom on focus (any input <16px triggers it) */
+  input, textarea, select { font-size: 16px !important; }
+
+  /* Compact sticky HUD */
+  #hud {
+    position: sticky; top: 0; z-index: 50;
+    padding: 6px 10px; min-height: 50px; height: auto;
+    flex-wrap: nowrap; gap: 6px;
+  }
+  .hud-left { gap: 8px; min-width: 0; flex: 1; }
+  .hud-right { gap: 8px; flex-shrink: 0; }
+  .logo-tag { display: none; }
+  .logo-text { font-size: 17px; letter-spacing: 2px; }
+  .threat-box { display: none; }          /* reduce HUD clutter on mobile */
+  .clock-box { display: none; }           /* clock/date hidden — sticky HUD stays compact */
+  .station-chips { overflow-x: auto; flex-wrap: nowrap; max-width: 100%;
+    -webkit-overflow-scrolling: touch; padding-bottom: 2px; }
+  .station-chips::-webkit-scrollbar { display: none; }
+  .station-chip { flex-shrink: 0; font-size: 12px; padding: 5px 10px; min-height: 36px; }
+
+  /* Stack layout: map on top, panels below as a long scrollable page */
+  #layout {
+    display: flex; flex-direction: column;
+    height: auto; min-height: calc(100vh - 50px); min-height: calc(100dvh - 50px);
+    gap: 4px;
+  }
+  .map-wrap { order: 1; height: 60vh; min-height: 340px; width: 100%; flex: 0 0 auto; position: relative; }
+  .panel-left, .panel-right { width: 100%; max-height: none; display: flex; border: none; border-top: 1px solid var(--line-soft); }
+  .panel-left { order: 2; }
+  .panel-right { order: 3; }
+  /* page scrolls — forecast flows; units/intel keep an inner scroll cap */
+  #forecast-list { flex: 0 0 auto; max-height: none; overflow: visible; }
+  .units-scroll  { flex: 0 0 auto; max-height: 320px; overflow-y: auto; }
+  .intel-scroll  { flex: 0 0 auto; max-height: 280px; overflow-y: auto; }
+
+  /* Touch targets — Apple HIG / Material 44px minimums */
+  button, .btn, .fc-dispatch, .station-chip, .icon-btn, .sim-btn, .mute-btn, .osint-toggle {
+    min-height: 44px;
+  }
+  .leaflet-touch .leaflet-bar a {
+    width: 44px !important; height: 44px !important;
+    line-height: 44px !important; font-size: 22px !important;
+  }
+
+  /* Map controls reposition / shrink */
+  .stat-strip { top: 8px; right: 8px; gap: 6px; flex-wrap: wrap; max-width: calc(100% - 16px); }
+  .stat { padding: 4px 10px; min-width: 56px; }
+  .stat-val { font-size: 17px; }
+  .stat-lbl { font-size: 9px; }
+  .osint-toggle { top: 8px; left: 8px; padding: 6px 9px; font-size: 12px; }
+  .timeline { bottom: 8px; width: calc(100% - 24px); padding: 8px 12px; }
+  .legend { display: none; }              /* legend on mobile — covered by chip colors */
+  .radar-sweep { display: none; }         /* perf: drop the radar sweep on mobile */
+
+  /* Forecast cards a touch larger for fingers */
+  .forecast-card { padding: 12px; }
+  .fc-name { font-size: 16px; }
+  .fc-prob b { font-size: 28px; }
+
+  /* Toasts — narrower, top instead of bottom-left so they don't cover the timeline */
+  #toast-host { bottom: auto; top: 60px; left: 8px; right: 8px; }
+  .toast { max-width: none; }
+}
+
+/* ===== Very small phones (≤480px) ===== */
+@media (max-width: 480px) {
+  .logo-text { font-size: 15px; }
+  .map-wrap { height: 55vh; min-height: 300px; }
+  .stat-strip { gap: 4px; }
+  .stat { padding: 3px 8px; min-width: 48px; }
+  .stat-val { font-size: 15px; }
+}
+
+/* ===== Ultra-compact (≤420px) ===== */
+@media (max-width: 420px) {
+  .logo-tag { display: none; }
+  .map-wrap { height: 50vh; min-height: 280px; }
+  .timeline { padding: 7px 10px; }
+  .tl-title span { display: none; }       /* leave only the clock icon */
+}
+
+/* ===== Login responsive (kept from before) ===== */
 @media (max-width: 540px) {
   .login-classification { font-size: 8px; letter-spacing: 1.5px; white-space: normal; line-height: 1.5; }
   .login-box { padding: 36px 30px 32px; }
+}
+
+/* ===== Accessibility — respect reduced motion ===== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
