@@ -417,8 +417,18 @@ body::before {
 .osint-tag { display: inline-flex; align-items: center; gap: 3px; flex: 0 0 auto;
   font-family: var(--font-mono); font-size: 9px; font-weight: 500; letter-spacing: .5px;
   color: var(--cyan); background: color-mix(in srgb, var(--cyan) 14%, transparent);
-  border: 1px solid color-mix(in srgb, var(--cyan) 45%, transparent); border-radius: 3px; padding: 2px 5px; }
+  border: 1px solid color-mix(in srgb, var(--cyan) 45%, transparent); border-radius: 3px; padding: 2px 5px;
+  text-decoration: none; }
 .osint-tag svg { width: 10px; height: 10px; }
+.osint-tag-link:hover { background: color-mix(in srgb, var(--cyan) 28%, transparent);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--cyan) 50%, transparent); }
+
+/* Source link (in OSINT popup top-code & intel log) */
+.src-link { color: var(--cyan); text-decoration: none; display: inline-flex; align-items: center; gap: 2px;
+  border-bottom: 1px dashed color-mix(in srgb, var(--cyan) 55%, transparent); padding-bottom: 1px;
+  transition: color .15s, border-color .15s; }
+.src-link:hover { color: #fff; border-bottom-color: var(--cyan); }
+.src-link svg { width: 10px; height: 10px; opacity: .75; }
 
 /* Live incident (sim escalation) */
 .live-incident { position: relative; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }

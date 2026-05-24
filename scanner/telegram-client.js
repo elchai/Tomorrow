@@ -60,6 +60,11 @@ async function handleMessage(event, client) {
   sig.id = `tg-${msg.id}-${Date.now().toString(36)}`;
   sig.source = '@' + key;
   sig.source_type = 'telegram';
+  // public channels: t.me/<username>/<msg_id> deep-links the specific message.
+  // private/numeric chats won't deep-link cleanly — leave URLs blank in that case.
+  const handle = (key && !/^-?\d+$/.test(key)) ? key : null;
+  sig.source_url = handle ? `https://t.me/${handle}` : null;
+  sig.msg_url    = handle ? `https://t.me/${handle}/${msg.id}` : null;
   sig.text_he = text.slice(0, 280);
 
   try {

@@ -24,6 +24,21 @@ window.TomorrowOsint = (function () {
     return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   }
 
+  // best URL for a signal: deep-link to the specific message if we have it, else channel.
+  // Falls back to deriving `https://t.me/<handle>` from `@handle` if neither was provided.
+  function bestUrl(s) {
+    if (s.msg_url) return s.msg_url;
+    if (s.source_url) return s.source_url;
+    if (s.source && s.source.startsWith('@')) return 'https://t.me/' + s.source.slice(1);
+    return null;
+  }
+  function srcLink(s, extraClass = '') {
+    const url = bestUrl(s);
+    const label = s.source || 'מקור';
+    if (!url) return label;
+    return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="src-link ${extraClass}" title="פתח את ההודעה בטלגרם">${label}<i data-lucide="external-link"></i></a>`;
+  }
+
   function timeAgo(s) {
     if (s.mins_ago != null) {
       const m = s.mins_ago;
@@ -70,6 +85,7 @@ window.TomorrowOsint = (function () {
       if (best && bestD <= CONFIG.SIGNAL_BOOST_RADIUS_M && !best.osint) {
         best.osint = true;
         best.osint_source = sig.source;
+        best.osint_url = bestUrl(sig);
         best.probability = Math.min(100, best.probability + Math.round(sig.confidence * 16));
         if (sig.risk < best.risk) best.risk = sig.risk;  // a credible report can raise severity
       }
@@ -90,7 +106,7 @@ window.TomorrowOsint = (function () {
     const mk = L.marker([sig.lat, sig.lng], { icon, zIndexOffset: 700 }).addTo(m);
     mk.bindPopup(`
       <div class="tac-popup" dir="rtl" style="--rc:#00e5ff">
-        <div class="tp-code">OSINT · ${sig.source}</div>
+        <div class="tp-code">OSINT · ${srcLink(sig)}</div>
         <div class="tp-name" style="color:#00e5ff"><i data-lucide="radio-tower"></i><span>${crime.name}</span></div>
         <div class="tp-zone"><i data-lucide="map-pin"></i><span>${sig.zone}</span></div>
         <div class="os-text">"${sig.text_he}"</div>
@@ -139,7 +155,7 @@ window.TomorrowOsint = (function () {
     // surface each signal in the operational log
     list.slice(0, 8).forEach(sig => {
       const crime = CONFIG.crimeType(sig.crime);
-      TomorrowApp.logEvent('osint', sig.risk, `📡 אות OSINT · ${sig.source}: ${crime.name} ב${sig.zone} (מהימנות ${Math.round(sig.confidence * 100)}%)`);
+      TomorrowApp.logEvent('osint', sig.risk, `📡 אות OSINT · ${srcLink(sig)}: ${crime.name} ב${sig.zone} (מהימנות ${Math.round(sig.confidence * 100)}%)`);
     });
 
     // reflect the boost in the forecast + map

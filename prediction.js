@@ -164,7 +164,9 @@ window.TomorrowPrediction = (function () {
                 <span class="fc-name">${h.crime_name}</span>
                 <span class="fc-code">${h.code} · #${h.id}</span>
               </div>
-              ${h.osint ? '<span class="osint-tag" title="מאומת במקור OSINT / טלגרם"><i data-lucide="radio-tower"></i>OSINT</span>' : ''}
+              ${h.osint ? (h.osint_url
+                ? `<a href="${h.osint_url}" target="_blank" rel="noopener noreferrer" class="osint-tag osint-tag-link" title="פתח את הדיווח ב-${h.osint_source || 'טלגרם'}"><i data-lucide="radio-tower"></i>OSINT<i data-lucide="external-link"></i></a>`
+                : '<span class="osint-tag" title="מאומת במקור OSINT / טלגרם"><i data-lucide="radio-tower"></i>OSINT</span>') : ''}
               <span class="risk-chip">${r.label}</span>
             </div>
             <div class="fc-zone"><i data-lucide="map-pin"></i><span>${h.zone}</span></div>
@@ -181,7 +183,7 @@ window.TomorrowPrediction = (function () {
 
       list.querySelectorAll('.forecast-card').forEach(card => {
         card.addEventListener('click', (e) => {
-          if (e.target.closest('.fc-dispatch')) return;
+          if (e.target.closest('.fc-dispatch, a')) return;   // dispatch btn + any link inside (e.g. OSINT)
           const h = State.forecast.find(x => x.id === parseInt(card.dataset.id));
           if (h && window.TomorrowMap) TomorrowMap.focusHotspot(h);
         });

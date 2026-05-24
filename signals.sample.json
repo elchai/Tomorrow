@@ -1,9 +1,11 @@
 {
-  "_note": "Demo OSINT feed — mimics the shape the always-on Telegram scanner writes to Firebase /crime-signals. mins_ago is rendered as a relative timestamp client-side so it always looks fresh.",
+  "_note": "Demo OSINT feed — mimics the shape the always-on Telegram scanner writes to Firebase /crime-signals. source_url = channel; msg_url = deep link to the specific message (t.me/<chan>/<msg_id>). mins_ago is rendered as a relative timestamp client-side.",
   "signals": [
     {
       "id": "tg-2041",
       "source": "@telaviv_police_scanner",
+      "source_url": "https://t.me/telaviv_police_scanner",
+      "msg_url": "https://t.me/telaviv_police_scanner/1042",
       "source_type": "telegram",
       "text_he": "דיווח על קטטה אלימה עם מספר מעורבים סמוך לתחנה המרכזית, נשמעו צעקות וזעקות לעזרה",
       "crime": "assault",
@@ -17,6 +19,8 @@
     {
       "id": "tg-2042",
       "source": "@florentin_live",
+      "source_url": "https://t.me/florentin_live",
+      "msg_url": "https://t.me/florentin_live/803",
       "source_type": "telegram",
       "text_he": "תושבים מדווחים על פריצה לדירה ברחוב ויטל, החשוד נמלט עם תיק",
       "crime": "burglary",
@@ -30,6 +34,8 @@
     {
       "id": "tg-2043",
       "source": "@south_tlv_news",
+      "source_url": "https://t.me/south_tlv_news",
+      "msg_url": "https://t.me/south_tlv_news/2210",
       "source_type": "telegram",
       "text_he": "פעילות חשודה של עסקת סמים סמוך למתחם התחנה, מספר דמויות מתקהלות",
       "crime": "drugs",
@@ -43,6 +49,8 @@
     {
       "id": "tg-2044",
       "source": "@jaffa_alerts",
+      "source_url": "https://t.me/jaffa_alerts",
+      "msg_url": "https://t.me/jaffa_alerts/477",
       "source_type": "telegram",
       "text_he": "דיווח לא מאומת על שוד עוברי אורח סמוך לשוק הפשפשים ביפו",
       "crime": "robbery",
@@ -56,6 +64,8 @@
     {
       "id": "tg-2045",
       "source": "@city_watch_tlv",
+      "source_url": "https://t.me/city_watch_tlv",
+      "msg_url": "https://t.me/city_watch_tlv/1581",
       "source_type": "telegram",
       "text_he": "ריסוס גרפיטי והשחתת רכוש סמוך לדיזנגוף סנטר, נראו שלושה צעירים",
       "crime": "vandalism",

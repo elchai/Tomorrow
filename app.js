@@ -128,6 +128,7 @@ window.TomorrowApp = (function () {
         <span class="intel-text">${e.text}</span>
       </div>
     `).join('');
+    renderIcons();   // intel rows may embed lucide icons (e.g. external-link on OSINT source links)
   }
 
   // ---------- Station chips (header) ----------
