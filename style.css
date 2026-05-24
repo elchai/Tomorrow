@@ -105,7 +105,7 @@ body::before {
 @keyframes shimmer { to { background-position: 200% center } }
 
 .login-sub { display: flex; flex-direction: column; align-items: center; gap: 4px; margin-bottom: 30px; }
-.login-sub-en { font-family: var(--font-mono); font-size: 11px; color: var(--cyan);
+.login-sub-en { font-family: var(--font-he); font-weight: 500; font-size: 11px; color: var(--cyan);
   letter-spacing: .34em; padding-inline-start: .34em; opacity: .85; }
 .login-sub-he { font-family: var(--font-he); font-weight: 400; font-size: 12.5px; color: var(--text-dim); letter-spacing: .12em; }
 
@@ -131,9 +131,9 @@ body::before {
   letter-spacing: .08em; color: #fff; background: linear-gradient(135deg, var(--police), rgba(0,229,255,.35));
   border: 1px solid var(--police-br); border-radius: 6px; cursor: pointer; transition: box-shadow .2s; }
 .login-btn:hover { box-shadow: 0 0 24px rgba(43,143,255,.6); }
-.login-error { font-family: var(--font-mono); font-size: 11px; color: var(--critical); height: 16px; margin-top: 12px; letter-spacing: .08em; }
+.login-error { font-family: var(--font-he); font-weight: 500; font-size: 11px; color: var(--critical); height: 16px; margin-top: 12px; letter-spacing: .08em; }
 .login-footer { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
-  font-family: var(--font-mono); font-size: 10px; color: var(--text-faint); pointer-events: none; white-space: nowrap; }
+  font-family: var(--font-he); font-size: 11px; color: var(--text-faint); pointer-events: none; white-space: nowrap; }
 
 /* ===================== BOOT ===================== */
 #boot {
@@ -149,10 +149,10 @@ body::before {
   letter-spacing: 12px; color: var(--police-br);
   text-shadow: 0 0 30px rgba(43,143,255,.6); animation: flick 3s infinite;
 }
-.boot-sub { font-family: var(--font-mono); color: var(--cyan); letter-spacing: 3px; margin-top: 8px; font-size: 12px; }
+.boot-sub { font-family: var(--font-he); font-weight: 500; color: var(--cyan); letter-spacing: 4px; margin-top: 10px; font-size: 12px; }
 .boot-progress { height: 4px; background: rgba(43,143,255,.15); border-radius: 4px; margin: 28px 0 18px; overflow: hidden; }
 #boot-bar { height: 100%; width: 0; background: linear-gradient(90deg, var(--police), var(--cyan)); transition: width .4s ease; box-shadow: 0 0 12px var(--cyan); }
-.boot-lines { text-align: right; direction: rtl; font-family: var(--font-mono); font-size: 12px; color: var(--low); min-height: 130px; }
+.boot-lines { text-align: right; direction: rtl; font-family: var(--font-he); font-weight: 400; font-size: 13px; color: var(--low); min-height: 130px; }
 .boot-line { opacity: 0; animation: lineIn .3s forwards; margin: 3px 0; }
 @keyframes lineIn { from { opacity: 0; transform: translateX(8px);} to { opacity: .85; transform: none; } }
 @keyframes flick { 0%,92%,100%{opacity:1} 93%{opacity:.4} 95%{opacity:1} 97%{opacity:.6} }
@@ -187,7 +187,7 @@ body::before {
 
 .threat-box { display: flex; align-items: center; gap: 8px; padding: 6px 12px;
   background: rgba(0,0,0,.3); border: 1px solid var(--line); border-radius: 6px; }
-.threat-level { font-family: var(--font-mono); font-size: 12px; letter-spacing: 1px; }
+.threat-level { font-family: var(--font-he); font-weight: 500; font-size: 12.5px; letter-spacing: .5px; }
 .threat-dot { width: 10px; height: 10px; border-radius: 50%; animation: pulse 1.6s infinite; }
 .threat-dot.critical { background: var(--critical); box-shadow: 0 0 12px var(--critical); }
 .threat-dot.high { background: var(--high); box-shadow: 0 0 12px var(--high); }
@@ -267,8 +267,8 @@ body::before {
 .fc-headtext { flex: 1; min-width: 0; }
 .fc-name { display: block; font-family: var(--font-ui); font-weight: 700; font-size: 15px; color: var(--text); line-height: 1.1; }
 .fc-code { display: block; font-family: var(--font-mono); font-size: 10px; letter-spacing: 1px; color: var(--text-faint); margin-top: 1px; }
-.risk-chip { flex: 0 0 auto; font-family: var(--font-mono); font-size: 9.5px; font-weight: 500; letter-spacing: 1px;
-  text-transform: uppercase; padding: 3px 7px; border-radius: 3px;
+.risk-chip { flex: 0 0 auto; font-family: var(--font-he); font-size: 10.5px; font-weight: 700; letter-spacing: .5px;
+  padding: 3px 8px; border-radius: 3px;
   color: var(--rc); background: color-mix(in srgb, var(--rc) 14%, transparent); border: 1px solid color-mix(in srgb, var(--rc) 45%, transparent); }
 
 .fc-zone { display: flex; align-items: center; gap: 5px; font-size: 12.5px; color: var(--text-dim); margin-top: 9px; }
@@ -285,8 +285,8 @@ body::before {
 .fc-gauge-fill { height: 100%; background: var(--rc); box-shadow: 0 0 8px var(--rc); border-radius: 2px; transition: width .4s; }
 
 .fc-factors { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 9px; }
-.factor { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .3px; background: rgba(255,255,255,.05);
-  color: var(--text-dim); padding: 2px 7px; border-radius: 3px; border: 1px solid var(--line-soft); }
+.factor { font-family: var(--font-he); font-weight: 400; font-size: 11px; background: rgba(255,255,255,.05);
+  color: var(--text-dim); padding: 2px 8px; border-radius: 3px; border: 1px solid var(--line-soft); }
 .fc-dispatch { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; margin-top: 11px;
   padding: 8px; font-family: var(--font-ui); font-weight: 700; font-size: 13px; letter-spacing: .04em;
   background: rgba(43,143,255,.1); color: var(--police-br); border: 1px solid rgba(43,143,255,.35);
@@ -456,7 +456,7 @@ body::before {
 .tl-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; gap: 10px; }
 .tl-title { display: flex; align-items: center; gap: 6px; font-family: var(--font-ui); font-weight: 600; font-size: 13px; color: var(--text-dim); }
 .tl-title svg { width: 13px; height: 13px; }
-.tl-readout { font-family: var(--font-mono); font-size: 15px; color: var(--cyan); min-width: 56px; text-align: left; }
+.tl-readout { font-family: var(--font-he); font-weight: 700; font-size: 15px; color: var(--cyan); min-width: 56px; text-align: left; }
 
 .sim-btn { display: flex; align-items: center; gap: 6px; font-family: var(--font-ui); font-weight: 700; font-size: 13px;
   padding: 6px 12px; border-radius: 5px; cursor: pointer; color: var(--low);
