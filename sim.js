@@ -1,5 +1,5 @@
 /* ============================================================
-   TOMORROW — Shift Simulation ("מצב משמרת")
+   TOMORROW — Shift Simulation ("סריקה" — UI label; internally a 24h forecast walkthrough)
    Turns the forecast into a live game: time auto-advances, and
    un-patrolled high-risk hotspots may ESCALATE into live incidents.
    Dispatch a unit before escalation → crime PREVENTED (+score).
@@ -115,8 +115,8 @@ window.TomorrowSim = (function () {
     setBtn();
     const slider = document.getElementById('tl-slider');
     if (slider) slider.disabled = true;
-    TomorrowApp.toast('▶ משמרת החלה — הזנק ניידות לפני שהפשע מתרחש', 'info', 4000);
-    TomorrowApp.logEvent('system', 3, '▶ מצב משמרת הופעל — סימולציית 24 שעות');
+    TomorrowApp.toast('▶ סריקה החלה — הזנק ניידות לפני שהפשע מתרחש', 'info', 4000);
+    TomorrowApp.logEvent('system', 3, '▶ סריקת 24 שעות הופעלה');
     if (window.TomorrowSounds) TomorrowSounds.online();
     timer = setInterval(tick, TICK_MS);
   }
@@ -131,8 +131,8 @@ window.TomorrowSim = (function () {
     const s = score();
     const total = s.prevented + s.occurred;
     const rate = total ? Math.round((s.prevented / total) * 100) : 0;
-    TomorrowApp.toast(`⏸ משמרת הסתיימה · שיעור מניעה ${rate}% (${s.prevented}/${total})`, 'info', 5000);
-    TomorrowApp.logEvent('system', 3, `⏸ סיכום משמרת: נמנעו ${s.prevented} · התרחשו ${s.occurred} · מניעה ${rate}%`);
+    TomorrowApp.toast(`⏸ סריקה הסתיימה · שיעור מניעה ${rate}% (${s.prevented}/${total})`, 'info', 5000);
+    TomorrowApp.logEvent('system', 3, `⏸ סיכום סריקה: נמנעו ${s.prevented} · התרחשו ${s.occurred} · מניעה ${rate}%`);
   }
 
   function toggle() { running ? stop() : start(); }
@@ -141,8 +141,8 @@ window.TomorrowSim = (function () {
     const btn = document.getElementById('btn-sim');
     if (!btn) return;
     btn.innerHTML = running
-      ? '<i data-lucide="pause"></i><span>עצור משמרת</span>'
-      : '<i data-lucide="play"></i><span>הפעל משמרת</span>';
+      ? '<i data-lucide="pause"></i><span>עצור סריקה</span>'
+      : '<i data-lucide="play"></i><span>הפעל סריקה</span>';
     btn.classList.toggle('active', running);
     TomorrowApp.renderIcons();
   }
