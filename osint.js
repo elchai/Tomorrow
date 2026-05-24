@@ -86,7 +86,7 @@ window.TomorrowOsint = (function () {
         best.osint = true;
         best.osint_source = sig.source;
         best.osint_url = bestUrl(sig);
-        best.probability = Math.min(100, best.probability + Math.round(sig.confidence * 16));
+        best.probability = Math.min(100, best.probability + Math.round(sig.confidence * CONFIG.FACTORS.osint));
         if (sig.risk < best.risk) best.risk = sig.risk;  // a credible report can raise severity
       }
     });

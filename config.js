@@ -29,6 +29,15 @@ window.CONFIG = (function () {
   const MAP_ZOOM = 13;
   const MAP_MAX_ZOOM = 19;
 
+  // --- Prediction Weights (adjustable in analytics) ---
+  const FACTORS = {
+    base: 0.5,
+    fit: 35,
+    hist: 25,
+    osint: 16
+  };
+
+
   // --- Risk levels (1 = critical … 4 = low) — drives all color coding ---
   const RISK = {
     1: { key: 'critical', label: 'קריטי',  color: '#ff1f4b', glow: '#ff5470' },
@@ -108,7 +117,7 @@ window.CONFIG = (function () {
     STORAGE_KEY, SYNC_DEBOUNCE_MS, ACCESS_CODE,
     FIREBASE_URL, SIGNALS_PATH, SIGNALS_SAMPLE, SIGNAL_BOOST_RADIUS_M, SIGNAL_REFRESH_MS,
     MAP_CENTER, MAP_ZOOM, MAP_MAX_ZOOM,
-    RISK, CRIME_TYPES, UNIT_TYPES, STATIONS, RESPONSE_CARDS, ROLES,
+    RISK, CRIME_TYPES, UNIT_TYPES, STATIONS, RESPONSE_CARDS, ROLES, FACTORS,
     responseCard,
     crimeType: (k) => CRIME_TYPES.find(c => c.key === k) || CRIME_TYPES[0],
     unitType:  (k) => UNIT_TYPES.find(u => u.key === k) || UNIT_TYPES[0],

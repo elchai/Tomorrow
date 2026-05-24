@@ -91,9 +91,9 @@ window.TomorrowPrediction = (function () {
         const crime = CONFIG.CRIME_TYPES[Math.floor(rng() * CONFIG.CRIME_TYPES.length)];
         const zone = ZONES[Math.floor(rng() * ZONES.length)];
 
-        const base = crime.base_rate * 100 * 0.5;
-        const fit = timeFit(crime, hour) * 35;
-        const hist = zone.weight * 25;
+        const base = crime.base_rate * 100 * CONFIG.FACTORS.base;
+        const fit = timeFit(crime, hour) * CONFIG.FACTORS.fit;
+        const hist = zone.weight * CONFIG.FACTORS.hist;
         const upl = weekendUplift(hour);
         const jitter = (rng() - 0.5) * 14;
         const score = Math.max(4, Math.min(100, (base + fit + hist + jitter) * upl));

@@ -239,6 +239,8 @@ window.TomorrowApp = (function () {
       if (window.TomorrowMap) TomorrowMap.init();
       if (window.TomorrowDispatch) TomorrowDispatch.init();
       if (window.TomorrowSim) TomorrowSim.init();
+      if (window.TomorrowAnalytics) TomorrowAnalytics.init();
+      if (window.TomorrowBriefing) TomorrowBriefing.init();
       updateThreatLevel();
       renderIcons();   // convert any remaining static [data-lucide] in the HUD/timeline
       if (window.TomorrowSounds) TomorrowSounds.online();

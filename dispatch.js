@@ -55,18 +55,15 @@ window.TomorrowDispatch = (function () {
     if (!State.units || State.units.length === 0) seedUnits();
     if (window.TomorrowMap && !map) map = TomorrowMap.getMap();
     TomorrowApp.register('dispatch', { onStationChange: renderUnits });
-    renderUnits();
-  }
-
-  function seedUnits() {
+    re  function seedUnits() {
     const units = [];
     CONFIG.STATIONS.forEach(s => {
-      for (let i = 1; i <= Math.min(3, s.cars); i++) {
-        const type = i === 1 ? 'patrol' : (i === 2 ? 'patrol' : 'motor');
+      for (let i = 1; i <= Math.min(4, s.cars); i++) {
+        const type = i === 1 ? 'patrol' : (i === 2 ? 'motor' : (i === 3 ? 'swat' : 'undercover'));
         const ut = CONFIG.unitType(type);
         units.push({
-          callsign: `${s.id.slice(0, 3).toUpperCase()}-${i}`,
-          type, type_name: ut.name, icon: ut.icon,
+          callsign: `${s.id.split('-')[0].toUpperCase().slice(0, 3)}-${i}`,
+          type, type_name: ut.name,
           status: 'available', text: 'זמינה · בתחנה',
           station_id: s.id
         });
@@ -82,40 +79,50 @@ window.TomorrowDispatch = (function () {
   }
 
   // ---------- Patrol vehicle animation (station → hotspot) ----------
-  function dispatchVehicle(unit, fromLatLng, toLatLng, color, onArrive) {
+  function dispatchVehicle(unit, fromLatLng, toLatLng, color, onArrive, isReturning = false) {
     if (!map) return;
     const id = unit.callsign + '_' + Date.now() + Math.random().toString(36).slice(2, 5);
 
     // curved route so multiple cars don't overlap on a straight line
     const dLat = toLatLng[0] - fromLatLng[0], dLng = toLatLng[1] - fromLatLng[1];
+    const curveSign = isReturning ? -0.18 : 0.18;
     const mid = [
-      (fromLatLng[0] + toLatLng[0]) / 2 + dLng * 0.18,
-      (fromLatLng[1] + toLatLng[1]) / 2 - dLat * 0.18
+      (fromLatLng[0] + toLatLng[0]) / 2 + dLng * curveSign,
+      (fromLatLng[1] + toLatLng[1]) / 2 - dLat * curveSign
     ];
     const points = bezier(fromLatLng, mid, toLatLng, 80);
 
     const distKm = distanceMeters(fromLatLng[0], fromLatLng[1], toLatLng[0], toLatLng[1]) / 1000;
-    const etaMin = (distKm / CONFIG.unitType(unit.type).speed_kmh) * 60;
+    const speed = CONFIG.unitType(unit.type).speed_kmh;
+    const etaMin = (distKm / speed) * 60;
     const demoMs = (State.settings.demo_seconds || 11) * 1000;
     const stepMs = demoMs / points.length;
 
     const line = L.polyline([points[0]], {
-      color, weight: 2.5, dashArray: '8,8', opacity: 0.6,
-      interactive: false, className: 'avl-path'
+      color: isReturning ? '#7f8db0' : color,
+      weight: isReturning ? 1.6 : 2.5,
+      dashArray: isReturning ? '4,4' : '8,8',
+      opacity: isReturning ? 0.45 : 0.6,
+      interactive: false,
+      className: 'avl-path'
     }).addTo(map);
 
     const icon = L.divIcon({
-      html: `<div class="vehicle-marker"><div class="v-icon">${carSvg(color)}</div><div class="v-cs">${unit.callsign}</div></div>`,
-      className: '', iconSize: [54, 40], iconAnchor: [27, 20]
+      html: `<div class="vehicle-marker ${isReturning ? 'returning' : ''}"><div class="v-icon">${carSvg(isReturning ? '#7f8db0' : color)}</div><div class="v-cs">${unit.callsign}</div></div>`,
+      className: '',
+      iconSize: [54, 40],
+      iconAnchor: [27, 20]
     });
-    const marker = L.marker(points[0], { icon, zIndexOffset: 800 }).addTo(map);
+    const marker = L.marker(points[0], { icon, zIndexOffset: isReturning ? 600 : 800 }).addTo(map);
 
     let step = 0;
     const trail = [points[0]];
     function rotate() {
       const cur = points[step], nxt = points[Math.min(step + 1, points.length - 1)];
       const el = marker.getElement()?.querySelector('.v-shape');
-      if (el && (cur[0] !== nxt[0] || cur[1] !== nxt[1])) el.style.transform = `rotate(${calcHeadingDeg(cur, nxt)}deg)`;
+      if (el && (cur[0] !== nxt[0] || cur[1] !== nxt[1])) {
+        el.style.transform = `rotate(${calcHeadingDeg(cur, nxt)}deg)`;
+      }
     }
     setTimeout(rotate, 30);
 
@@ -127,38 +134,72 @@ window.TomorrowDispatch = (function () {
       rotate();
       if (step >= points.length - 1) {
         clearInterval(interval);
-        onSceneSecure(toLatLng[0], toLatLng[1], color);
-        if (window.TomorrowSounds) TomorrowSounds.arrival();
-        TomorrowApp.logEvent('status', 3, `${unit.callsign} הגיעה ל${unit.dest || 'יעד'} · ETA ריאלי ${etaMin.toFixed(0)} דק׳`);
+        
+        if (!isReturning) {
+          // Arrival at crime scene
+          onSceneSecure(toLatLng[0], toLatLng[1], color);
+          if (window.TomorrowSounds) TomorrowSounds.arrival();
+          TomorrowApp.logEvent('status', 3, `${unit.callsign} הגיעה ל${unit.dest || 'יעד'} · ETA ריאלי ${etaMin.toFixed(0)} דק׳`);
 
-        // on-scene phase: unit dwells at the target before returning available
-        unit.status = 'onscene';
-        unit.text = `בשטח · ${unit.dest || 'יעד'}`;
-        renderUnits();
-
-        // fade trail (keep the unit marker parked on scene during dwell)
-        let f = 0;
-        const fade = setInterval(() => {
-          f++;
-          line.setStyle({ opacity: Math.max(0, 0.6 - f * 0.07) });
-          if (f > 9) { clearInterval(fade); map.removeLayer(line); }
-        }, 220);
-
-        const dwellMs = (State.settings.onscene_seconds || 7) * 1000;
-        setTimeout(() => {
-          if (marker.getElement()) marker.getElement().style.opacity = '0';
-          map.removeLayer(marker);
-          delete active[id];
-          unit.status = 'available';
-          unit.text = 'זמינה · בתחנה';
+          // on-scene phase: unit dwells at the target
+          unit.status = 'onscene';
+          const dwellSec = State.settings.onscene_seconds || 7;
+          unit.text = `בשטח · אבטחת מוקד (${dwellSec}ש׳)`;
           renderUnits();
+
           // mark the hotspot as handled/secured
           if (unit.hotspot_id != null) {
             const h = State.forecast.find(x => x.id === unit.hotspot_id);
             if (h) { h.resolved = true; TomorrowPrediction.renderForecastList(); }
           }
-          TomorrowApp.logEvent('status', 4, `${unit.callsign} סיימה טיפול · חוזרת לזמינות`);
-        }, dwellMs);
+
+          // fade trail
+          let f = 0;
+          const fade = setInterval(() => {
+            f++;
+            line.setStyle({ opacity: Math.max(0, 0.6 - f * 0.07) });
+            if (f > 9) { clearInterval(fade); map.removeLayer(line); }
+          }, 220);
+
+          const dwellMs = dwellSec * 1000;
+          setTimeout(() => {
+            map.removeLayer(marker);
+            delete active[id];
+
+            const station = CONFIG.station(unit.station_id);
+            if (station) {
+              unit.status = 'returning';
+              unit.text = `חזרה לתחנת ${station.name}`;
+              renderUnits();
+              TomorrowApp.logEvent('status', 2, `${unit.callsign} סיימה טיפול · בדרך חזרה לתחנה`);
+              dispatchVehicle(unit, toLatLng, [station.lat, station.lng], color, onArrive, true);
+            } else {
+              unit.status = 'available';
+              unit.text = 'זמינה · בתחנה';
+              renderUnits();
+            }
+          }, dwellMs);
+        } else {
+          // Arrival back at police station
+          if (marker.getElement()) marker.getElement().style.opacity = '0';
+          map.removeLayer(marker);
+          delete active[id];
+
+          // fade trail
+          let f = 0;
+          const fade = setInterval(() => {
+            f++;
+            line.setStyle({ opacity: Math.max(0, 0.45 - f * 0.06) });
+            if (f > 9) { clearInterval(fade); map.removeLayer(line); }
+          }, 220);
+
+          unit.status = 'available';
+          unit.text = 'זמינה · בתחנה';
+          unit.dest = null;
+          unit.hotspot_id = null;
+          renderUnits();
+          TomorrowApp.logEvent('status', 4, `🚔 ${unit.callsign} חזרה לתחנת האם · זמינה לשיגור`);
+        }
 
         if (onArrive) onArrive();
       }
@@ -238,16 +279,24 @@ window.TomorrowDispatch = (function () {
     if (items.length === 0) {
       list.innerHTML = '<div class="empty-state">אין יחידות בתחנה זו</div>';
     } else {
-      list.innerHTML = items.map(u => `
-        <div class="unit-card status-${u.status}" data-cs="${u.callsign}">
-          <div class="u-row">
-            <span class="u-icon"><i data-lucide="${CONFIG.unitType(u.type).glyph}"></i></span>
-            <span class="u-cs">${u.callsign}</span>
-            <span class="u-led"></span>
-          </div>
-          <div class="u-type">${u.type_name}</div>
-          <div class="u-text">${u.text}</div>
-        </div>`).join('');
+      list.innerHTML = items.map(u => {
+        const hasProgress = u.status === 'onscene';
+        const dwellSec = State.settings.onscene_seconds || 7;
+        const progressHtml = hasProgress 
+          ? `<div class="u-progress"><div class="u-progress-fill" style="animation: dwellBar ${dwellSec}s linear forwards"></div></div>`
+          : '';
+        return `
+          <div class="unit-card status-${u.status}" data-cs="${u.callsign}">
+            <div class="u-row">
+              <span class="u-icon"><i data-lucide="${CONFIG.unitType(u.type).glyph}"></i></span>
+              <span class="u-cs">${u.callsign}</span>
+              <span class="u-led"></span>
+            </div>
+            <div class="u-type">${u.type_name}</div>
+            <div class="u-text">${u.text}</div>
+            ${progressHtml}
+          </div>`;
+      }).join('');
       list.querySelectorAll('.unit-card').forEach(c => c.addEventListener('click', () => {
         const u = State.units.find(x => x.callsign === c.dataset.cs);
         if (u) TomorrowApp.toast(`${u.callsign} — ${u.text}`);
@@ -263,3 +312,4 @@ window.TomorrowDispatch = (function () {
 
   return { init, setMap, dispatchToHotspot, dispatchVehicle, saturateArea, renderUnits, getVisibleUnits };
 })();
+

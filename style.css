@@ -309,7 +309,18 @@ body::before {
 .unit-card.status-available .u-led { background: var(--low); box-shadow: 0 0 8px var(--low); }
 .unit-card.status-dispatched .u-led { background: var(--medium); box-shadow: 0 0 8px var(--medium); animation: pulse 1s infinite; }
 .unit-card.status-onscene .u-led { background: var(--police-br); box-shadow: 0 0 8px var(--police-br); }
+.unit-card.status-returning .u-led { background: #7f8db0; box-shadow: 0 0 6px #7f8db0; }
 .unit-card.status-dispatched { border-color: rgba(255,208,0,.3); }
+.unit-card.status-onscene { border-color: rgba(43,143,255,.45); }
+.unit-card.status-returning { border-color: rgba(127,141,176,.3); opacity: 0.85; }
+
+.u-progress { height: 3px; background: rgba(255,255,255,.05); border-radius: 2px; margin-top: 7px; overflow: hidden; }
+.u-progress-fill { height: 100%; background: var(--police-br); box-shadow: 0 0 6px var(--police-br); border-radius: 2px; transform-origin: left; }
+@keyframes dwellBar {
+  from { width: 100%; }
+  to { width: 0%; }
+}
+
 
 /* ===================== INTEL FEED ===================== */
 .intel-row { display: flex; gap: 8px; padding: 5px 4px; border-bottom: 1px solid var(--line-soft);
