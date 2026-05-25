@@ -105,12 +105,27 @@ window.TomorrowPrediction = (function () {
           rtmFactors = rtm.factors;
         }
 
+        // Strategic Calendar Events impact
+        let eventBoost = 0;
+        const activeEvents = State.active_events || [];
+        const eventFactors = [];
+        CONFIG.STRATEGIC_EVENTS.forEach(ev => {
+          if (activeEvents.includes(ev.key)) {
+            const isZoneMatch = ev.zones.length === 0 || ev.zones.includes(zone.name);
+            const boostVal = ev.crime_boosts[crime.key] || 0;
+            if (isZoneMatch && boostVal > 0) {
+              eventBoost += boostVal;
+              eventFactors.push(ev.name);
+            }
+          }
+        });
+
         const base = crime.base_rate * 100 * CONFIG.FACTORS.base;
         const fit = timeFit(crime, hour) * CONFIG.FACTORS.fit;
         const hist = zone.weight * CONFIG.FACTORS.hist;
         const upl = weekendUplift(hour);
         const jitter = (rng() - 0.5) * 14;
-        const score = Math.max(4, Math.min(100, (base + fit + hist + jitter) * upl + rtmBoost));
+        const score = Math.max(4, Math.min(100, (base + fit + hist + jitter) * upl + rtmBoost + eventBoost));
 
         const station = TomorrowApp.nearestStation(zone.lat, zone.lng);
 
@@ -127,7 +142,7 @@ window.TomorrowPrediction = (function () {
           window: `${String(hour).padStart(2, '0')}:00–${String((hour + 1) % 24).padStart(2, '0')}:00`,
           probability: Math.round(score),
           risk: scoreToRisk(score),
-          factors: factorTags(crime, hour).concat(rtmFactors),
+          factors: factorTags(crime, hour).concat(rtmFactors).concat(eventFactors),
           station_id: station ? station.id : null,
           dispatched: false
         });

@@ -55,7 +55,10 @@ window.TomorrowDispatch = (function () {
     if (!State.units || State.units.length === 0) seedUnits();
     if (window.TomorrowMap && !map) map = TomorrowMap.getMap();
     TomorrowApp.register('dispatch', { onStationChange: renderUnits });
-    re  function seedUnits() {
+    renderUnits();
+  }
+
+  function seedUnits() {
     const units = [];
     CONFIG.STATIONS.forEach(s => {
       for (let i = 1; i <= Math.min(4, s.cars); i++) {

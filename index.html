@@ -82,7 +82,7 @@
     <div class="hud-right">
       <div class="threat-box">
         <span id="threat-dot" class="threat-dot low"></span>
-        <span id="threat-level" class="threat-level">DEFCON 4 · רגיל</span>
+        <span id="threat-level" class="threat-level">DTI: רגישות רגילה (Level 4)</span>
       </div>
       <div class="clock-box">
         <div id="hud-clock" class="clock">--:--:--</div>
@@ -105,7 +105,15 @@
         <button id="btn-regen" class="btn btn-ghost"><i data-lucide="refresh-cw"></i><span>הרץ מודל</span></button>
         <button id="btn-saturate" class="btn btn-primary"><i data-lucide="shield"></i><span>סיור מונע</span></button>
       </div>
-      <div id="forecast-list" class="scroll-list"></div>
+      <div id="forecast-list" class="scroll-list" style="height: calc(100% - 130px - 210px); flex: 1;"></div>
+
+      <!-- Strategic Events Registry -->
+      <div class="panel-head" style="margin-top: 10px; border-top: 1px solid var(--line-soft); padding-top: 10px; flex-shrink: 0;">
+        <span class="panel-title"><i data-lucide="calendar"></i><span>אירועים אסטרטגיים</span></span>
+      </div>
+      <div id="strategic-events-list" class="strategic-events-list" style="height: 190px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; padding: 4px 6px; flex-shrink: 0;">
+        <!-- Dynamic strategic events populated by JS -->
+      </div>
     </aside>
 
     <!-- Center: map -->

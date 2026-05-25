@@ -622,3 +622,75 @@ body::before {
     scroll-behavior: auto !important;
   }
 }
+
+/* ===== Strategic Events switches & B2B styles ===== */
+.event-row {
+  cursor: pointer;
+}
+.event-row:hover {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border-color: rgba(43, 143, 255, 0.2) !important;
+}
+.event-row.active {
+  background: rgba(0, 229, 255, 0.03) !important;
+}
+.event-row.active:hover {
+  border-color: var(--cyan) !important;
+}
+.slider-round {
+  background-color: #4a5568;
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  border-radius: 10px;
+  transition: 0.2s ease-in-out;
+}
+.slider-knob {
+  position: absolute;
+  height: 10px;
+  width: 10px;
+  left: 3px;
+  bottom: 3px;
+  background-color: #04070f;
+  border-radius: 50%;
+  transition: 0.2s ease-in-out;
+}
+input:checked + .slider-round {
+  background-color: var(--cyan) !important;
+  box-shadow: 0 0 8px var(--cyan);
+}
+input:checked + .slider-round .slider-knob {
+  left: 15px !important;
+}
+
+/* Tabs */
+.an-tab:hover {
+  color: #fff !important;
+  border-bottom: 2px solid rgba(25, 109, 255, 0.4) !important;
+}
+.an-tab.active {
+  color: #fff !important;
+  border-bottom: 2px solid var(--police) !important;
+}
+
+/* Spinner for Loader */
+.spin {
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Scroll list for strategic events */
+.strategic-events-list::-webkit-scrollbar {
+  width: 5px;
+}
+.strategic-events-list::-webkit-scrollbar-thumb {
+  background: rgba(0, 229, 255, 0.15);
+  border-radius: 3px;
+}
+.strategic-events-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 229, 255, 0.3);
+}

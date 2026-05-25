@@ -113,11 +113,20 @@ window.CONFIG = (function () {
     commander:  { level: 4, label: 'קצין תורן' }
   };
 
+  // --- Strategic / Calendar / Environmental Events ---
+  const STRATEGIC_EVENTS = [
+    { key: 'protest_kaplan', name: 'מחאת קפלן (הפגנה המונית)', active: true, crime_boosts: { disorder: 25, vandalism: 15 }, description: 'ריכוז קהל חריג במרכז העיר, הפרות סדר וחיכוך פוטנציאלי.', zones: ['מתחם רכבת השלום', 'לב העיר / אלנבי'] },
+    { key: 'derby_bloomfield', name: 'דרבי כדורגל (איצטדיון בלומפילד)', active: false, crime_boosts: { assault: 20, disorder: 15, vandalism: 10 }, description: 'הגעת אלפי אוהדים ופוטנציאל לחיכוך אלים בסביבת האצטדיון.', zones: ['נמל יפו / שוק הפשפשים', 'רובע פלורנטין', 'מתחם התחנה המרכזית'] },
+    { key: 'summer_vacation', name: 'חופשת הקיץ (ריכוז בני נוער)', active: true, crime_boosts: { vandalism: 12, theft: 10, auto_theft: 8 }, description: 'התקהלויות נוער בשעות לילה מאוחרות בגנים ציבוריים ובחופים.', zones: ['שפת הים / טיילת', 'הדר יוסף'] },
+    { key: 'heatwave', name: 'עומס חום קיצוני (שרב)', active: false, crime_boosts: { domestic: 18, assault: 15 }, description: 'טמפרטורות גבוהות המעלות סטטיסטית את מדד האלימות והחיכוך הבינאישי.', zones: [] }, // applied district-wide
+    { key: 'rosh_hashanah', name: 'ערב ראש השנה (בתים ריקים)', active: false, crime_boosts: { burglary: 28, theft: 15 }, description: 'עזיבת המונים לטובת ארוחות חג משאירה דירות מגורים ללא השגחה.', zones: ['לב העיר / אלנבי', 'הדר יוסף', 'אזור התעשייה צפון'] }
+  ];
+
   return {
     STORAGE_KEY, SYNC_DEBOUNCE_MS, ACCESS_CODE,
     FIREBASE_URL, SIGNALS_PATH, SIGNALS_SAMPLE, SIGNAL_BOOST_RADIUS_M, SIGNAL_REFRESH_MS,
     MAP_CENTER, MAP_ZOOM, MAP_MAX_ZOOM,
-    RISK, CRIME_TYPES, UNIT_TYPES, STATIONS, RESPONSE_CARDS, ROLES, FACTORS,
+    RISK, CRIME_TYPES, UNIT_TYPES, STATIONS, RESPONSE_CARDS, ROLES, FACTORS, STRATEGIC_EVENTS,
     responseCard,
     crimeType: (k) => CRIME_TYPES.find(c => c.key === k) || CRIME_TYPES[0],
     unitType:  (k) => UNIT_TYPES.find(u => u.key === k) || UNIT_TYPES[0],

@@ -10,6 +10,7 @@ window.TomorrowState = {
   units: [],                  // patrol units
   intel_log: [],              // audit / activity feed
   forecast_hour: null,        // selected hour on the timeline (null = "now")
+  active_events: ['protest_kaplan', 'summer_vacation'], // active strategic events by default
   sim: { prevented: 0, occurred: 0 },  // shift-simulation score
   settings: { demo_seconds: 11, onscene_seconds: 7 }
 };
@@ -232,6 +233,73 @@ window.TomorrowApp = (function () {
     }
   }
 
+  function renderStrategicEvents() {
+    const list = document.getElementById('strategic-events-list');
+    if (!list) return;
+    
+    list.innerHTML = CONFIG.STRATEGIC_EVENTS.map(ev => {
+      const active = State.active_events.includes(ev.key);
+      return `
+        <div class="event-row ${active ? 'active' : ''}" data-key="${ev.key}" style="
+          display: flex;
+          flex-direction: column;
+          background: rgba(255, 255, 255, 0.02);
+          border: 1px solid ${active ? 'rgba(0, 229, 255, 0.3)' : 'var(--line-soft)'};
+          border-radius: 6px;
+          padding: 8px 10px;
+          transition: all 0.2s ease;
+        ">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:12.5px; font-weight:700; color:${active ? '#fff' : 'var(--text-dim)'};">${ev.name}</span>
+            <label class="switch" style="position:relative; display:inline-block; width:28px; height:16px;">
+              <input type="checkbox" class="event-checkbox" data-key="${ev.key}" ${active ? 'checked' : ''} style="opacity:0; width:0; height:0; cursor:pointer;" />
+              <span class="slider-round" style="
+                position: absolute; cursor: pointer; inset: 0;
+                background-color: ${active ? 'var(--cyan)' : '#4a5568'};
+                transition: .2s; border-radius: 10px;
+                box-shadow: ${active ? '0 0 8px var(--cyan)' : 'none'};
+              ">
+                <span class="slider-knob" style="
+                  position: absolute; height: 10px; width: 10px;
+                  left: ${active ? '15px' : '3px'}; bottom: 3px;
+                  background-color: #04070f; transition: .2s; border-radius: 50%;
+                "></span>
+              </span>
+            </label>
+          </div>
+          <div style="font-size:10.5px; color:var(--text-faint); margin-top:4px; line-height:1.35;">${ev.description}</div>
+        </div>
+      `;
+    }).join('');
+    
+    list.querySelectorAll('.event-checkbox').forEach(chk => {
+      chk.addEventListener('change', (e) => {
+        const key = e.target.dataset.key;
+        if (e.target.checked) {
+          if (!State.active_events.includes(key)) {
+            State.active_events.push(key);
+          }
+          const ev = CONFIG.STRATEGIC_EVENTS.find(x => x.key === key);
+          logEvent('system', 2, `📅 אירוע אסטרטגי הופעל: ${ev.name}`);
+          toast(`📅 אירוע הופעל: ${ev.name}`, 'info');
+        } else {
+          State.active_events = State.active_events.filter(k => k !== key);
+          const ev = CONFIG.STRATEGIC_EVENTS.find(x => x.key === key);
+          logEvent('system', 3, `📅 אירוע אסטרטגי הושבת: ${ev.name}`);
+          toast(`📅 אירוע הושבת: ${ev.name}`, 'info');
+        }
+        
+        saveState();
+        renderStrategicEvents();
+        
+        // Recalculate and update the forecast dynamically!
+        if (window.TomorrowPrediction) {
+          TomorrowPrediction.regenerate();
+        }
+      });
+    });
+  }
+
   function startSystem() {
     runBoot(() => {
       if (window.TomorrowPrediction) TomorrowPrediction.init();
@@ -239,12 +307,279 @@ window.TomorrowApp = (function () {
       if (window.TomorrowLayers) TomorrowLayers.init();
       if (window.TomorrowDispatch) TomorrowDispatch.init();
       if (window.TomorrowAnalytics) TomorrowAnalytics.init();
+      renderStrategicEvents();
       updateThreatLevel();
       renderIcons();   // convert any remaining static [data-lucide] in the HUD/timeline
       if (window.TomorrowSounds) TomorrowSounds.online();
       logEvent('system', 4, '✅ מערכת הניבוי והיתוך המודיעין מקוונת — מודל RTM נטען בהצלחה');
       if (window.TomorrowOsint) TomorrowOsint.init();   // OSINT signals (async) — boosts forecast
     });
+  }
+
+  function printPatrolOrder(hId) {
+    const h = State.forecast.find(x => x.id === parseInt(hId));
+    if (!h) { toast('⚠ מוקד חיזוי לא נמצא', 'warning'); return; }
+    
+    const r = CONFIG.RISK[h.risk];
+    const station = CONFIG.station(h.station_id) || nearestStation(h.lat, h.lng);
+    const dateStr = new Date().toLocaleDateString('he-IL', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
+    const timeStr = new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
+    
+    // Calculate Explainable weights
+    const baseW = Math.round(CONFIG.FACTORS.base * 20);
+    const fitW = h.factors.includes('שעת שיא לעבירה') ? CONFIG.FACTORS.fit : 5;
+    const histW = CONFIG.FACTORS.hist;
+    const osintW = h.osint ? CONFIG.FACTORS.osint : 0;
+    
+    let lightingW = h.factors.includes('אזור תאורה ציבורית לקויה') ? 16 : 0;
+    let barsW = h.factors.includes('קרבה למוקדי חיכוך / חיי לילה') ? 14 : 0;
+    let atmsW = h.factors.includes('קרבה לכספומט / מוקד פיננסי') ? 12 : 0;
+    
+    // Strategic events weights
+    let eventBoost = 0;
+    const activeEvs = CONFIG.STRATEGIC_EVENTS.filter(ev => State.active_events.includes(ev.key));
+    const eventFactors = [];
+    activeEvs.forEach(ev => {
+      const isZoneMatch = ev.zones.length === 0 || ev.zones.includes(h.zone);
+      const boostVal = ev.crime_boosts[h.crime] || 0;
+      if (isZoneMatch && boostVal > 0) {
+        eventBoost += boostVal;
+        eventFactors.push(`${ev.name} (+${boostVal}%)`);
+      }
+    });
+
+    const rtmSum = lightingW + barsW + atmsW;
+    
+    const printWindow = window.open('', '_blank', 'width=800,height=900');
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html lang="he" dir="rtl">
+      <head>
+        <meta charset="UTF-8">
+        <title>פקודת סיור מונחה - תא סיכון #${h.id}</title>
+        <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+        <style>
+          body {
+            font-family: 'Heebo', sans-serif;
+            color: #000;
+            background: #fff;
+            padding: 30px;
+            direction: rtl;
+            line-height: 1.5;
+          }
+          .header {
+            text-align: center;
+            border-bottom: 2px double #000;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+          }
+          .emblem {
+            font-size: 32px;
+            margin-bottom: 5px;
+          }
+          .header h1 {
+            font-size: 22px;
+            margin: 5px 0;
+            font-weight: 700;
+          }
+          .header h2 {
+            font-size: 16px;
+            margin: 0;
+            color: #444;
+            font-weight: 400;
+          }
+          .confidential {
+            border: 2px solid #ff1f4b;
+            color: #ff1f4b;
+            display: inline-block;
+            padding: 4px 15px;
+            font-weight: 800;
+            font-size: 14px;
+            margin: 10px 0;
+            text-transform: uppercase;
+          }
+          .meta-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+          }
+          .meta-table th, .meta-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: right;
+            font-size: 14px;
+          }
+          .meta-table th {
+            background-color: #f5f5f5;
+            width: 25%;
+            font-weight: 700;
+          }
+          .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            border-bottom: 1px solid #000;
+            padding-bottom: 5px;
+            margin-top: 25px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+          }
+          .factor-tag {
+            background: #f0f0f0;
+            border: 1px solid #ccc;
+            padding: 3px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            margin: 4px;
+            font-size: 12px;
+          }
+          .gauge-container {
+            border: 1px solid #000;
+            background: #f0f0f0;
+            height: 20px;
+            width: 100%;
+            margin: 10px 0;
+            position: relative;
+          }
+          .gauge-fill {
+            background: #000;
+            height: 100%;
+          }
+          .gauge-text {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            text-align: center;
+            line-height: 20px;
+            font-weight: 700;
+            color: #000;
+            mix-blend-mode: difference;
+          }
+          .signature-section {
+            margin-top: 50px;
+            display: flex;
+            justify-content: space-between;
+          }
+          .sig-box {
+            text-align: center;
+            width: 45%;
+          }
+          .sig-line {
+            border-top: 1px solid #000;
+            margin-top: 40px;
+            padding-top: 5px;
+            font-size: 13px;
+          }
+          .bullet-list {
+            margin-right: 20px;
+            margin-bottom: 15px;
+          }
+          .bullet-list li {
+            margin-bottom: 5px;
+            font-size: 14px;
+          }
+          @media print {
+            body { padding: 0; }
+            button { display: none; }
+          }
+          .print-btn {
+            background: #1a6dff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: block;
+            margin-left: auto;
+          }
+        </style>
+      </head>
+      <body>
+        <button class="print-btn" onclick="window.print()">שגר להדפסה (Print) ⎙</button>
+        
+        <div class="header">
+          <div class="emblem">🇮🇱</div>
+          <h1>מדינת ישראל — משטרת ישראל</h1>
+          <h2>מחוז תל אביב • אגף המבצעים • ענף סיור ושיטור מונחה</h2>
+          <div class="confidential">סודי — לשימוש מבצעי בלבד</div>
+        </div>
+
+        <h1>פקודת נוכחות מונעת מבצעית (Directed Patrol Order)</h1>
+        <p>צו נוכחות מונעת זה מופק על ידי מערכת <b>TOMORROW</b> על בסיס היתוך מודיעיני רב-שכבתי וניתוח סיכון מרחבי-זמני. מטרת הפעילות היא שיבוש ומניעת עבירות פשיעה על ידי יצירת נוכחות משטרתית בולטת בתא המטרה.</p>
+
+        <div class="section-title">פרטי גזרת הסיור ומטרה</div>
+        <table class="meta-table">
+          <tr>
+            <th>מזהה תא סיכון</th>
+            <td>#${h.id}</td>
+            <th>תחנת אם / מרחב</th>
+            <td>${station ? station.name : 'כללי'}</td>
+          </tr>
+          <tr>
+            <th>עבירת יעד עיקרית</th>
+            <td><b>${h.crime_name} (${h.code})</b></td>
+            <th>טווח שעות פעילות מומלץ</th>
+            <td>${h.window}</td>
+          </tr>
+          <tr>
+            <th>נ"צ מרכזי לתא</th>
+            <td style="font-family: monospace;">${h.lat.toFixed(5)}, ${h.lng.toFixed(5)}</td>
+            <th>שכונה / אזור גזרתי</th>
+            <td>${h.zone}</td>
+          </tr>
+          <tr>
+            <th>תאריך הפקה</th>
+            <td>${dateStr}</td>
+            <th>שעת הפקה</th>
+            <td>${timeStr}</td>
+          </tr>
+        </table>
+
+        <div class="section-title">הסתברות ורמת איום</div>
+        <div style="font-size: 15px; margin-bottom: 8px;">
+          הסתברות מצרפית לפעילות עבריינית בתא זה במשמרת הנוכחית עומדת על: <b>${h.probability}%</b> (רמת רגישות: <b>${r.label}</b>).
+        </div>
+        <div class="gauge-container">
+          <div class="gauge-fill" style="width: ${h.probability}%;"></div>
+          <div class="gauge-text">${h.probability}% סבירות פשיעה צפויה</div>
+        </div>
+
+        <div class="section-title">ביסוס ונימוקי מודל החיזוי (Explainable AI)</div>
+        <ul class="bullet-list">
+          <li><b>רקע סטטיסטי היסטורי (Background):</b> ${baseW + histW}% השפעה. תא זה מתאפיין בפעילות פלילית מוגברת היסטורית ביממה זו של החודש.</li>
+          <li><b>התאמה למחזוריות זמנית (Temporal):</b> ${fitW}% השפעה. השעות המוגדרות תואמות סטטיסטית לשעות השיא של ביצוע העבירה.</li>
+          ${h.osint ? `<li><b>התראות מודיעין שטח (OSINT):</b> מהימנות גבוהה מדפי רשתות חברתיות/טלגרם בשעות האחרונות בטווח תא זה.</li>` : ''}
+          ${rtmSum > 0 ? `<li><b>נתוני שטח סביבתיים (RTM Boost):</b> קרבה לגורמי סיכון פיזיים גאוגרפיים (תאורה לקויה, מוקדי חיי לילה או כספומטים פיננסיים).</li>` : ''}
+          ${eventBoost > 0 ? `<li><b>אירועים אסטרטגיים פעילים:</b> ${eventFactors.join(', ')}.</li>` : ''}
+        </ul>
+
+        <div class="section-title">גורמי סיכון פעילים ומאומתים בגזרה</div>
+        <div style="margin-bottom: 15px;">
+          ${h.factors.map(f => `<span class="factor-tag">${f}</span>`).join('')}
+        </div>
+
+        <div class="section-title">הנחיות פעולה וטקטיקה לצוותי הסיור</div>
+        <ul class="bullet-list">
+          <li><b>בולטות משטרתית (High Visibility):</b> נסיעה איטית בתוך תא הסיכון עם אורות כחולים מהבהבים (צ'קלקות) למשך 15 דקות לפחות בתוך חלון הזמן המיועד.</li>
+          <li><b>פטרול רגלי יזום (Foot Patrol):</b> ירידה מהניידת וביצוע סיורים רגליים בנקודות תורפה ספציפיות כגון כניסות לעסקים, כספומטים, וסמטאות חשוכות.</li>
+          <li><b>תשאול ועמידה במחסומים:</b> הקמת מחסום פתע בכניסות/יציאות מהגזרה המלבנית וביצוע בדיקות רכבים חשודים בהתאם לחשד סביר.</li>
+          <li><b>שילוב מודיעין בזמן אמת:</b> שמירה על קשר רציף עם פקמ"צ התחנה לקבלת עדכונים שוטפים מערוצי ה-OSINT והיתוך המידע של המערכת.</li>
+        </ul>
+
+        <div class="signature-section">
+          <div class="sig-box">
+            <div class="sig-line">חתימת מפקח/קצין תורן תחנה (הנפקת צו)</div>
+          </div>
+          <div class="sig-box">
+            <div class="sig-line">חתימת מפקד כוח הסיור (אישור ביצוע פקודה)</div>
+          </div>
+        </div>
+      </body>
+      </html>
+    `);
+    printWindow.document.close();
+    logEvent('system', 2, `⎙ הונפקה פקודת סיור מונחת מודפסת לתא סיכון #${h.id} (ייצוא רשמי)`);
   }
 
   // ---------- Init ----------
@@ -261,6 +596,7 @@ window.TomorrowApp = (function () {
     getCurrentStation, setStation, nearestStation,
     register, broadcast,
     toast, logEvent, renderIntelLog, updateThreatLevel, renderIcons,
+    printPatrolOrder,
     State
   };
 })();
