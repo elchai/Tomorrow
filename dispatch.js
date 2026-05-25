@@ -244,12 +244,11 @@ window.TomorrowDispatch = (function () {
     if (chosen.length === 0) { TomorrowApp.toast(`⚠ אין ניידות זמינות ב${station.name}`, 'warning'); return; }
 
     h.dispatched = true;
-    if (window.TomorrowSim) TomorrowSim.notePrevented(h);   // crime prevented if during a running shift
     if (window.TomorrowMap) { TomorrowMap.markDispatched(h); TomorrowMap.focusHotspot(h); }
     if (window.TomorrowSounds) { TomorrowSounds.alert(h.risk); setTimeout(() => TomorrowSounds.dispatch(), 700); }
 
-    TomorrowApp.toast(`🚓 הזנקה: ${chosen.length} יחידות מ${station.name} → ${h.zone}`, 'success');
-    TomorrowApp.logEvent('dispatch', h.risk, `הזנקת ${chosen.length} יחידות ל${h.crime_name} · ${h.zone} (${h.probability}%)`);
+    TomorrowApp.toast(`🚓 פריסת סיור: ${chosen.length} צוותים הוקצו לתא #${h.id} ב${h.zone}`, 'success');
+    TomorrowApp.logEvent('dispatch', h.risk, `הקצאת ${chosen.length} צוותי סיור מונחה לתא #${h.id} ב${h.zone} (${h.probability}%)`);
 
     chosen.forEach((u, idx) => {
       u.status = 'dispatched';

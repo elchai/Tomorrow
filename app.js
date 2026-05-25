@@ -189,10 +189,10 @@ window.TomorrowApp = (function () {
     const dot = document.getElementById('threat-dot');
     if (!el) return;
     let label, cls;
-    if (critical >= 2)      { label = 'DEFCON 1 · קריטי'; cls = 'critical'; }
-    else if (critical >= 1) { label = 'DEFCON 2 · גבוה';  cls = 'high'; }
-    else if (high >= 2)     { label = 'DEFCON 3 · מוגבר'; cls = 'medium'; }
-    else                    { label = 'DEFCON 4 · רגיל';  cls = 'low'; }
+    if (critical >= 2)      { label = 'DTI: רגישות קריטית (Level 1)'; cls = 'critical'; }
+    else if (critical >= 1) { label = 'DTI: רגישות גבוהה (Level 2)';  cls = 'high'; }
+    else if (high >= 2)     { label = 'DTI: רגישות מוגברת (Level 3)'; cls = 'medium'; }
+    else                    { label = 'DTI: רגישות רגילה (Level 4)';  cls = 'low'; }
     el.textContent = label;
     if (dot) dot.className = `threat-dot ${cls}`;
   }
@@ -234,16 +234,15 @@ window.TomorrowApp = (function () {
 
   function startSystem() {
     runBoot(() => {
-      // Build forecast + map + dispatch after boot
       if (window.TomorrowPrediction) TomorrowPrediction.init();
       if (window.TomorrowMap) TomorrowMap.init();
+      if (window.TomorrowLayers) TomorrowLayers.init();
       if (window.TomorrowDispatch) TomorrowDispatch.init();
-      if (window.TomorrowSim) TomorrowSim.init();
       if (window.TomorrowAnalytics) TomorrowAnalytics.init();
       updateThreatLevel();
       renderIcons();   // convert any remaining static [data-lucide] in the HUD/timeline
       if (window.TomorrowSounds) TomorrowSounds.online();
-      logEvent('system', 4, '✅ רשת הניבוי מקוונת — תחזית 24 שעות נטענה');
+      logEvent('system', 4, '✅ מערכת הניבוי והיתוך המודיעין מקוונת — מודל RTM נטען בהצלחה');
       if (window.TomorrowOsint) TomorrowOsint.init();   // OSINT signals (async) — boosts forecast
     });
   }

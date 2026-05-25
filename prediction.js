@@ -91,19 +91,28 @@ window.TomorrowPrediction = (function () {
         const crime = CONFIG.CRIME_TYPES[Math.floor(rng() * CONFIG.CRIME_TYPES.length)];
         const zone = ZONES[Math.floor(rng() * ZONES.length)];
 
+        // scatter around the zone, then keep it on land (east of the TLV coastline)
+        const jLat = zone.lat + (rng() - 0.5) * 0.012;
+        let jLng = zone.lng + (rng() - 0.5) * 0.012;
+        jLng = clampToLand(jLat, jLng, rng);
+
+        // GIS Contextual Layer impact
+        let rtmBoost = 0;
+        let rtmFactors = [];
+        if (window.TomorrowLayers && TomorrowLayers.checkRTMImpact) {
+          const rtm = TomorrowLayers.checkRTMImpact(jLat, jLng, hour, crime.key);
+          rtmBoost = rtm.boost;
+          rtmFactors = rtm.factors;
+        }
+
         const base = crime.base_rate * 100 * CONFIG.FACTORS.base;
         const fit = timeFit(crime, hour) * CONFIG.FACTORS.fit;
         const hist = zone.weight * CONFIG.FACTORS.hist;
         const upl = weekendUplift(hour);
         const jitter = (rng() - 0.5) * 14;
-        const score = Math.max(4, Math.min(100, (base + fit + hist + jitter) * upl));
+        const score = Math.max(4, Math.min(100, (base + fit + hist + jitter) * upl + rtmBoost));
 
         const station = TomorrowApp.nearestStation(zone.lat, zone.lng);
-
-        // scatter around the zone, then keep it on land (east of the TLV coastline)
-        const jLat = zone.lat + (rng() - 0.5) * 0.012;
-        let jLng = zone.lng + (rng() - 0.5) * 0.012;
-        jLng = clampToLand(jLat, jLng, rng);
 
         list.push({
           id: id++,
@@ -118,7 +127,7 @@ window.TomorrowPrediction = (function () {
           window: `${String(hour).padStart(2, '0')}:00–${String((hour + 1) % 24).padStart(2, '0')}:00`,
           probability: Math.round(score),
           risk: scoreToRisk(score),
-          factors: factorTags(crime, hour),
+          factors: factorTags(crime, hour).concat(rtmFactors),
           station_id: station ? station.id : null,
           dispatched: false
         });
@@ -203,6 +212,16 @@ window.TomorrowPrediction = (function () {
     if (stat) stat.textContent = items.length;
     const crit = document.getElementById('stat-critical');
     if (crit) crit.textContent = items.filter(h => h.risk === 1).length;
+
+    // Calculate Directed Patrol Coverage Rate
+    const dispatchedCount = items.filter(h => h.dispatched).length;
+    const coverageRate = items.length ? Math.round((dispatchedCount / items.length) * 100) : 100;
+    const covEl = document.getElementById('stat-coverage');
+    if (covEl) covEl.textContent = `${coverageRate}%`;
+
+    // Calculate Ingested Intelligence Signals Count
+    const intelEl = document.getElementById('stat-intel');
+    if (intelEl) intelEl.textContent = (State.signals || []).length;
   }
 
   function refresh() {

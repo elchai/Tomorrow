@@ -110,7 +110,25 @@ window.TomorrowOsint = (function () {
         <div class="tp-name" style="color:#00e5ff"><i data-lucide="radio-tower"></i><span>${crime.name}</span></div>
         <div class="tp-zone"><i data-lucide="map-pin"></i><span>${sig.zone}</span></div>
         <div class="os-text">"${sig.text_he}"</div>
-        <div class="tp-row">
+        
+        <!-- NLP entity extraction breakdown -->
+        <div style="margin-top: 8px; font-size: 11px; color: var(--text-dim); background: rgba(0, 229, 255, 0.03); border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 4px; padding: 6px 8px; line-height: 1.45;">
+          <div style="font-weight:700; color:var(--cyan); margin-bottom:4px;">עיבוד ישויות NLP גולמיות:</div>
+          <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+            <span>סיווג אירוע חזוי:</span>
+            <span style="font-weight:700; color:#fff;">${crime.name}</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+            <span>נ״צ גאוגרפי שחולץ:</span>
+            <span style="font-family:var(--font-mono); color:#fff;">${sig.lat.toFixed(4)}, ${sig.lng.toFixed(4)}</span>
+          </div>
+          <div style="display:flex; justify-content:space-between;">
+            <span>מקור היתוך מידע:</span>
+            <span style="color:#fff;">פיד מודיעין OSINT</span>
+          </div>
+        </div>
+
+        <div class="tp-row" style="margin-top: 10px;">
           <span class="tp-window"><i data-lucide="clock"></i>${timeAgo(sig)}</span>
           <span class="risk-chip" style="--rc:#00e5ff">מהימנות ${Math.round(sig.confidence * 100)}%</span>
         </div>

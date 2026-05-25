@@ -119,19 +119,19 @@
         <span class="osint-badge" id="osint-count">0</span>
       </button>
 
-      <!-- Stat strip + shift score -->
+      <!-- Operational Stat strip -->
       <div class="stat-strip">
-        <div class="stat"><span class="stat-val" id="stat-hotspots">0</span><span class="stat-lbl">מוקדים</span></div>
-        <div class="stat"><span class="stat-val crit" id="stat-critical">0</span><span class="stat-lbl">קריטי</span></div>
-        <div class="stat"><span class="stat-val" id="stat-units">0/0</span><span class="stat-lbl">ניידות</span></div>
-        <div class="stat sim-stat"><span class="stat-val good" id="stat-prevented">0</span><span class="stat-lbl">נמנעו</span></div>
-        <div class="stat sim-stat"><span class="stat-val crit" id="stat-occurred">0</span><span class="stat-lbl">התרחשו</span></div>
+        <div class="stat"><span class="stat-val" id="stat-hotspots">0</span><span class="stat-lbl">תאי סיכון</span></div>
+        <div class="stat"><span class="stat-val crit" id="stat-critical">0</span><span class="stat-lbl">איומי ליבה</span></div>
+        <div class="stat"><span class="stat-val" id="stat-units">0/0</span><span class="stat-lbl">פריסת כוחות</span></div>
+        <div class="stat"><span class="stat-val good" id="stat-coverage">0%</span><span class="stat-lbl">כיסוי סיור</span></div>
+        <div class="stat"><span class="stat-val info" style="color: var(--cyan);" id="stat-intel">0</span><span class="stat-lbl">אותות היתוך</span></div>
       </div>
 
-      <!-- 24h timeline scrubber + simulation control -->
+      <!-- 24h timeline scrubber + layers controller -->
       <div class="timeline">
         <div class="tl-head">
-          <button id="btn-sim" class="sim-btn"><i data-lucide="play"></i><span>הפעל סריקה</span></button>
+          <button id="btn-sim" class="sim-btn" style="color: var(--cyan); background: rgba(0, 229, 255, 0.08); border-color: rgba(0, 229, 255, 0.4);"><i data-lucide="layers"></i><span>שכבות הקשר (RTM)</span></button>
           <span class="tl-title"><i data-lucide="clock"></i><span>ציר תחזית · 24 שעות</span></span>
           <span id="tl-readout" class="tl-readout">עכשיו</span>
         </div>
@@ -176,7 +176,7 @@
   <script src="prediction.js"></script>
   <script src="map.js"></script>
   <script src="dispatch.js"></script>
-  <script src="sim.js"></script>
+  <script src="layers.js"></script>
   <script src="osint.js"></script>
   <script src="analytics.js"></script>
 
@@ -207,9 +207,6 @@
         btn.innerHTML = `<i data-lucide="${m ? 'volume-x' : 'volume-2'}"></i>`;
         btn.classList.toggle('muted', m);
         TomorrowApp.renderIcons();
-      });
-      document.getElementById('btn-sim').addEventListener('click', () => {
-        if (window.TomorrowSim) TomorrowSim.toggle();
       });
       document.getElementById('btn-osint').addEventListener('click', () => {
         if (window.TomorrowOsint) TomorrowOsint.toggle();

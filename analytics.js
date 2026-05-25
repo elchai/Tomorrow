@@ -196,10 +196,11 @@ window.TomorrowAnalytics = (function () {
   }
 
   function calculateStats() {
-    // 1. Prevention Rate
-    const s = State.sim || { prevented: 0, occurred: 0 };
-    const total = s.prevented + s.occurred;
-    const preventRate = total ? Math.round((s.prevented / total) * 100) : 0;
+    // 1. Directed Patrol Coverage Rate (Percentage of risk cells covered by dispatched patrols)
+    const stationId = State.current_station_id;
+    const activeForecast = (State.forecast || []).filter(h => !stationId || h.station_id === stationId);
+    const dispatchedCount = activeForecast.filter(h => h.dispatched).length;
+    const preventRate = activeForecast.length ? Math.round((dispatchedCount / activeForecast.length) * 100) : 100;
     
     const pEl = document.getElementById('an-prevent-rate');
     if (pEl) pEl.textContent = `${preventRate}%`;

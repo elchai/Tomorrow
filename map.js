@@ -69,50 +69,105 @@ window.TomorrowMap = (function () {
   // ---------- Hotspots + heatmap ----------
   function makeHotspotMarker(h) {
     const r = CONFIG.RISK[h.risk];
-    const ringRadius = 90 + (100 - h.probability) * 4; // higher prob → tighter ring
-    const ring = L.circle([h.lat, h.lng], {
-      radius: ringRadius,
-      color: r.color, fillColor: r.color,
-      fillOpacity: 0.10, weight: 1.5, opacity: 0.6,
-      dashArray: '4,6', interactive: false,
-      className: `risk-ring risk-${h.risk}`
+    
+    // Snapping lat/lng to 150m tactical grid cells
+    const cellSizeLat = 0.0014;
+    const cellSizeLng = 0.0016;
+    const cellLat = Math.floor(h.lat / cellSizeLat) * cellSizeLat;
+    const cellLng = Math.floor(h.lng / cellSizeLng) * cellSizeLng;
+
+    const bounds = [
+      [cellLat, cellLng],
+      [cellLat + cellSizeLat, cellLng + cellSizeLng]
+    ];
+
+    const rect = L.rectangle(bounds, {
+      color: r.color,
+      fillColor: r.color,
+      fillOpacity: h.dispatched ? 0.04 : 0.18,
+      weight: 1.5,
+      opacity: h.dispatched ? 0.3 : 0.85,
+      className: `rtm-grid-cell risk-${h.risk}`
     }).addTo(map);
 
-    const pulse = h.risk <= 2 ? '<div class="hs-pulse"></div><div class="hs-pulse"></div>' : '';
+    // DivIcon center marker for the cell data
+    const centerLat = cellLat + cellSizeLat / 2;
+    const centerLng = cellLng + cellSizeLng / 2;
+
+    const pulse = h.risk <= 2 && !h.dispatched ? '<div class="hs-pulse" style="width:24px; height:24px;"></div>' : '';
     const icon = L.divIcon({
-      html: `<div class="hotspot-marker risk-${h.risk} ${h.dispatched ? 'dispatched' : ''}" style="--rc:${r.color};--rg:${r.glow}">
+      html: `<div class="hotspot-marker risk-${h.risk} ${h.dispatched ? 'dispatched' : ''}" style="--rc:${r.color};--rg:${r.glow}; width:32px; height:32px;">
                ${pulse}
-               <div class="hs-core"><i data-lucide="${h.glyph}"></i></div>
-               <div class="hs-prob">${h.probability}<span>%</span></div>
+               <div class="hs-core" style="width:22px; height:22px; border-width:1px;"><i data-lucide="${h.glyph}" style="width:12px; height:12px;"></i></div>
+               <div class="hs-prob" style="font-size:9.5px; bottom:-9px;">${h.probability}<span>%</span></div>
              </div>`,
-      className: '', iconSize: [44, 44], iconAnchor: [22, 22]
+      className: '', iconSize: [32, 32], iconAnchor: [16, 16]
     });
-    const m = L.marker([h.lat, h.lng], { icon, zIndexOffset: 400 }).addTo(map);
+    const m = L.marker([centerLat, centerLng], { icon, zIndexOffset: 400 }).addTo(map);
     m.bindPopup(popupHtml(h), { className: 'tac-popup-wrap' });
     m.on('popupopen', () => TomorrowApp.renderIcons());
 
-    hotspotRefs[h.id] = { marker: m, ring };
+    // Bind click on the cell bounds to open the popup too
+    rect.on('click', () => m.openPopup());
+
+    hotspotRefs[h.id] = { marker: m, ring: rect };
   }
 
   function popupHtml(h) {
     const r = CONFIG.RISK[h.risk];
+    
+    // Structured risk factors analysis (Explainable AI - XAI)
+    const baseW = Math.round(CONFIG.FACTORS.base * 20);
+    const fitW = h.factors.includes('שעת שיא לעבירה') ? CONFIG.FACTORS.fit : 5;
+    const histW = CONFIG.FACTORS.hist;
+    const osintW = h.osint ? CONFIG.FACTORS.osint : 0;
+    
+    let lightingW = h.factors.includes('אזור תאורה ציבורית לקויה') ? 16 : 0;
+    let barsW = h.factors.includes('קרבה למוקדי חיכוך / חיי לילה') ? 14 : 0;
+    let atmsW = h.factors.includes('קרבה לכספומט / מוקד פיננסי') ? 12 : 0;
+    
+    const rtmSum = lightingW + barsW + atmsW;
+
     return `
-      <div class="tac-popup risk-${h.risk}" dir="rtl" style="--rc:${r.color}">
-        <div class="tp-code">${h.code} · FORECAST #${h.id}</div>
-        <div class="tp-name"><i data-lucide="${h.glyph}"></i><span>${h.crime_name}</span></div>
-        <div class="tp-zone"><i data-lucide="map-pin"></i><span>${h.zone}</span></div>
-        <div class="tp-row">
+      <div class="tac-popup risk-${h.risk}" dir="rtl" style="--rc:${r.color}; min-width: 270px; padding: 12px 14px;">
+        <div class="tp-code">CELL INDEX · תא סיכון #${h.id}</div>
+        <div class="tp-name"><i data-lucide="${h.glyph}"></i><span>תחזית: ${h.crime_name}</span></div>
+        <div class="tp-zone"><i data-lucide="map-pin"></i><span>מיקום: ${h.zone}</span></div>
+        <div class="tp-row" style="margin-top: 8px; border-bottom: 1px dashed var(--line-soft); padding-bottom: 8px;">
           <span class="tp-window"><i data-lucide="clock"></i>${h.window}</span>
-          <span class="risk-chip">סיכון ${r.label}</span>
+          <span class="risk-chip">רמת סיכון: ${r.label}</span>
         </div>
-        <div class="tp-readout">
+        
+        <!-- Explainable AI (XAI) Risk Breakdown -->
+        <div style="margin-top: 8px; font-size: 11px; color: var(--text-dim);">
+          <div style="font-weight:700; color:var(--text); margin-bottom:4px;">ניתוח הסברי סיכון (Explainable AI):</div>
+          <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+            <span>משקל סטטיסטי היסטורי (Background):</span>
+            <span style="font-family:var(--font-mono); color:#fff;">${baseW + histW}%</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+            <span>התאמה לשעת שיא יומית (Temporal):</span>
+            <span style="font-family:var(--font-mono); color:#fff;">${fitW}%</span>
+          </div>
+          ${osintW ? `
+          <div style="display:flex; justify-content:space-between; margin-bottom:2px; color: var(--cyan);">
+            <span>אימות מודיעין שטח (OSINT Fusion):</span>
+            <span style="font-family:var(--font-mono); font-weight:700;">+${osintW}%</span>
+          </div>` : ''}
+          ${rtmSum ? `
+          <div style="display:flex; justify-content:space-between; margin-bottom:2px; color: var(--low);">
+            <span>גורמי שטח מרחביים (RTM Boost):</span>
+            <span style="font-family:var(--font-mono); font-weight:700;">+${rtmSum}%</span>
+          </div>` : ''}
+        </div>
+
+        <div class="tp-readout" style="margin-top:12px; border-top: 1px solid var(--line-soft); padding-top:8px;">
           <span class="tp-prob"><b>${h.probability}</b><i>%</i></span>
-          <span class="tp-prob-lbl">סבירות מודל</span>
+          <span class="tp-prob-lbl">הסתברות מצרפית למשמרת</span>
         </div>
-        <div class="fc-gauge"><div class="fc-gauge-fill" style="width:${h.probability}%"></div></div>
-        ${h.factors.length ? `<div class="tp-factors">${h.factors.map(f => `<span class="factor">${f}</span>`).join('')}</div>` : ''}
-        <button class="tp-dispatch" onclick="TomorrowDispatch.dispatchToHotspot(TomorrowState.forecast.find(x=>x.id===${h.id}))">
-          <i data-lucide="navigation"></i><span>הזנק ניידת ליעד</span>
+        
+        <button class="tp-dispatch" onclick="TomorrowDispatch.dispatchToHotspot(TomorrowState.forecast.find(x=>x.id===${h.id}))" style="margin-top:12px; background:var(--police); border-color:var(--police-br);">
+          <i data-lucide="navigation"></i><span>הקצה כוח סיור מונחה</span>
         </button>
       </div>`;
   }
