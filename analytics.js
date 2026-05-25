@@ -154,32 +154,32 @@ window.TomorrowAnalytics = (function () {
         
         <!-- B2B ROC-AUC & Precision Metrics -->
         <div style="margin-bottom: 16px; flex-shrink: 0;">
-          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-faint); margin-bottom: 8px;">מדדי הערכת מודל (Machine Learning)</div>
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-faint); margin-bottom: 8px;">מדדי הערכת מודל (סטטיסטיקה מדעית)</div>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px;">
             <div style="background: rgba(0, 229, 255, 0.02); border: 1px solid rgba(0, 229, 255, 0.15); border-radius: 6px; padding: 8px; text-align: center;">
               <span style="display:block; font-size: 20px; font-family: var(--font-mono); font-weight:700; color: var(--cyan);" id="val-roc-auc">0.88</span>
-              <span style="font-size: 9.5px; color: var(--text-dim);">ROC-AUC (הפרדה)</span>
+              <span style="font-size: 9.5px; color: var(--text-dim);">כושר הפרדה (ROC-AUC)</span>
             </div>
             <div style="background: rgba(56, 224, 138, 0.02); border: 1px solid rgba(56, 224, 138, 0.15); border-radius: 6px; padding: 8px; text-align: center;">
               <span style="display:block; font-size: 20px; font-family: var(--font-mono); font-weight:700; color: var(--low);" id="val-precision">84.2%</span>
-              <span style="font-size: 9.5px; color: var(--text-dim);">Precision (דיוק)</span>
+              <span style="font-size: 9.5px; color: var(--text-dim);">מדד דיוק (Precision)</span>
             </div>
           </div>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
             <div style="background: rgba(255, 122, 24, 0.02); border: 1px solid rgba(255, 122, 24, 0.15); border-radius: 6px; padding: 8px; text-align: center;">
               <span style="display:block; font-size: 20px; font-family: var(--font-mono); font-weight:700; color: var(--high);" id="val-recall">79.5%</span>
-              <span style="font-size: 9.5px; color: var(--text-dim);">Recall (רגישות)</span>
+              <span style="font-size: 9.5px; color: var(--text-dim);">מדד רגישות (Recall)</span>
             </div>
             <div style="background: rgba(26, 109, 255, 0.02); border: 1px solid rgba(26, 109, 255, 0.15); border-radius: 6px; padding: 8px; text-align: center;">
               <span style="display:block; font-size: 20px; font-family: var(--font-mono); font-weight:700; color: var(--police-br);" id="val-f1">0.82</span>
-              <span style="font-size: 9.5px; color: var(--text-dim);">F1-Score (משולב)</span>
+              <span style="font-size: 9.5px; color: var(--text-dim);">ציון מצרפי (F1)</span>
             </div>
           </div>
         </div>
 
         <!-- Confusion Matrix Grid -->
         <div style="margin-bottom: 16px; flex-shrink: 0;">
-          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-faint); margin-bottom: 8px;">מטריצת טעויות (Confusion Matrix)</div>
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-faint); margin-bottom: 8px;">מטריצת טעויות (השוואת תחזית מול מציאות)</div>
           <div style="display: grid; grid-template-columns: 80px 1fr 1fr; gap: 4px; font-size: 9.5px; text-align: center; line-height: 1.25;">
             <div></div>
             <div style="font-weight: 700; color: var(--text-dim); padding: 2px;">חזוי: אמת</div>
@@ -188,21 +188,21 @@ window.TomorrowAnalytics = (function () {
             <div style="font-weight: 700; color: var(--text-dim); text-align: right; align-self: center;">בפועל: פשע</div>
             <div style="background: rgba(56, 224, 138, 0.06); border: 1px solid rgba(56, 224, 138, 0.2); padding: 6px 4px; border-radius: 4px;">
               <span style="display:block; font-family: var(--font-mono); font-weight: 700; font-size: 13px; color:#fff;" id="matrix-tp">42</span>
-              <span style="color: var(--low); font-size: 8px;">True Pos (אמת)</span>
+              <span style="color: var(--low); font-size: 8px;">זיהוי אמת (TP)</span>
             </div>
             <div style="background: rgba(255, 31, 75, 0.06); border: 1px solid rgba(255, 31, 75, 0.2); padding: 6px 4px; border-radius: 4px;">
               <span style="display:block; font-family: var(--font-mono); font-weight: 700; font-size: 13px; color:#fff;" id="matrix-fn">11</span>
-              <span style="color: var(--critical); font-size: 8px;">False Neg (פספוס)</span>
+              <span style="color: var(--critical); font-size: 8px;">סיווג חסר (FN)</span>
             </div>
 
             <div style="font-weight: 700; color: var(--text-dim); text-align: right; align-self: center;">בפועל: שקט</div>
             <div style="background: rgba(255, 122, 24, 0.06); border: 1px solid rgba(255, 122, 24, 0.2); padding: 6px 4px; border-radius: 4px;">
               <span style="display:block; font-family: var(--font-mono); font-weight: 700; font-size: 13px; color:#fff;" id="matrix-fp">8</span>
-              <span style="color: var(--high); font-size: 8px;">False Pos (שווא)</span>
+              <span style="color: var(--high); font-size: 8px;">התרעת שווא (FP)</span>
             </div>
             <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--line-soft); padding: 6px 4px; border-radius: 4px;">
               <span style="display:block; font-family: var(--font-mono); font-weight: 700; font-size: 13px; color:#fff;" id="matrix-tn">179</span>
-              <span style="color: var(--text-dim); font-size: 8px;">True Neg (שקט)</span>
+              <span style="color: var(--text-dim); font-size: 8px;">שקט תקין (TN)</span>
             </div>
           </div>
         </div>
