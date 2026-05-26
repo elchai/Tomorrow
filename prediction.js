@@ -199,6 +199,10 @@ window.TomorrowPrediction = (function () {
               <span class="fc-prob"><b>${h.probability}</b><i>%</i></span>
             </div>
             <div class="fc-gauge"><div class="fc-gauge-fill" style="width:${h.probability}%"></div></div>
+            ${(() => {
+              const e = TomorrowApp.nearestEta(h.lat, h.lng, h.station_id);
+              return e ? `<div class="fc-eta"><i data-lucide="timer"></i><span class="fc-eta-min">${e.eta} דק׳</span><span class="fc-eta-from">מ${e.station.name} · ${e.km.toFixed(1)} ק״מ</span></div>` : '';
+            })()}
             ${h.factors.length ? `<div class="fc-factors">${h.factors.map(f => `<span class="factor">${f}</span>`).join('')}</div>` : ''}
             <button class="fc-dispatch" data-id="${h.id}"><i data-lucide="navigation"></i><span>הזנק ניידת ליעד</span></button>
           </div>`;

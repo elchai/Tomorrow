@@ -48,6 +48,28 @@ window.TomorrowApp = (function () {
     broadcast('onStationChange');
   }
 
+  // Haversine distance in km between two lat/lng pairs
+  function distanceKm(lat1, lng1, lat2, lng2) {
+    const R = 6371, toRad = d => d * Math.PI / 180;
+    const dφ = toRad(lat2 - lat1), dλ = toRad(lng2 - lng1);
+    const a = Math.sin(dφ / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dλ / 2) ** 2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
+
+  // Statistical ETA (minutes) for a patrol from one coord to another.
+  // Formula: base dispatch overhead + (distance / city patrol speed). See CONFIG.
+  function etaMinutes(lat1, lng1, lat2, lng2) {
+    const km = distanceKm(lat1, lng1, lat2, lng2);
+    return Math.max(1, Math.round(CONFIG.PATROL_BASE_MIN + (km / CONFIG.PATROL_SPEED_KMH) * 60));
+  }
+  // Convenience: nearest-station ETA to a target point. Returns { eta, station, km }.
+  function nearestEta(targetLat, targetLng, preferredStationId) {
+    const st = (preferredStationId && CONFIG.station(preferredStationId)) || nearestStation(targetLat, targetLng);
+    if (!st) return null;
+    const km = distanceKm(st.lat, st.lng, targetLat, targetLng);
+    return { eta: etaMinutes(st.lat, st.lng, targetLat, targetLng), station: st, km };
+  }
+
   // Nearest station to a coordinate (used by dispatch)
   function nearestStation(lat, lng) {
     let best = null, bestD = Infinity;
@@ -309,10 +331,40 @@ window.TomorrowApp = (function () {
       renderStrategicEvents();
       updateThreatLevel();
       renderIcons();   // convert any remaining static [data-lucide] in the HUD/timeline
+      relocateActionButtonsToNavRail();
       if (window.TomorrowSounds) TomorrowSounds.online();
       logEvent('system', 4, '✅ מערכת הניבוי והיתוך המודיעין מקוונת — מודל RTM נטען בהצלחה');
       if (window.TomorrowOsint) TomorrowOsint.init();   // OSINT signals (async) — boosts forecast
     });
+  }
+
+  // Move the action buttons that modules injected into the HUD into the side nav-rail,
+  // and give them a visible label. Modules don't need to know about the rail's existence.
+  function relocateActionButtonsToNavRail() {
+    const rail = document.getElementById('nav-rail');
+    if (!rail) return;
+    const map = [
+      { id: 'btn-analytics', label: 'אנליטיקה' },
+      { id: 'btn-intel',     label: 'מודיעין'  },
+      { id: 'btn-lpr',       label: 'LPR'      }
+    ];
+    map.forEach(({ id, label }) => {
+      const btn = document.getElementById(id);
+      if (!btn) return;
+      btn.classList.add('nav-rail-btn');
+      btn.style.marginInlineEnd = '';   // strip the HUD margin
+      // append label below the icon (skip if already added)
+      if (!btn.querySelector('.nav-rail-label')) {
+        const lbl = document.createElement('span');
+        lbl.className = 'nav-rail-label';
+        lbl.textContent = label;
+        btn.appendChild(lbl);
+      }
+      // insert ABOVE the .nav-rail-bottom section (which holds the logout button)
+      const bottom = rail.querySelector('.nav-rail-bottom');
+      if (bottom) rail.insertBefore(btn, bottom); else rail.appendChild(btn);
+    });
+    renderIcons();   // re-run lucide on moved buttons
   }
 
   function printPatrolOrder(hId) {
@@ -593,6 +645,7 @@ window.TomorrowApp = (function () {
   return {
     init, saveState, loadState,
     getCurrentStation, setStation, nearestStation,
+    distanceKm, etaMinutes, nearestEta,
     register, broadcast,
     toast, logEvent, renderIntelLog, updateThreatLevel, renderIcons,
     printPatrolOrder,

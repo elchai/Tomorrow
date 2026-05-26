@@ -228,7 +228,9 @@ window.TomorrowAnalytics = (function () {
 
   function toggle() {
     isOpen = !isOpen;
-    panelEl.style.right = isOpen ? '0px' : '-310px';
+    // honor the side nav-rail width (set as CSS var; 0 on mobile)
+    const railOpen = getComputedStyle(document.documentElement).getPropertyValue('--rail-w').trim() || '0px';
+    panelEl.style.right = isOpen ? railOpen : '-310px';
     
     const btn = document.getElementById('btn-analytics');
     if (btn) btn.classList.toggle('active', isOpen);

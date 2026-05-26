@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TOMORROW · רשת ניבוי פשיעה</title>
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon.png">
+  <link rel="apple-touch-icon" href="assets/favicon.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,27 +23,8 @@
     <div class="login-classification">SECURE OPERATIONS SYSTEM // AUTHORIZED PERSONNEL ONLY</div>
 
     <div class="login-box">
-      <div class="login-badge">
-        <svg viewBox="0 0 120 140" width="104" height="120" xmlns="http://www.w3.org/2000/svg">
-          <!-- shield -->
-          <path d="M60 6 L108 26 L108 70 Q108 112 60 134 Q12 112 12 70 L12 26 Z"
-                fill="rgba(26,109,255,0.07)" stroke="#2b8fff" stroke-width="2"/>
-          <path d="M60 18 L97 34 L97 70 Q97 102 60 120 Q23 102 23 70 L23 34 Z"
-                fill="none" stroke="#00e5ff" stroke-width="1" opacity="0.45"/>
-          <!-- radar / predictive eye -->
-          <circle cx="60" cy="64" r="26" fill="none" stroke="#00e5ff" stroke-width="1.4" opacity="0.8"/>
-          <circle cx="60" cy="64" r="16" fill="none" stroke="#00e5ff" stroke-width="1" opacity="0.5"/>
-          <circle cx="60" cy="64" r="5" fill="#ffd000"/>
-          <!-- crosshair -->
-          <line x1="60" y1="30" x2="60" y2="98" stroke="#00e5ff" stroke-width="1" opacity="0.5"/>
-          <line x1="26" y1="64" x2="94" y2="64" stroke="#00e5ff" stroke-width="1" opacity="0.5"/>
-          <!-- sweep -->
-          <path d="M60 64 L60 38 A26 26 0 0 1 82 56 Z" fill="rgba(0,229,255,0.18)"/>
-        </svg>
-      </div>
-      <div class="login-title">TOMORROW</div>
+      <img class="login-logo" src="assets/tomorrow-logo.png" alt="TOMORROW · Crime Prediction System" />
       <div class="login-sub">
-        <span class="login-sub-en">PREDICTIVE&nbsp;POLICING&nbsp;GRID</span>
         <span class="login-sub-he">רשת ניבוי פשיעה</span>
       </div>
 
@@ -61,8 +44,8 @@
   <!-- ===== Boot screen ===== -->
   <div id="boot">
     <div class="boot-inner">
-      <div class="boot-logo">TOMORROW</div>
-      <div class="boot-sub">PREDICTIVE POLICING GRID · רשת ניבוי פשיעה</div>
+      <img class="boot-logo-img" src="assets/tomorrow-logo.png" alt="TOMORROW" />
+      <div class="boot-sub">רשת ניבוי פשיעה</div>
       <div class="boot-progress"><div id="boot-bar"></div></div>
       <div id="boot-lines" class="boot-lines"></div>
     </div>
@@ -88,7 +71,7 @@
         <div id="hud-clock" class="clock">--:--:--</div>
         <div id="hud-date" class="date">—</div>
       </div>
-      <button id="btn-mute" class="icon-btn" title="קול"><i data-lucide="volume-2"></i></button>
+      <button id="btn-mute" class="icon-btn muted" title="הפעל קול"><i data-lucide="volume-x"></i></button>
       <button id="btn-hamburger" class="icon-btn hamburger-btn" title="תפריט מערכת" aria-label="תפריט מערכת" aria-expanded="false"><i data-lucide="menu"></i></button>
     </div>
   </header>
@@ -107,12 +90,24 @@
       <li class="hm-item" data-trigger="btn-osint"><i data-lucide="radio-tower"></i><span>שכבת OSINT</span></li>
       <li class="hm-item" data-trigger="btn-sim"><i data-lucide="layers"></i><span>שכבות הקשר (RTM)</span></li>
       <li class="hm-item" data-trigger="btn-mute"><i data-lucide="volume-2"></i><span>קול / השתקה</span></li>
+      <li class="hm-item hm-item-logout" data-trigger="btn-logout"><i data-lucide="log-out"></i><span>יציאה</span></li>
     </ul>
     <div class="hm-foot">TOMORROW v0.2 · נבנה ע״י אלחי פיין</div>
   </aside>
 
   <!-- ===== Main layout ===== -->
   <main id="layout">
+
+    <!-- Side navigation rail (RTL leading edge — visual right). Hidden on mobile (hamburger takes over). -->
+    <aside id="nav-rail" class="nav-rail">
+      <!-- buttons (Analytics, Intel, LPR) get relocated here by app.js post-init, inserted ABOVE .nav-rail-bottom -->
+      <div class="nav-rail-bottom">
+        <button id="btn-logout" class="icon-btn nav-rail-btn" title="יציאה לדף הכניסה">
+          <i data-lucide="log-out"></i>
+          <span class="nav-rail-label">יציאה</span>
+        </button>
+      </div>
+    </aside>
 
     <!-- Left: forecast feed -->
     <aside class="panel panel-left">
@@ -224,8 +219,11 @@
         if (window.TomorrowPrediction) TomorrowPrediction.refresh();
       });
 
-      document.getElementById('btn-regen').addEventListener('click', () => {
+      document.getElementById('btn-regen').addEventListener('click', (e) => {
         if (window.TomorrowPrediction) TomorrowPrediction.regenerate();
+        const btn = e.currentTarget;
+        btn.classList.add('flash-success');
+        setTimeout(() => btn.classList.remove('flash-success'), 1800);
       });
       document.getElementById('btn-saturate').addEventListener('click', () => {
         if (window.TomorrowDispatch) TomorrowDispatch.saturateArea();
@@ -235,10 +233,16 @@
         const btn = e.currentTarget;
         btn.innerHTML = `<i data-lucide="${m ? 'volume-x' : 'volume-2'}"></i>`;
         btn.classList.toggle('muted', m);
+        btn.title = m ? 'הפעל קול' : 'השתק קול';
         TomorrowApp.renderIcons();
       });
       document.getElementById('btn-osint').addEventListener('click', () => {
         if (window.TomorrowOsint) TomorrowOsint.toggle();
+      });
+      document.getElementById('btn-logout').addEventListener('click', () => {
+        try { sessionStorage.removeItem('tomorrow_auth'); } catch {}
+        TomorrowApp.toast?.('🚪 יוצא מהמערכת…', 'info', 1200);
+        setTimeout(() => location.reload(), 350);
       });
 
       // ── Mobile hamburger menu — consolidates HUD action buttons ──

@@ -8,7 +8,7 @@
 window.TomorrowSounds = (function () {
 
   let ctx = null;
-  let muted = false;
+  let muted = true;   // muted by default — user must opt-in to sound
 
   function ensure() {
     if (!ctx) {

@@ -164,14 +164,9 @@ window.TomorrowMap = (function () {
           <span class="tp-prob-lbl">הסתברות מצרפית למשמרת</span>
         </div>
         
-        <div style="display:flex; gap:8px; margin-top:12px;">
-          <button class="tp-dispatch" onclick="TomorrowDispatch.dispatchToHotspot(TomorrowState.forecast.find(x=>x.id===${h.id}))" style="flex:1.2; margin:0; background:var(--police); border-color:var(--police-br); padding: 6px 4px; font-size:11.5px; display:flex; align-items:center; justify-content:center; gap:4px;">
-            <i data-lucide="navigation" style="width:12px; height:12px;"></i><span>שגר כוח סיור</span>
-          </button>
-          <button class="tp-dispatch" onclick="TomorrowApp.printPatrolOrder(${h.id})" style="flex:1; margin:0; background:rgba(0, 229, 255, 0.08); border-color:rgba(0, 229, 255, 0.4); color:var(--cyan); padding: 6px 4px; font-size:11.5px; display:flex; align-items:center; justify-content:center; gap:4px;">
-            <i data-lucide="printer" style="width:12px; height:12px;"></i><span>פקודה מודפסת</span>
-          </button>
-        </div>
+        <button class="tp-dispatch" onclick="TomorrowDispatch.dispatchToHotspot(TomorrowState.forecast.find(x=>x.id===${h.id}))">
+          <i data-lucide="navigation"></i><span>שגר כוח סיור</span>
+        </button>
       </div>`;
   }
 

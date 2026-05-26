@@ -226,6 +226,70 @@ window.TomorrowDispatch = (function () {
     }, 50);
   }
 
+  // ---------- Cross-station Mutual Aid allocation ----------
+  function findAvailableUnits(preferredStationId, recommendedTypes, targetLatLng) {
+    const chosen = [];
+    const usedCallsigns = new Set();
+
+    // 1. Try to find recommended unit types at the preferred station first
+    recommendedTypes.forEach(typeKey => {
+      const u = State.units.find(u => u.station_id === preferredStationId && u.status === 'available' && u.type === typeKey && !usedCallsigns.has(u.callsign));
+      if (u) {
+        chosen.push(u);
+        usedCallsigns.add(u.callsign);
+      }
+    });
+
+    // 2. Try to fill remaining slots with ANY available unit at the preferred station
+    if (chosen.length < recommendedTypes.length) {
+      const remainingCount = recommendedTypes.length - chosen.length;
+      const primaryStationUnits = State.units.filter(u => u.station_id === preferredStationId && u.status === 'available' && !usedCallsigns.has(u.callsign));
+      primaryStationUnits.slice(0, remainingCount).forEach(u => {
+        chosen.push(u);
+        usedCallsigns.add(u.callsign);
+      });
+    }
+
+    // 3. MUTUAL AID: Try to find available recommended units at neighboring stations (sorted by distance)
+    if (chosen.length < recommendedTypes.length) {
+      const otherStations = CONFIG.STATIONS
+        .filter(s => s.id !== preferredStationId)
+        .map(s => ({
+          station: s,
+          distance: distanceMeters(s.lat, s.lng, targetLatLng[0], targetLatLng[1])
+        }))
+        .sort((a, b) => a.distance - b.distance);
+
+      for (const entry of otherStations) {
+        if (chosen.length >= recommendedTypes.length) break;
+
+        const remainingCount = recommendedTypes.length - chosen.length;
+        const recommendedTypesRemaining = recommendedTypes.slice(chosen.length);
+
+        // Try to find recommended types at this neighbor station
+        recommendedTypesRemaining.forEach(typeKey => {
+          const u = State.units.find(u => u.station_id === entry.station.id && u.status === 'available' && u.type === typeKey && !usedCallsigns.has(u.callsign));
+          if (u && chosen.length < recommendedTypes.length) {
+            chosen.push(u);
+            usedCallsigns.add(u.callsign);
+          }
+        });
+
+        // Fill remaining slots with ANY available unit at this neighbor station
+        if (chosen.length < recommendedTypes.length) {
+          const nextRemaining = recommendedTypes.length - chosen.length;
+          const neighborStationUnits = State.units.filter(u => u.station_id === entry.station.id && u.status === 'available' && !usedCallsigns.has(u.callsign));
+          neighborStationUnits.slice(0, nextRemaining).forEach(u => {
+            chosen.push(u);
+            usedCallsigns.add(u.callsign);
+          });
+        }
+      }
+    }
+
+    return chosen;
+  }
+
   // ---------- High-level: dispatch units to a predicted hotspot ----------
   function dispatchToHotspot(h) {
     if (!h) { TomorrowApp.toast('⚠ לא נבחר מוקד חיזוי', 'warning'); return; }
@@ -234,30 +298,36 @@ window.TomorrowDispatch = (function () {
 
     const recommended = CONFIG.responseCard(h.crime, h.risk);
     const r = CONFIG.RISK[h.risk];
-    const from = [station.lat, station.lng];
     const to = [h.lat, h.lng];
 
-    // pick available units from this station, fall back to any
-    const pool = State.units.filter(u => u.station_id === station.id && u.status === 'available');
-    const chosen = [];
-    recommended.forEach(typeKey => {
-      const u = pool.find(p => p.type === typeKey && !chosen.includes(p)) || pool.find(p => !chosen.includes(p));
-      if (u) chosen.push(u);
-    });
-    if (chosen.length === 0) { TomorrowApp.toast(`⚠ אין ניידות זמינות ב${station.name}`, 'warning'); return; }
+    // Allocate units using our smart multi-station algorithm
+    const chosen = findAvailableUnits(station.id, recommended, to);
+    if (chosen.length === 0) { TomorrowApp.toast(`⚠ אין ניידות זמינות בכל המרחב`, 'warning'); return; }
 
     h.dispatched = true;
     if (window.TomorrowMap) { TomorrowMap.markDispatched(h); TomorrowMap.focusHotspot(h); }
     if (window.TomorrowSounds) { TomorrowSounds.alert(h.risk); setTimeout(() => TomorrowSounds.dispatch(), 700); }
 
-    TomorrowApp.toast(`🚓 פריסת סיור: ${chosen.length} צוותים הוקצו לתא #${h.id} ב${h.zone}`, 'success');
-    TomorrowApp.logEvent('dispatch', h.risk, `הקצאת ${chosen.length} צוותי סיור מונחה לתא #${h.id} ב${h.zone} (${h.probability}%)`);
+    // Log & Toast with Mutual Aid counts
+    const primaryCount = chosen.filter(u => u.station_id === station.id).length;
+    const mutualCount = chosen.length - primaryCount;
+
+    if (mutualCount > 0) {
+      TomorrowApp.toast(`🚓 סיוע הדדי: ${chosen.length} צוותים הוקצו (מתוכם ${mutualCount} מתחנה שכנה) לתא #${h.id} ב${h.zone}`, 'success');
+      TomorrowApp.logEvent('dispatch', h.risk, `הקצאת ${chosen.length} צוותי סיור מונחה לתא #${h.id} ב${h.zone} (${h.probability}%) - כולל ${mutualCount} צוותי סיוע הדדי`);
+    } else {
+      TomorrowApp.toast(`🚓 פריסת סיור: ${chosen.length} צוותים הוקצו לתא #${h.id} ב${h.zone}`, 'success');
+      TomorrowApp.logEvent('dispatch', h.risk, `הקצאת ${chosen.length} צוותי סיור מונחה לתא #${h.id} ב${h.zone} (${h.probability}%)`);
+    }
 
     chosen.forEach((u, idx) => {
       u.status = 'dispatched';
       u.text = `בדרך ל${h.zone}`;
       u.dest = h.zone;
       u.hotspot_id = h.id;
+      // starting point is the unit's actual home station!
+      const uStation = CONFIG.station(u.station_id);
+      const from = [uStation.lat, uStation.lng];
       setTimeout(() => dispatchVehicle(u, from, to, r.color), idx * 1400);
     });
     renderUnits();
@@ -271,6 +341,56 @@ window.TomorrowDispatch = (function () {
     TomorrowApp.toast(`🛡️ סיור מונע מוגבר על ${fc.length} מוקדים`, 'success');
     TomorrowApp.logEvent('dispatch', 2, `הפעלת סיור מונע מוגבר על ${fc.length} מוקדי סיכון גבוה`);
     fc.slice(0, 4).forEach((h, i) => setTimeout(() => dispatchToHotspot(h), i * 900));
+  }
+
+  // ---------- LPR Dispatch Loop ----------
+  function dispatchToLpr(a) {
+    if (!a) return;
+    const station = TomorrowApp.nearestStation(a.camera.lat, a.camera.lng);
+    if (!station) { TomorrowApp.toast('⚠ לא נמצאה תחנה זמינה בסביבת המצלמה', 'warning'); return; }
+
+    // Allocate 1 available patrol unit (using smart cross-station mutual aid if needed)
+    const recommended = ['patrol'];
+    const chosen = findAvailableUnits(station.id, recommended, [a.camera.lat, a.camera.lng]);
+    if (chosen.length === 0) {
+      TomorrowApp.toast(`⚠ אין ניידות פנויות להזנקת LPR ב${station.name} או בסביבתה`, 'warning');
+      return;
+    }
+
+    const u = chosen[0];
+    const uStation = CONFIG.station(u.station_id);
+    const from = [uStation.lat, uStation.lng];
+    const to = [a.camera.lat, a.camera.lng];
+
+    // Lock unit as dispatched
+    u.status = 'dispatched';
+    u.text = `מרדף LPR · ${a.camera.name}`;
+    u.dest = a.camera.name;
+    u.lpr_alert_id = a.id;
+
+    // stolen gets critical color (#ff1f4b), flagged gets high color (#ff7a18)
+    const color = a.status === 'stolen' ? CONFIG.RISK[1].color : CONFIG.RISK[2].color;
+
+    // Dispatches AVL car to camera
+    dispatchVehicle(u, from, to, color, () => {
+      // Callback upon arrival at the LPR camera scene
+      if (window.TomorrowLpr) {
+        TomorrowLpr.updateAlertStatus(a.id, 'secured', u.callsign);
+      }
+    });
+
+    const isMutual = u.station_id !== station.id;
+    if (isMutual) {
+      TomorrowApp.toast(`🚓 סיוע הדדי LPR: צוות ${u.callsign} מתחנת ${uStation.name} הוזנק למצלמה ב${a.camera.name}`, 'success');
+      TomorrowApp.logEvent('dispatch', 2, `🚨 סיוע הדדי LPR: הזנקת צוות ${u.callsign} לתפיסת רכב ${a.status === 'stolen' ? 'גנוב' : 'מסומן'} · לוחית ${a.plate} · ${a.camera.name}`);
+    } else {
+      TomorrowApp.toast(`🚓 שיגור LPR: צוות ${u.callsign} הוזנק מ${uStation.name} למצלמה ב${a.camera.name}`, 'success');
+      TomorrowApp.logEvent('dispatch', 1, `🚨 שיגור LPR: הזנקת צוות ${u.callsign} לתפיסת רכב ${a.status === 'stolen' ? 'גנוב' : 'מסומן'} · לוחית ${a.plate} · ${a.camera.name}`);
+    }
+
+    if (window.TomorrowSounds) TomorrowSounds.dispatch();
+    renderUnits();
+    TomorrowApp.saveState();
   }
 
   // ---------- Units sidebar ----------
@@ -312,6 +432,6 @@ window.TomorrowDispatch = (function () {
     if (stat) stat.textContent = `${avail}/${items.length}`;
   }
 
-  return { init, setMap, dispatchToHotspot, dispatchVehicle, saturateArea, renderUnits, getVisibleUnits };
+  return { init, setMap, dispatchToHotspot, dispatchToLpr, dispatchVehicle, saturateArea, renderUnits, getVisibleUnits };
 })();
 

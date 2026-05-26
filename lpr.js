@@ -93,12 +93,8 @@ window.TomorrowLpr = (function () {
       if (dispatchBtn) {
         const a = ALERTS.find(x => x.id === dispatchBtn.dataset.dispatch);
         if (!a) return;
-        // synthesize a fake hotspot for the dispatch system
-        const station = TomorrowApp.nearestStation(a.camera.lat, a.camera.lng);
-        if (window.TomorrowDispatch && station) {
-          TomorrowApp.toast(`🚓 הזנקה מ${station.name} ל${a.camera.name} — לוחית ${a.plate}`, 'success');
-          TomorrowApp.logEvent('dispatch', 1, `הזנקה אחר רכב ${a.status === 'stolen' ? 'גנוב' : 'מסומן'} · לוחית ${a.plate} · ${a.camera.name}`);
-          if (window.TomorrowSounds) TomorrowSounds.dispatch();
+        if (window.TomorrowDispatch) {
+          TomorrowDispatch.dispatchToLpr(a);
         }
       }
     });
@@ -130,7 +126,8 @@ window.TomorrowLpr = (function () {
 
   function renderAlert(a) {
     const cls = `lpr-alert lpr-${a.status}`;
-    const statusLbl = a.status === 'stolen' ? 'רכב גנוב' : (a.status === 'flagged' ? 'מסומן' : 'נקי');
+    const statusLbl = a.status === 'stolen' ? 'רכב גנוב' : (a.status === 'flagged' ? 'מסומן' : (a.status === 'secured' ? 'טופל בהצלחה' : 'נקי'));
+    const eta = TomorrowApp.nearestEta(a.camera.lat, a.camera.lng);
     return `
       <div class="${cls}">
         <div class="lpr-row-top">
@@ -143,6 +140,7 @@ window.TomorrowLpr = (function () {
         </div>
         <div class="lpr-camera"><i data-lucide="map-pin"></i><span>${a.camera.name}</span></div>
         <div class="lpr-match"><i data-lucide="link"></i><span>${a.match_src}</span></div>
+        ${eta ? `<div class="lpr-eta"><i data-lucide="timer"></i><span>ETA <b>${eta.eta} דק׳</b> מ${eta.station.name} (${eta.km.toFixed(1)} ק״מ)</span></div>` : ''}
         <div class="lpr-row-bottom">
           <span class="lpr-when"><i data-lucide="clock"></i>לפני ${a.mins_ago} דק׳</span>
           <div class="lpr-actions">
@@ -152,6 +150,23 @@ window.TomorrowLpr = (function () {
         </div>
       </div>
     `;
+  }
+
+  function updateAlertStatus(alertId, newStatus, callsign) {
+    const a = ALERTS.find(x => x.id === alertId);
+    if (a) {
+      a.status = newStatus;
+      if (newStatus === 'secured') {
+        a.dispatchable = false;
+        a.match_src = `טופל בהצלחה ע״י צוות ${callsign || 'סיור'}`;
+        a.mins_ago = 0;
+      }
+      updateBadge();
+      if (panelEl) {
+        panelEl.innerHTML = renderPanel();
+        TomorrowApp.renderIcons();
+      }
+    }
   }
 
   function toggle() {
@@ -166,5 +181,5 @@ window.TomorrowLpr = (function () {
   function close() { if (isOpen) toggle(); }
   function open()  { if (!isOpen) toggle(); }
 
-  return { init, toggle, open, close };
+  return { init, toggle, open, close, updateAlertStatus };
 })();
