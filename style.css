@@ -838,7 +838,10 @@ input:checked + .slider-round .slider-knob {
   display: flex;
   flex-direction: column;
   direction: rtl;
-  transform: translateX(105%);
+  /* Push the drawer fully off-screen past the rail. `right: var(--rail-w)` sets
+     the OPEN position; closed = translate by (drawer width + rail width) so the
+     drawer's left edge sits at viewport's right edge, not bleeding into the rail. */
+  transform: translateX(calc(100% + var(--rail-w)));
   transition: transform 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
 }
 .drawer-panel.open { transform: translateX(0); }
