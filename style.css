@@ -38,12 +38,13 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 html, body {
-  height: 100%;
+  min-height: 100%;
   background: var(--bg-void);
   color: var(--text);
   font-family: var(--font-he);
-  overflow: hidden;
+  overflow-x: hidden; overflow-y: auto;
 }
+body { padding-top: var(--hud-h); }  /* clear the fixed HUD */
 
 body {
   background:
@@ -155,7 +156,7 @@ body::before {
 
 /* ===================== HUD ===================== */
 #hud {
-  position: relative; z-index: 5; height: var(--hud-h);
+  position: fixed; top: 0; left: 0; right: 0; z-index: 50; height: var(--hud-h);
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 18px; background: linear-gradient(180deg, rgba(11,19,34,.95), rgba(7,12,24,.9));
   border-bottom: 1px solid var(--line);
@@ -823,7 +824,7 @@ input:checked + .slider-round .slider-knob {
 /* ===================== DRAWER PANELS (Intel, LPR — shared base) ===================== */
 .drawer-panel {
   position: absolute;
-  top: var(--hud-h);
+  top: 0;                /* #layout already starts below the fixed HUD */
   bottom: 0;
   right: var(--rail-w);
   width: 320px;
@@ -956,6 +957,32 @@ input:checked + .slider-round .slider-knob {
 .lpr-btn svg { width: 11px; height: 11px; }
 .lpr-btn.primary { background: var(--police); color: #fff; border-color: var(--police-br); }
 .lpr-btn:hover { box-shadow: 0 0 10px rgba(43,143,255,.4); }
+
+/* ===================== SITE FOOTER (Dag Hazahav credit) ===================== */
+.app-footer {
+  background: linear-gradient(180deg, rgba(7, 12, 24, .9), rgba(4, 7, 15, 1));
+  border-top: 1px solid color-mix(in srgb, var(--cyan) 20%, transparent);
+  padding: 18px 24px;
+  z-index: 30;
+}
+.app-footer-inner { max-width: 1400px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap;
+  font-family: var(--font-he); font-size: 12.5px; color: var(--text-dim); }
+.app-footer-tag { font-weight: 600; letter-spacing: .5px; color: var(--cyan); }
+.app-footer-credit { color: var(--text-faint); }
+.app-footer-link {
+  color: var(--cyan); font-weight: 700; text-decoration: none;
+  padding: 2px 6px; border-radius: 4px;
+  border-bottom: 1px dashed color-mix(in srgb, var(--cyan) 55%, transparent);
+  transition: color .15s, background .15s, border-color .15s;
+}
+.app-footer-link:hover {
+  color: #fff; background: rgba(0, 229, 255, .12); border-bottom-color: var(--cyan);
+}
+@media (max-width: 768px) {
+  .app-footer-inner { flex-direction: column; gap: 6px; text-align: center; font-size: 12px; }
+}
 
 /* ===================== MOBILE HAMBURGER MENU ===================== */
 .hamburger-btn { display: none; }   /* desktop: hidden */

@@ -55,7 +55,7 @@ window.TomorrowAnalytics = (function () {
     panelEl.className = 'panel';
     panelEl.style.cssText = `
       position: absolute;
-      top: var(--hud-h);
+      top: 0;
       bottom: 0;
       right: -310px;
       width: 300px;
