@@ -21,6 +21,11 @@ token.json
 דוגמה*.pdf
 *.brochure-sample.pdf
 
+# Source logo files (we only commit the optimized version in assets/)
+/tomorrow_logo*.png
+/tomorrrow_logo*.png
+/Gemini_Generated_*.png
+
 # OS
 .DS_Store
 Thumbs.db

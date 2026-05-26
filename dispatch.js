@@ -98,7 +98,12 @@ window.TomorrowDispatch = (function () {
     const distKm = distanceMeters(fromLatLng[0], fromLatLng[1], toLatLng[0], toLatLng[1]) / 1000;
     const speed = CONFIG.unitType(unit.type).speed_kmh;
     const etaMin = (distKm / speed) * 60;
-    const demoMs = (State.settings.demo_seconds || 11) * 1000;
+    
+    // Make travel animation duration proportional to actual distance/ETA:
+    // 1 minute of real travel time = 1.3 seconds of visual movement on the map.
+    // Bound between 3.5 seconds (for very close targets) and 18 seconds (for far away mutual-aid targets) to remain playable.
+    const animationSeconds = Math.max(3.5, Math.min(18.0, etaMin * 1.3));
+    const demoMs = animationSeconds * 1000;
     const stepMs = demoMs / points.length;
 
     const line = L.polyline([points[0]], {
