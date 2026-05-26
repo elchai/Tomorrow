@@ -89,8 +89,27 @@
         <div id="hud-date" class="date">—</div>
       </div>
       <button id="btn-mute" class="icon-btn" title="קול"><i data-lucide="volume-2"></i></button>
+      <button id="btn-hamburger" class="icon-btn hamburger-btn" title="תפריט מערכת" aria-label="תפריט מערכת" aria-expanded="false"><i data-lucide="menu"></i></button>
     </div>
   </header>
+
+  <!-- ===== Mobile hamburger menu (visible ≤768px) ===== -->
+  <div id="hamburger-overlay" aria-hidden="true"></div>
+  <aside id="hamburger-menu" class="hamburger-menu" aria-hidden="true">
+    <div class="hm-head">
+      <span class="hm-title"><i data-lucide="layout-grid"></i><span>תפריט מערכת</span></span>
+      <button id="btn-close-hamburger" class="icon-btn" style="border:none;background:transparent" title="סגור"><i data-lucide="x"></i></button>
+    </div>
+    <ul class="hm-list">
+      <li class="hm-item" data-trigger="btn-analytics"><i data-lucide="bar-chart-3"></i><span>אנליטיקה וכיול מודל</span></li>
+      <li class="hm-item" data-trigger="btn-intel"><i data-lucide="scan-face"></i><span>תיק יעד מודיעיני</span></li>
+      <li class="hm-item" data-trigger="btn-lpr"><i data-lucide="camera"></i><span>התראות LPR</span></li>
+      <li class="hm-item" data-trigger="btn-osint"><i data-lucide="radio-tower"></i><span>שכבת OSINT</span></li>
+      <li class="hm-item" data-trigger="btn-sim"><i data-lucide="layers"></i><span>שכבות הקשר (RTM)</span></li>
+      <li class="hm-item" data-trigger="btn-mute"><i data-lucide="volume-2"></i><span>קול / השתקה</span></li>
+    </ul>
+    <div class="hm-foot">TOMORROW v0.2 · נבנה ע״י אלחי פיין</div>
+  </aside>
 
   <!-- ===== Main layout ===== -->
   <main id="layout">
@@ -187,6 +206,8 @@
   <script src="layers.js"></script>
   <script src="osint.js"></script>
   <script src="analytics.js"></script>
+  <script src="intel.js"></script>
+  <script src="lpr.js"></script>
 
   <!-- UI wiring (timeline + control buttons) -->
   <script>
@@ -218,6 +239,30 @@
       });
       document.getElementById('btn-osint').addEventListener('click', () => {
         if (window.TomorrowOsint) TomorrowOsint.toggle();
+      });
+
+      // ── Mobile hamburger menu — consolidates HUD action buttons ──
+      const ham = document.getElementById('btn-hamburger');
+      const menu = document.getElementById('hamburger-menu');
+      const overlay = document.getElementById('hamburger-overlay');
+      function toggleHam(force) {
+        const next = typeof force === 'boolean' ? force : !menu.classList.contains('open');
+        menu.classList.toggle('open', next);
+        overlay.classList.toggle('open', next);
+        ham?.classList.toggle('active', next);
+        menu.setAttribute('aria-hidden', next ? 'false' : 'true');
+        ham?.setAttribute('aria-expanded', next ? 'true' : 'false');
+      }
+      ham?.addEventListener('click', () => toggleHam());
+      overlay?.addEventListener('click', () => toggleHam(false));
+      document.getElementById('btn-close-hamburger')?.addEventListener('click', () => toggleHam(false));
+      document.addEventListener('keydown', e => { if (e.key === 'Escape' && menu.classList.contains('open')) toggleHam(false); });
+      menu.querySelectorAll('.hm-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const target = document.getElementById(item.dataset.trigger);
+          toggleHam(false);
+          if (target) setTimeout(() => target.click(), 220);   // wait for menu fade
+        });
       });
     });
   </script>

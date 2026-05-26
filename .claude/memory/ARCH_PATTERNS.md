@@ -8,7 +8,8 @@ Vanilla JS, ללא build, dependencies מ-CDN (Leaflet 1.9.4 + leaflet.heat, Goo
 state גלובלי יחיד + localStorage עם debounce, רישום מודולים ו-broadcast לאירועים.
 
 ## מודולים (סדר טעינה קריטי!)
-`config.js → sounds.js → app.js → prediction.js → map.js → dispatch.js → sim.js → osint.js`
+`config.js → sounds.js → app.js → prediction.js → map.js → dispatch.js → layers.js → osint.js → analytics.js → intel.js → lpr.js`
+*(sim.js הוסר ב-pivot ל-B2B; layers.js = RTM contextual layers; analytics/intel/lpr = drawer panels)*
 **גוטצ'ה:** prediction/map/dispatch תופסים `const State = window.TomorrowState` בזמן eval של ה-IIFE.
 `TomorrowState` מוגדר ב-app.js — לכן **app.js חייב להיטען לפני** השאר. אחרת:
 `Cannot read properties of undefined (reading 'forecast')`.
@@ -50,6 +51,18 @@ state גלובלי יחיד + localStorage עם debounce, רישום מודול�
 
 ## גרסת State
 `STORAGE_KEY='tomorrow_state_v2'` — שינוי מבנה (glyph/code) מצריך bump כדי לזרוק forecast/units ישנים מ-localStorage.
+
+## Drawer Pattern (Analytics / Intel / LPR)
+מודולים פאנליים פותחים drawer מצד ימין (RTL), 320px רוחב, מעל הדשבורד — לא view-routing.
+דפוס אחיד: `init()` מזריק `.icon-btn` ל-HUD-right ובונה `<aside class="drawer-panel">`,
+ה-`.open` class מחליף `transform: translateX(105%)` ל-`translateX(0)`. `analytics.js` משתמש בסגנון inline ישן (`right: -310px → 0`) — תואם, רק לא עקבי. אם תוסיף drawer חדש — קלל ב-`.drawer-panel` + `.open`.
+**אין מתאם בין drawers** כרגע — פתיחת אחד לא סוגרת אחרים. v1 פיצ'ר; ניתן להוסיף ב-`TomorrowApp.openDrawer(name)` עתידית.
+
+## Mobile Hamburger (≤768px)
+HUD מסתיר `#btn-analytics, #btn-intel, #btn-lpr` במובייל ומציג `#btn-hamburger` במקומם.
+הלחיצה פותחת `#hamburger-menu` (drawer מצד שמאל, מצד ה-RTL leading) שמרכז את כל הפעולות.
+לחיצה על פריט מבצעת `document.getElementById(item.dataset.trigger).click()` עם השהיה 220ms (לסיים fade).
+תפריט נסגר ב-overlay/X/Escape.
 
 ## RTL
 `dir="rtl"`. בגריד 3 עמודות: panel-left (ראשון ב-DOM) מופיע ויזואלית מימין. תחזית=ימין, ניידות=שמאל.

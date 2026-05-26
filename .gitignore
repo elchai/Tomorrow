@@ -11,6 +11,16 @@ package-lock.json.bak
 *.key
 *.pem
 
+# OAuth credentials (Google / others) — never commit
+client_secret*.json
+credentials.json
+token.json
+*.oauth.json
+
+# Personal reference docs kept in project root (brochures, sample PDFs)
+דוגמה*.pdf
+*.brochure-sample.pdf
+
 # OS
 .DS_Store
 Thumbs.db

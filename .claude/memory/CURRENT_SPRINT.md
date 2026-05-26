@@ -34,6 +34,16 @@
 - **מינוח מקצועי:** הסרת DEFCON והחלפה ב-**District Threat Index (DTI - מדד רגישות גזרתית)**.
 
 
+## ✅ בוצע (v0.4 — שדרוג מערכת + drawer ים, 2026-05-26)
+- ניקוי: boot קוצר ל-3 שורות (~1.6ש'), radar sweep הוסר לחלוטין, sim.js הוסר ב-pivot ל-B2B
+- **שני drawers חדשים** (intel.js + lpr.js) עוקבים אחר דפוס analytics.js:
+  - **Intel (Target Profile)** — 3 יעדי דמו, פרופיל מלא (רקע פלילי + איכון סלולארי + פיד OSINT עם קישורי t.me)
+  - **LPR (Real-time Alerts)** — 5 התראות דמו, גנובים/מסומנים/נקיים, badge עם hot count, focus + dispatch
+- **תפריט המבורגר למובייל** — ≤768px מסתיר את אייקוני ה-HUD, מציג hamburger שפותח drawer-תפריט עם 6 פעולות (Analytics/Intel/LPR/OSINT/RTM/Mute)
+- **גיליון Guy Nir** עודכן: 4 שורות חדשות (Heatmap Dashboard / LPR Feed / Target Profile / Cellular Anomaly) דרך MCP sheets שבניתי
+- **MCP Sheets** פעיל ומחובר — שרת מקומי ב-`scripts/mcp-sheets/`, OAuth קבוע, append חי לכל גיליון
+- ARCH_PATTERNS עודכן: drawer pattern + mobile hamburger
+
 ## 🔜 פיתוח עתידי (מהמשתמש + הצעות)
 **אינטגרציית תחנות + הזנקה (ליבה הבאה):**
 - הקצאה חכמה לפי תחנה רלוונטית + ETA אמיתי לפי מרחק/מהירות יחידה (כבר יש בסיס ב-dispatch.js)

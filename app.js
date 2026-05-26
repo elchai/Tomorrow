@@ -154,12 +154,9 @@ window.TomorrowApp = (function () {
     const bar = document.getElementById('boot-bar');
     const lines = document.getElementById('boot-lines');
     const steps = [
-      'אתחול רשת ניבוי טקטית…',
-      'טעינת שכבות מודיעין גאוגרפי…',
-      'סנכרון תחנות משטרה ומרחבים…',
-      'הרצת מודל ניבוי פשיעה — 24 שעות…',
-      'חישוב מדדי סיכון לפי אזור…',
-      'הרשת מקוונת. TOMORROW מוכן.'
+      'אתחול רשת ניבוי וטעינת שכבות הקשר (RTM)…',
+      'הרצת מודל חיזוי 24 שעות + סנכרון מודיעין…',
+      'TOMORROW מקוון.'
     ];
     let i = 0;
     const iv = setInterval(() => {
@@ -175,10 +172,10 @@ window.TomorrowApp = (function () {
         clearInterval(iv);
         if (boot) {
           boot.classList.add('done');
-          setTimeout(() => { boot.style.display = 'none'; if (onDone) onDone(); }, 700);
+          setTimeout(() => { boot.style.display = 'none'; if (onDone) onDone(); }, 450);
         } else if (onDone) onDone();
       }
-    }, 420);
+    }, 380);
   }
 
   // ---------- Threat level (district aggregate) ----------
@@ -307,6 +304,8 @@ window.TomorrowApp = (function () {
       if (window.TomorrowLayers) TomorrowLayers.init();
       if (window.TomorrowDispatch) TomorrowDispatch.init();
       if (window.TomorrowAnalytics) TomorrowAnalytics.init();
+      if (window.TomorrowIntel) TomorrowIntel.init();
+      if (window.TomorrowLpr) TomorrowLpr.init();
       renderStrategicEvents();
       updateThreatLevel();
       renderIcons();   // convert any remaining static [data-lucide] in the HUD/timeline

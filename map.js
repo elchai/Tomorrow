@@ -1,7 +1,7 @@
 /* ============================================================
    TOMORROW — Map view
    Leaflet dark tactical map · predicted-crime heatmap ·
-   risk rings · station markers · hotspot markers · radar sweep
+   risk rings · station markers · hotspot markers
    ============================================================ */
 
 window.TomorrowMap = (function () {
@@ -11,7 +11,6 @@ window.TomorrowMap = (function () {
   let heatLayer = null;
   const hotspotRefs = {};   // id -> { marker, ring }
   const stationRefs = {};
-  let radarEl = null;
 
   function init() {
     const station = TomorrowApp.getCurrentStation();
@@ -29,7 +28,6 @@ window.TomorrowMap = (function () {
 
     placeStations();
     renderHotspots();
-    buildRadarSweep();
 
     TomorrowApp.register('map', { onStationChange });
 
@@ -216,16 +214,6 @@ window.TomorrowMap = (function () {
       const el = ref.marker.getElement()?.querySelector('.hotspot-marker');
       if (el) el.classList.add('dispatched');
     }
-  }
-
-  // ---------- Radar sweep overlay (cosmetic SWAT HUD) ----------
-  function buildRadarSweep() {
-    const wrap = document.getElementById('map').parentElement;
-    if (!wrap) return;
-    radarEl = document.createElement('div');
-    radarEl.className = 'radar-sweep';
-    radarEl.innerHTML = '<div class="radar-arm"></div>';
-    wrap.appendChild(radarEl);
   }
 
   function onStationChange() {
