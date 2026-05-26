@@ -26,6 +26,12 @@ token.json
 /tomorrrow_logo*.png
 /Gemini_Generated_*.png
 
+# Local audit / verification scripts (Playwright-based, throwaway)
+/_audit_*.mjs
+/_verify.mjs
+/package.json
+/package-lock.json
+
 # OS
 .DS_Store
 Thumbs.db
