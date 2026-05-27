@@ -32,7 +32,7 @@
   --font-mono:  'Share Tech Mono', monospace;
 
   --hud-h: 56px;
-  --rail-w: 132px;
+  --rail-w: 64px;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -762,49 +762,37 @@ input:checked + .slider-round .slider-knob {
   background: rgba(0, 229, 255, 0.3);
 }
 
-/* ===================== SIDE NAV RAIL (vertical, RTL leading edge) ===================== */
+/* ===================== SIDE NAV RAIL (icon-only, FireOps-style) ===================== */
 .nav-rail {
-  background: #0b1322;     /* fully opaque — must not blend with body bg */
-  border-left: 2px solid var(--cyan);
-  box-shadow: -4px 0 18px rgba(0, 0, 0, .55), inset 2px 0 0 rgba(0, 229, 255, .25);
+  background: #0b1322;
+  border-left: 1px solid color-mix(in srgb, var(--cyan) 22%, transparent);
+  box-shadow: -3px 0 14px rgba(0, 0, 0, .5);
   display: flex; flex-direction: column;
-  align-items: stretch; gap: 8px;
-  padding: 14px 10px;
-  z-index: 100;     /* above the map, below drawers/menus */
-}
-/* small header at the very top of the rail */
-.nav-rail::before {
-  content: 'ניווט';
-  display: block; text-align: center;
-  font-family: var(--font-he); font-weight: 700; font-size: 10px; letter-spacing: 2px;
-  color: var(--cyan); padding-bottom: 8px; margin-bottom: 4px;
-  border-bottom: 1px solid color-mix(in srgb, var(--cyan) 25%, transparent);
+  align-items: center; gap: 6px;
+  padding: 12px 6px;
+  z-index: 100;
 }
 .nav-rail-btn {
-  width: 100% !important; height: 72px !important;
-  flex-direction: column !important; gap: 6px !important;
-  padding: 10px 6px !important; border-radius: 8px !important;
-  border: 1px solid var(--line) !important;
-  background: rgba(43, 143, 255, .08) !important;
-  color: var(--text) !important;
+  width: 46px !important; height: 46px !important;
+  padding: 0 !important; border-radius: 10px !important;
+  border: 1px solid transparent !important;
+  background: transparent !important;
+  color: var(--text-dim) !important;
+  display: flex !important; align-items: center !important; justify-content: center !important;
   position: relative;
-  transition: background .15s, color .15s, border-color .15s, box-shadow .15s, transform .1s;
+  transition: background .15s, color .15s, border-color .15s, box-shadow .15s;
 }
-.nav-rail-btn:hover { background: rgba(43, 143, 255, .22) !important;
-  color: var(--cyan) !important; border-color: var(--police-br) !important;
-  box-shadow: 0 0 14px rgba(43, 143, 255, .45);
-  transform: translateX(-2px); }
-.nav-rail-btn svg { width: 24px !important; height: 24px !important; }
-.nav-rail-btn .nav-rail-label {
-  font-family: var(--font-he); font-size: 11.5px; font-weight: 600; letter-spacing: .3px;
-  white-space: nowrap; color: inherit;
-}
+.nav-rail-btn:hover { background: rgba(43, 143, 255, .15) !important;
+  color: var(--cyan) !important; border-color: color-mix(in srgb, var(--cyan) 35%, transparent) !important; }
+.nav-rail-btn svg { width: 22px !important; height: 22px !important; }
+/* icon-only design — hide any old labels still on the buttons */
+.nav-rail-btn .nav-rail-label { display: none !important; }
 .nav-rail-btn.active {
-  background: var(--police) !important; color: #fff !important;
+  background: color-mix(in srgb, var(--police) 25%, transparent) !important;
+  color: var(--cyan) !important;
   border-color: var(--police-br) !important;
-  box-shadow: 0 0 20px rgba(43, 143, 255, .6);
+  box-shadow: 0 0 14px rgba(0, 229, 255, .4), inset 0 0 6px rgba(0, 229, 255, .15);
 }
-.nav-rail-btn.active .nav-rail-label { color: #fff; }
 /* badge on nav-rail button — top-left corner (smaller) */
 .nav-rail-btn .hud-badge { top: 2px; left: 2px; }
 

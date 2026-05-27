@@ -352,19 +352,50 @@ window.TomorrowApp = (function () {
       const btn = document.getElementById(id);
       if (!btn) return;
       btn.classList.add('nav-rail-btn');
-      btn.style.marginInlineEnd = '';   // strip the HUD margin
-      // append label below the icon (skip if already added)
-      if (!btn.querySelector('.nav-rail-label')) {
-        const lbl = document.createElement('span');
-        lbl.className = 'nav-rail-label';
-        lbl.textContent = label;
-        btn.appendChild(lbl);
-      }
+      btn.style.marginInlineEnd = '';
+      // icon-only design (FireOps-style): label kept in the `title` attribute as tooltip
+      btn.title = label;
+      // remove any leftover label span if it was added by a previous build
+      btn.querySelector('.nav-rail-label')?.remove();
       // insert ABOVE the .nav-rail-bottom section (which holds the logout button)
       const bottom = rail.querySelector('.nav-rail-bottom');
       if (bottom) rail.insertBefore(btn, bottom); else rail.appendChild(btn);
     });
     renderIcons();   // re-run lucide on moved buttons
+
+    // Mutual exclusion: opening one drawer closes the others.
+    // Each rail button click runs the module's own toggle first (bubble);
+    // afterward this delegated listener closes any other drawer that's still open,
+    // and tells Leaflet to recompute its size so map tiles don't go gray.
+    // Per-button mutual-exclusion listener (event delegation on rail fails because
+    // lucide replaces children mid-flight and closest() can resolve to detached nodes).
+    ['btn-analytics', 'btn-intel', 'btn-lpr'].forEach(id => {
+      const btn = document.getElementById(id);
+      if (!btn) return;
+      btn.addEventListener('click', () => {
+        // run AFTER the module's own toggle (registered earlier) — close others
+        setTimeout(() => closeOtherDrawers(id), 0);
+        // after the slide-in animation completes, let Leaflet recompute its size
+        setTimeout(() => window.TomorrowMap?.getMap()?.invalidateSize(), 350);
+      });
+    });
+  }
+
+  // Close all drawers EXCEPT the one whose trigger button id is passed (or all of them if no arg).
+  function closeOtherDrawers(exceptBtnId) {
+    const drawers = [
+      { btn: 'btn-analytics', panel: 'analytics-panel', external: () => window.TomorrowAnalytics?.toggle?.() },
+      { btn: 'btn-intel',     panel: 'intel-panel',     external: () => window.TomorrowIntel?.close?.() },
+      { btn: 'btn-lpr',       panel: 'lpr-panel',       external: () => window.TomorrowLpr?.close?.() }
+    ];
+    drawers.forEach(({ btn, panel, external }) => {
+      if (btn === exceptBtnId) return;
+      const el = document.getElementById(panel);
+      if (!el) return;
+      const looksOpen = el.classList.contains('open')
+        || (el.style.right && parseFloat(el.style.right) >= 0);  // analytics uses inline right
+      if (looksOpen) external();
+    });
   }
 
   function printPatrolOrder(hId) {
