@@ -191,5 +191,11 @@ window.TomorrowOsint = (function () {
     }
   }
 
-  return { init, toggle, renderMarkers, loadSignals };
+  // Called from prediction.regenerate() so the OSINT tag survives a re-roll.
+  function reapplyBoost() {
+    applyBoost();
+    updateCount();
+  }
+
+  return { init, toggle, renderMarkers, loadSignals, applyBoost, reapplyBoost };
 })();

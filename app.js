@@ -665,8 +665,17 @@ window.TomorrowApp = (function () {
   }
 
   // ---------- Init ----------
+  function applyVersionLabels() {
+    const v = (window.CONFIG && CONFIG.VERSION) || 'v0.6';
+    const tag = document.getElementById('version-tag');
+    if (tag) tag.textContent = v;
+    const foot = document.getElementById('hm-version');
+    if (foot) foot.textContent = `TOMORROW ${v} · נבנה ע״י אלחי פיין`;
+  }
+
   function init() {
     loadState();
+    applyVersionLabels();
     renderStationChips();
     renderIntelLog();
     startClock();

@@ -6,6 +6,9 @@
 
 window.CONFIG = (function () {
 
+  // --- Release tag (shown in HUD + hamburger footer) ---
+  const VERSION = 'v0.6';
+
   // --- Storage / sync ---
   const STORAGE_KEY = 'tomorrow_state_v2';
   const SYNC_DEBOUNCE_MS = 800;
@@ -130,6 +133,7 @@ window.CONFIG = (function () {
   ];
 
   return {
+    VERSION,
     STORAGE_KEY, SYNC_DEBOUNCE_MS, ACCESS_CODE,
     FIREBASE_URL, SIGNALS_PATH, SIGNALS_SAMPLE, SIGNAL_BOOST_RADIUS_M, SIGNAL_REFRESH_MS,
     PATROL_SPEED_KMH, PATROL_BASE_MIN,

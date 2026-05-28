@@ -20,7 +20,8 @@
   <div id="login">
     <div class="login-grid"></div>
     <div class="login-scan"></div>
-    <div class="login-classification">SECURE OPERATIONS SYSTEM // AUTHORIZED PERSONNEL ONLY</div>
+    <div class="login-classification">DEMONSTRATION ENVIRONMENT // NOT A LIVE SYSTEM</div>
+    <div class="login-demo-disclaimer">תצוגת דמו · נתונים פיקטיביים · ללא אבטחה אמיתית · קוד גישה קוסמטי</div>
 
     <div class="login-box">
       <img class="login-logo" src="assets/tomorrow-logo.png" alt="TOMORROW · Crime Prediction System" />
@@ -52,13 +53,19 @@
     <div class="scanlines"></div>
   </div>
 
+  <!-- ===== DEMO ribbon (always visible) ===== -->
+  <div id="demo-ribbon" class="demo-ribbon" aria-label="הודעת דמו">
+    <i data-lucide="alert-triangle"></i>
+    <span>תצוגת דמו · נתונים פיקטיביים · ללא שימוש מבצעי</span>
+  </div>
+
   <!-- ===== Header HUD ===== -->
   <header id="hud">
     <div class="hud-left">
       <div class="logo">
         <span class="logo-mark"><i data-lucide="radar"></i></span>
         <span class="logo-text">TOMORROW</span>
-        <span class="logo-tag">v0.2</span>
+        <span class="logo-tag" id="version-tag">v0.6</span>
       </div>
       <div id="station-chips" class="station-chips"></div>
     </div>
@@ -88,11 +95,11 @@
       <li class="hm-item" data-trigger="btn-intel"><i data-lucide="scan-face"></i><span>תיק יעד מודיעיני</span></li>
       <li class="hm-item" data-trigger="btn-lpr"><i data-lucide="camera"></i><span>התראות LPR</span></li>
       <li class="hm-item" data-trigger="btn-osint"><i data-lucide="radio-tower"></i><span>שכבת OSINT</span></li>
-      <li class="hm-item" data-trigger="btn-sim"><i data-lucide="layers"></i><span>שכבות הקשר (RTM)</span></li>
+      <li class="hm-item" data-trigger="btn-layers"><i data-lucide="layers"></i><span>שכבות הקשר (RTM)</span></li>
       <li class="hm-item" data-trigger="btn-mute"><i data-lucide="volume-2"></i><span>קול / השתקה</span></li>
       <li class="hm-item hm-item-logout" data-trigger="btn-logout"><i data-lucide="log-out"></i><span>יציאה</span></li>
     </ul>
-    <div class="hm-foot">TOMORROW v0.2 · נבנה ע״י אלחי פיין</div>
+    <div class="hm-foot" id="hm-version">TOMORROW v0.6 · נבנה ע״י אלחי פיין</div>
   </aside>
 
   <!-- ===== Main layout ===== -->
@@ -204,7 +211,7 @@
   <!-- ===== Scripts ===== -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="https://unpkg.com/lucide@0.474.0/dist/umd/lucide.min.js" crossorigin="anonymous"></script>
   <script src="config.js"></script>
   <script src="sounds.js"></script>
   <script src="app.js"></script>

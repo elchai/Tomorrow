@@ -264,6 +264,10 @@ window.TomorrowPrediction = (function () {
     State.forecast = generate();
     TomorrowApp.saveState();
     refresh();
+    // Re-apply OSINT boost so the OSINT tag survives regeneration
+    if (window.TomorrowOsint && typeof TomorrowOsint.reapplyBoost === 'function') {
+      TomorrowOsint.reapplyBoost();
+    }
     TomorrowApp.toast('🔄 מודל הניבוי הורץ מחדש', 'info');
     TomorrowApp.logEvent('model', 3, 'הרצת מודל ניבוי מחדש — תחזית 24 שעות עודכנה');
   }

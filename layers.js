@@ -244,7 +244,9 @@ window.TomorrowLayers = (function () {
 
   // --- RTM Prediction Multiplier Helpers ---
   function getDistance(lat1, lng1, lat2, lng2) {
-    return Math.sqrt((lat1 - lat2) ** 2 + (lat1 - lat2) ** 2) * 111000; // rough meter estimation
+    const dLat = lat1 - lat2;
+    const dLng = (lng1 - lng2) * Math.cos((lat1 + lat2) * 0.5 * Math.PI / 180);
+    return Math.hypot(dLat, dLng) * 111000;
   }
 
   function checkRTMImpact(lat, lng, hour, crimeKey) {

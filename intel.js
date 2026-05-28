@@ -21,9 +21,9 @@ window.TomorrowIntel = (function () {
       record: ['פריצה לבית · 2024', 'תקיפה · 2025', 'איומים · 2026'],
       last_cell: { lat: 32.0572, lng: 34.7705, when: 'לפני 17 דק׳', precision: 250 },
       osint: [
-        { src: '@florentin_live',         text: 'נראה ברחוב ויטל אתמול בלילה',                              when: 'לפני 4 שע׳' },
-        { src: '@south_tlv_news',         text: 'דיווח על תקרית עם אדם בעל מאפיינים דומים סמוך לתחנה',  when: 'לפני 12 שע׳' },
-        { src: '@telaviv_police_scanner', text: 'יחידת סיור מתבקשת לאיתור — איתות חיובי במצלמת LPR',     when: 'לפני יום' }
+        { src: '@florentin_live_demo',         text: 'נראה ברחוב ויטל אתמול בלילה',                              when: 'לפני 4 שע׳' },
+        { src: '@south_tlv_news_demo',         text: 'דיווח על תקרית עם אדם בעל מאפיינים דומים סמוך לתחנה',  when: 'לפני 12 שע׳' },
+        { src: '@telaviv_police_scanner_demo', text: 'יחידת סיור מתבקשת לאיתור — איתות חיובי במצלמת LPR',     when: 'לפני יום' }
       ]
     },
     {
@@ -34,8 +34,8 @@ window.TomorrowIntel = (function () {
       record: ['החזקת סמים בכוונת מכר · 2023', 'הלבנת הון · 2025'],
       last_cell: { lat: 32.0592, lng: 34.7795, when: 'לפני 3 שעות', precision: 400 },
       osint: [
-        { src: '@south_tlv_news', text: 'התקהלות חשודה סמוך למתחם התחנה',     when: 'לפני 6 שע׳' },
-        { src: '@city_watch_tlv', text: 'דיווח על עסקה במזומן בכיכר לבנה',    when: 'לפני יום' }
+        { src: '@south_tlv_news_demo', text: 'התקהלות חשודה סמוך למתחם התחנה',     when: 'לפני 6 שע׳' },
+        { src: '@city_watch_tlv_demo', text: 'דיווח על עסקה במזומן בכיכר לבנה',    when: 'לפני יום' }
       ]
     },
     {
@@ -46,7 +46,7 @@ window.TomorrowIntel = (function () {
       record: ['גניבה · 2025 (×3)', 'כיסנות · 2026'],
       last_cell: { lat: 32.0758, lng: 34.7751, when: 'לפני 42 דק׳', precision: 180 },
       osint: [
-        { src: '@city_watch_tlv', text: 'התראה על כיסנות בדיזנגוף סנטר בשעות הצהריים', when: 'לפני שעתיים' }
+        { src: '@city_watch_tlv_demo', text: 'התראה על כיסנות בדיזנגוף סנטר בשעות הצהריים', when: 'לפני שעתיים' }
       ]
     }
   ];

@@ -215,7 +215,7 @@ window.TomorrowAnalytics = (function () {
 
         <!-- Run Backtest Button -->
         <button id="btn-run-backtest" style="width: 100%; border-radius: 4px; height: 38px; font-family: var(--font-ui); font-size: 13px; font-weight:700; display:flex; justify-content:center; align-items:center; gap:8px; background:var(--police); border:1px solid var(--police-br); color:#fff; cursor:pointer; transition:all 0.2s ease; flex-shrink: 0;">
-          <i data-lucide="play-circle"></i><span>בצע אימות לאחור (30 יום)</span>
+          <i data-lucide="play-circle"></i><span>הפעל סימולציית הדגמה (30 יום)</span>
         </button>
       </div>
     `;
@@ -548,7 +548,7 @@ window.TomorrowAnalytics = (function () {
         ctx.lineTo(points[i].x, points[i].y);
       }
       
-      ctx.strokeStyle = 'var(--cyan)';
+      ctx.strokeStyle = '#00e5ff';
       ctx.lineWidth = 2.4;
       ctx.shadowColor = 'rgba(0, 229, 255, 0.5)';
       ctx.shadowBlur = 6;
@@ -583,7 +583,7 @@ window.TomorrowAnalytics = (function () {
       btn.style.background = '#4a5568';
       btn.style.borderColor = '#4a5568';
       btn.style.cursor = 'not-allowed';
-      btn.innerHTML = '<i data-lucide="loader" class="spin"></i><span>אנליזה ואימות לאחור...</span>';
+      btn.innerHTML = '<i data-lucide="loader" class="spin"></i><span>מריץ סימולציית הדגמה...</span>';
       TomorrowApp.renderIcons();
     }
 
@@ -592,7 +592,7 @@ window.TomorrowAnalytics = (function () {
       TomorrowSounds.alert(3);
     }
     
-    TomorrowApp.toast('📊 מתחיל סימולציית אימות לאחור מול 30 ימי פשיעה...', 'info');
+    TomorrowApp.toast('📊 מתחיל סימולציית הדגמה (30 ימי פשיעה סינתטיים)...', 'info');
 
     let progress = 0;
     const duration = 1500; // 1.5s
@@ -658,12 +658,12 @@ window.TomorrowAnalytics = (function () {
           btn.style.background = 'var(--police)';
           btn.style.borderColor = 'var(--police-br)';
           btn.style.cursor = 'pointer';
-          btn.innerHTML = '<i data-lucide="play-circle"></i><span>בצע אימות לאחור (30 יום)</span>';
+          btn.innerHTML = '<i data-lucide="play-circle"></i><span>הפעל סימולציית הדגמה (30 יום)</span>';
           TomorrowApp.renderIcons();
         }
 
         // Notification and logs
-        TomorrowApp.toast('✅ אימות המודל לאחור הושלם בהצלחה!', 'success');
+        TomorrowApp.toast('✅ סימולציית ההדגמה הסתיימה (נתונים סינתטיים)', 'success');
         TomorrowApp.logEvent('model', 2, `📊 אימות מודל (Backtest) מול 30 ימי עבר בוצע בהצלחה: ROC-AUC = ${finalRoc}, Precision = ${finalPrec}%, Recall = ${finalRec}%`);
         
         if (window.TomorrowSounds && TomorrowSounds.online) {
