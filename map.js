@@ -104,7 +104,22 @@ window.TomorrowMap = (function () {
     });
     const m = L.marker([centerLat, centerLng], { icon, zIndexOffset: 400 }).addTo(map);
     m.bindPopup(popupHtml(h), { className: 'tac-popup-wrap' });
-    m.on('popupopen', () => TomorrowApp.renderIcons());
+    m.on('popupopen', (e) => {
+      TomorrowApp.renderIcons();
+      // CSP blocks inline onclick — bind the dispatch button in JS instead.
+      // (Use data-id and look up the live hotspot at click time so a stale
+      // forecast-regenerate still resolves correctly.)
+      const root = e.popup.getElement();
+      const btn = root && root.querySelector('.tp-dispatch');
+      if (btn && !btn.dataset.wired) {
+        btn.dataset.wired = '1';
+        btn.addEventListener('click', () => {
+          const id = parseInt(btn.dataset.id, 10);
+          const hot = TomorrowState.forecast.find(x => x.id === id);
+          if (hot) TomorrowDispatch.dispatchToHotspot(hot);
+        });
+      }
+    });
 
     // Bind click on the cell bounds to open the popup too
     rect.on('click', () => m.openPopup());
@@ -166,7 +181,7 @@ window.TomorrowMap = (function () {
           <span class="tp-prob-lbl">${T('map.probabilityLabel')}</span>
         </div>
         
-        <button class="tp-dispatch" onclick="TomorrowDispatch.dispatchToHotspot(TomorrowState.forecast.find(x=>x.id===${h.id}))">
+        <button class="tp-dispatch" data-id="${h.id}">
           <i data-lucide="navigation"></i><span>${T('map.dispatch')}</span>
         </button>
       </div>`;

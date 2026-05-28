@@ -142,7 +142,7 @@ html[dir="rtl"] .login-locale { right: auto; left: 22px; align-items: flex-start
 
 .login-field { margin-bottom: 16px; }
 .login-field label { display: block; font-family: var(--font-he); font-size: 12px; font-weight: 500;
-  color: var(--text-dim); margin-bottom: 8px; text-align: center; letter-spacing: .04em; }
+  color: var(--text-dim); margin-bottom: 8px; text-align: start; letter-spacing: .04em; }
 #login-input { width: 100%; height: 50px; padding: 0 16px; box-sizing: border-box;
   background: rgba(2,6,14,.85) !important; border: 1px solid var(--line); border-radius: 6px;
   color: var(--cyan); -webkit-text-fill-color: var(--cyan); caret-color: var(--cyan);
@@ -855,11 +855,15 @@ input:checked + .slider-round .slider-knob {
   letter-spacing: .5px; color: var(--cyan); margin-top: 2px; line-height: 1;
 }
 
-/* Language popup — anchors to the rail, opens to the inline-end of the button (toward the map) */
+/* Language popup — anchors to the rail, opens toward the map.
+   In LTR the rail sits at the left edge → popup opens to the right.
+   In RTL the rail sits at the right edge → popup opens to the left.
+   Logical `inset-inline-start: 100%` would also "work" but the containing-
+   block math gets fragile inside the absolutely-positioned rail; explicit
+   `[dir]` selectors are unambiguous. */
 .lang-popup {
   position: absolute;
   bottom: 0;
-  inset-inline-start: calc(100% + 6px);
   z-index: 3000;
   background: rgba(8, 16, 35, 0.98);
   border: 1px solid var(--police);
@@ -867,25 +871,35 @@ input:checked + .slider-round .slider-knob {
   box-shadow: 0 10px 30px rgba(0, 0, 0, .6), 0 0 18px rgba(43, 143, 255, .25);
   padding: 6px;
   display: flex; flex-direction: column; gap: 2px;
-  min-width: 180px;
+  min-width: 220px;
 }
+/* Open toward the map (away from the screen edge the nav-rail sits on) */
+html[dir="ltr"] .lang-popup { left:  calc(100% + 6px); }
+html[dir="rtl"] .lang-popup { right: calc(100% + 6px); }
 .lang-popup[hidden] { display: none; }
 .lang-popup .lang-opt {
-  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  display: flex; align-items: center; gap: 10px;
   background: transparent; border: 1px solid transparent; border-radius: 6px;
   color: var(--text); font: 500 13px/1.2 var(--font-ui);
-  padding: 8px 12px; cursor: pointer; text-align: start;
+  padding: 8px 12px; cursor: pointer;
+  text-align: left;             /* uniform LTR look so the popup feels tidy
+                                   regardless of the option's native script */
   transition: background .15s, border-color .15s;
+  white-space: nowrap;
 }
 .lang-popup .lang-opt:hover:not(:disabled) { background: rgba(43, 143, 255, .12); border-color: var(--line); }
 .lang-popup .lang-opt.active { background: rgba(43, 143, 255, .22); border-color: var(--police-br); color: #fff; }
 .lang-popup .lang-opt:disabled { cursor: not-allowed; opacity: .55; }
+.lang-popup .lang-opt .lang-opt-name { flex: 0 1 auto; }
 .lang-popup .lang-soon {
+  margin-inline-start: auto;     /* push to the trailing edge of the row */
   font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
   letter-spacing: .5px; color: var(--high);
   background: rgba(255, 122, 24, 0.10);
   border: 1px solid rgba(255, 122, 24, 0.35);
   border-radius: 3px; padding: 2px 6px; text-transform: uppercase;
+  white-space: nowrap;           /* never let "Coming soon" wrap to a second line */
+  flex: 0 0 auto;
 }
 /* Logout button takes the destructive color hint */
 #btn-logout.nav-rail-btn { color: var(--text-faint) !important; }

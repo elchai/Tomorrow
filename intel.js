@@ -57,6 +57,16 @@ window.TomorrowIntel = (function () {
       if (e.target.closest('#btn-close-intel')) toggle();
       const t = e.target.closest('[data-target-id]');
       if (t) { activeTargetId = t.dataset.targetId; refresh(); }
+      // Inline onclick on the focus button was blocked by CSP — wire it here.
+      const focusBtn = e.target.closest('.intel-focus-btn');
+      if (focusBtn && window.TomorrowMap) {
+        const lat = parseFloat(focusBtn.dataset.lat);
+        const lng = parseFloat(focusBtn.dataset.lng);
+        if (!isNaN(lat) && !isNaN(lng)) {
+          TomorrowMap.getMap().flyTo([lat, lng], 17, { duration: 1.1 });
+          close();
+        }
+      }
     });
   }
 
@@ -114,7 +124,7 @@ window.TomorrowIntel = (function () {
           <div class="intel-cell-line"><span class="intel-cell-lbl">${T('intel.location') !== 'intel.location' ? T('intel.location') : 'Location'}</span><span class="intel-cell-val">${t.last_cell.lat.toFixed(4)}, ${t.last_cell.lng.toFixed(4)}</span></div>
           <div class="intel-cell-line"><span class="intel-cell-lbl">${T('intel.precision') !== 'intel.precision' ? T('intel.precision') : 'Precision'}</span><span class="intel-cell-val">~${t.last_cell.precision}m</span></div>
           <div class="intel-cell-line"><span class="intel-cell-lbl">${T('intel.when') !== 'intel.when' ? T('intel.when') : 'When'}</span><span class="intel-cell-val">${T(t.last_cell.when)}</span></div>
-          <button class="intel-focus-btn" onclick="TomorrowMap.getMap().flyTo([${t.last_cell.lat}, ${t.last_cell.lng}], 17, {duration:1.1}); TomorrowIntel.close();">
+          <button class="intel-focus-btn" data-lat="${t.last_cell.lat}" data-lng="${t.last_cell.lng}">
             <i data-lucide="navigation"></i><span>${T('intel.locate')}</span>
           </button>
         </div>
