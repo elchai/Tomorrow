@@ -10,9 +10,9 @@
     "classify:test": "node classifier.js --test"
   },
   "dependencies": {
+    "firebase-admin": "^12.0.0",
     "telegram": "^2.26.22",
     "input": "^1.0.1",
-    "dotenv": "^16.4.5",
-    "node-fetch": "^2.7.0"
+    "dotenv": "^16.4.5"
   }
 }

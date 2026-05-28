@@ -1,30 +1,49 @@
-/* Push classified signals to Firebase Realtime DB via REST.
+/* Push classified signals to Firebase Realtime DB using the Admin SDK —
+   mirrors the mabat-443 telegram-client pattern.
    The Tomorrow dashboard reads the same /crime-signals path. */
-const fetch = require('node-fetch');
+const admin = require('firebase-admin');
 
-const BASE = (process.env.FIREBASE_URL || '').replace(/\/$/, '');
-const AUTH = process.env.FIREBASE_DB_SECRET ? `?auth=${process.env.FIREBASE_DB_SECRET}` : '';
+const DATABASE_URL = process.env.FIREBASE_URL || 'https://mabat443-default-rtdb.asia-southeast1.firebasedatabase.app';
 const TTL_MS = (parseInt(process.env.SIGNAL_TTL_HOURS || '72', 10)) * 3600 * 1000;
+const SIGNALS_PATH = process.env.FIREBASE_SIGNALS_PATH || 'crime-signals';
+
+let dbCached = null;
+
+function db() {
+  if (dbCached) return dbCached;
+  if (admin.apps.length) return (dbCached = admin.app().database());
+
+  // Same env-shape as 443: FIREBASE_SERVICE_ACCOUNT is the full JSON inline.
+  const raw = process.env.FIREBASE_SERVICE_ACCOUNT;
+  if (!raw) {
+    throw new Error(
+      'FIREBASE_SERVICE_ACCOUNT is not set. Copy the JSON from mabat-443/.env (the\n' +
+      '   same service-account that writes /auto-news there) into Tomorrow\'s .env so the\n' +
+      '   scanner can write to /crime-signals on the same project.'
+    );
+  }
+  const serviceAccount = JSON.parse(raw);
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: DATABASE_URL
+  });
+  return (dbCached = admin.database());
+}
 
 async function pushSignal(signal) {
-  if (!BASE) { console.warn('[firebase] FIREBASE_URL not set — signal not persisted:', signal.id); return; }
-  const url = `${BASE}/crime-signals/${signal.id}.json${AUTH}`;
   const body = { ...signal, ts: new Date().toISOString(), expires_at: Date.now() + TTL_MS };
-  const res = await fetch(url, { method: 'PUT', body: JSON.stringify(body) });
-  if (!res.ok) throw new Error(`firebase PUT ${res.status}`);
+  await db().ref(`${SIGNALS_PATH}/${signal.id}`).set(body);
   return body;
 }
 
-// best-effort cleanup of expired signals (call periodically)
+// best-effort cleanup of expired signals — call periodically (e.g. every 30 min)
 async function purgeExpired() {
-  if (!BASE) return;
-  const res = await fetch(`${BASE}/crime-signals.json${AUTH}`);
-  if (!res.ok) return;
-  const all = (await res.json()) || {};
+  const snap = await db().ref(SIGNALS_PATH).once('value');
+  const all = snap.val() || {};
   const now = Date.now();
-  await Promise.all(Object.entries(all)
-    .filter(([, v]) => v && v.expires_at && v.expires_at < now)
-    .map(([id]) => fetch(`${BASE}/crime-signals/${id}.json${AUTH}`, { method: 'DELETE' })));
+  const stale = Object.entries(all).filter(([, v]) => v && v.expires_at && v.expires_at < now);
+  await Promise.all(stale.map(([id]) => db().ref(`${SIGNALS_PATH}/${id}`).remove()));
+  return stale.length;
 }
 
-module.exports = { pushSignal, purgeExpired };
+module.exports = { pushSignal, purgeExpired, SIGNALS_PATH, DATABASE_URL };

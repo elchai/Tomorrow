@@ -18,10 +18,14 @@ window.CONFIG = (function () {
   const ACCESS_CODE = '2024';
 
   // --- OSINT / Telegram-scan data source ---
-  // When FIREBASE_URL is set, the OSINT layer reads live crime signals from
-  // `${FIREBASE_URL}/${SIGNALS_PATH}.json` (written by the always-on scanner).
-  // While empty, it falls back to the bundled demo feed (signals.sample.json).
-  const FIREBASE_URL = '';                 // e.g. 'https://tomorrow-xxxx-rtdb.firebaseio.com'
+  // When FIREBASE_URL is non-empty the OSINT layer reads LIVE crime signals from
+  // `${FIREBASE_URL}/${SIGNALS_PATH}.json` (written by `scanner/` — see
+  // scanner/SETUP.md). When empty, it falls back to the bundled demo feed
+  // (signals.sample.json or the country profile's osintSignals).
+  //
+  // Tomorrow shares the Firebase project with mabat-443 — same RTDB,
+  // different path. Flip this on once the scanner is running.
+  const FIREBASE_URL = 'https://mabat443-default-rtdb.asia-southeast1.firebasedatabase.app';
   const SIGNALS_PATH = 'crime-signals';
   const SIGNALS_SAMPLE = 'signals.sample.json';
   const SIGNAL_BOOST_RADIUS_M = 600;       // a signal lifts the risk of forecast hotspots within this radius
