@@ -197,11 +197,11 @@ window.TomorrowPrediction = (function () {
                 <span class="fc-code">${h.code} · #${h.id}</span>
               </div>
               ${h.osint ? (h.osint_url
-                ? `<a href="${h.osint_url}" target="_blank" rel="noopener noreferrer" class="osint-tag osint-tag-link" title="פתח את הדיווח ב-${h.osint_source || 'טלגרם'}"><i data-lucide="radio-tower"></i>OSINT<i data-lucide="external-link"></i></a>`
-                : '<span class="osint-tag" title="מאומת במקור OSINT / טלגרם"><i data-lucide="radio-tower"></i>OSINT</span>') : ''}
+                ? `<a href="${h.osint_url}" target="_blank" rel="noopener noreferrer" class="osint-tag osint-tag-link" title="${tr('osint.openInTelegram')}"><i data-lucide="radio-tower"></i>OSINT<i data-lucide="external-link"></i></a>`
+                : `<span class="osint-tag" title="${tr('osint.popup.sourceLabel')}"><i data-lucide="radio-tower"></i>OSINT</span>`) : ''}
               <span class="risk-chip">${sevLabel(h.risk)}</span>
             </div>
-            <div class="fc-zone"><i data-lucide="map-pin"></i><span>${h.zone}</span></div>
+            <div class="fc-zone"><i data-lucide="map-pin"></i><span>${tr(h.zone)}</span></div>
             <div class="fc-readout">
               <span class="fc-window"><i data-lucide="clock"></i>${h.window}</span>
               <span class="fc-prob"><b>${h.probability}</b><i>%</i></span>
@@ -209,9 +209,9 @@ window.TomorrowPrediction = (function () {
             <div class="fc-gauge"><div class="fc-gauge-fill" style="width:${h.probability}%"></div></div>
             ${(() => {
               const e = TomorrowApp.nearestEta(h.lat, h.lng, h.station_id);
-              return e ? `<div class="fc-eta"><i data-lucide="timer"></i><span class="fc-eta-min">${e.eta} ${tr('forecast.eta')}</span><span class="fc-eta-from">${e.station.name} · ${e.km.toFixed(1)} km</span></div>` : '';
+              return e ? `<div class="fc-eta"><i data-lucide="timer"></i><span class="fc-eta-min">${e.eta} ${tr('forecast.eta')}</span><span class="fc-eta-from">${tr(e.station.name)} · ${e.km.toFixed(1)} km</span></div>` : '';
             })()}
-            ${h.factors.length ? `<div class="fc-factors">${h.factors.map(f => `<span class="factor">${tr('factor.' + f) !== 'factor.' + f ? tr('factor.' + f) : f}</span>`).join('')}</div>` : ''}
+            ${h.factors.length ? `<div class="fc-factors">${h.factors.map(f => `<span class="factor">${tr('factor.' + f) !== 'factor.' + f ? tr('factor.' + f) : tr(f)}</span>`).join('')}</div>` : ''}
             <button class="fc-dispatch" data-id="${h.id}"><i data-lucide="navigation"></i><span>${tr('forecast.dispatch')}</span></button>
           </div>`;
       }).join('');
@@ -264,6 +264,9 @@ window.TomorrowPrediction = (function () {
     }
     TomorrowApp.register('prediction', { onStationChange: refresh });
     renderForecastList();
+    document.addEventListener('tomorrow-lang-change', () => {
+      renderForecastList();
+    });
   }
 
   // Re-roll the model (fresh forecast)

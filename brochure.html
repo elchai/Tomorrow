@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TOMORROW — B2B Enterprise Product Brochure</title>
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-void:    #050608;
+      --bg-deep:    #0b0c0f;
+      --bg-panel:   #101217;
+      --bg-card:    #161820;
+      --police:     #7c3aed; /* Tactical violet */
+      --police-br:  #a78bfa; /* Light violet */
+      --cyan:       #c084fc; /* Neon purple/violet accent */
+      --critical:   #ff1f4b;
+      --high:       #ff7a18;
+      --medium:     #ffd000;
+      --low:        #38e08a;
+      --text:       #e2e8f0;
+      --text-dim:   #94a3b8;
+      --text-faint: #475569;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      background: radial-gradient(ellipse at center, #1b102f, #040507), var(--bg-void);
+      color: var(--text);
+      font-family: 'Heebo', sans-serif;
+      line-height: 1.6;
+      padding: 50px 20px;
+      overflow-y: auto;
+      min-height: 100vh;
+      text-align: left;
+    }
+    
+    /* Subtle high-tech purple grid overlay */
+    body::before {
+      content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background-image:
+        linear-gradient(rgba(167, 139, 250, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(167, 139, 250, 0.02) 1px, transparent 1px);
+      background-size: 50px 50px;
+    }
+
+    /* Subtle topographic contour line overlay */
+    body::after {
+      content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      opacity: 0.06;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1000' height='1000' viewBox='0 0 1000 1000'%3E%3Cpath d='M50,150 Q150,50 300,100 T600,150 T900,100 Q950,250 850,400 T500,500 T150,600 Z' fill='none' stroke='%23a78bfa' stroke-width='2'/%3E%3Cpath d='M100,200 Q200,100 350,150 T650,200 T850,150 Q900,300 800,450 T450,550 T200,650 Z' fill='none' stroke='%23a78bfa' stroke-width='1.5'/%3E%3Cpath d='M150,250 Q250,150 400,200 T700,250 T800,200 Q850,350 750,500 T400,600 T250,700 Z' fill='none' stroke='%23a78bfa' stroke-width='1'/%3E%3Cpath d='M400,80 Q500,180 600,100 T800,200 T900,400 Q750,600 600,500 T300,750 Z' fill='none' stroke='%23a78bfa' stroke-width='1'/%3E%3Cpath d='M450,130 Q550,230 650,150 T850,250 T950,450 Q800,650 650,550 T350,800 Z' fill='none' stroke='%23a78bfa' stroke-width='0.8'/%3E%3C/svg%3E");
+      background-size: 900px 900px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Floating navigation for slides */
+    .nav-bar {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(11, 19, 34, 0.85);
+      border: 1px solid rgba(43, 143, 255, 0.25);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 30px;
+      padding: 10px 24px;
+      display: flex;
+      gap: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      z-index: 1000;
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-dim);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 6px 16px;
+      border-radius: 20px;
+      transition: all 0.2s ease;
+      font-family: 'Heebo', sans-serif;
+    }
+
+    .nav-btn:hover {
+      color: var(--cyan);
+      background: rgba(0, 229, 255, 0.08);
+    }
+
+    .nav-btn.active {
+      color: #fff;
+      background: var(--police);
+      box-shadow: 0 0 12px rgba(43, 143, 255, 0.5);
+    }
+
+    /* Presentation Slide Card */
+    .slide-card {
+      background: linear-gradient(180deg, rgba(11, 19, 34, 0.72), rgba(7, 12, 24, 0.72));
+      border: 1px solid rgba(43, 143, 255, 0.16);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 12px;
+      padding: 44px 50px;
+      margin-bottom: 50px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      text-align: left;
+    }
+    
+    .slide-card:hover {
+      border-color: rgba(0, 229, 255, 0.35);
+      box-shadow: 0 15px 45px rgba(0, 229, 255, 0.1);
+    }
+
+    .slide-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+      opacity: 0.7;
+    }
+
+    .slide-tag {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: var(--cyan);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .slide-title {
+      font-size: 28px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 18px;
+      letter-spacing: -0.5px;
+    }
+    
+    .slide-title span {
+      color: var(--cyan);
+    }
+
+    .slide-subtitle {
+      font-size: 15px;
+      color: var(--text-dim);
+      font-weight: 400;
+      margin-bottom: 24px;
+      border-bottom: 1px dashed var(--line);
+      padding-bottom: 12px;
+    }
+
+    p {
+      color: var(--text-dim);
+      margin-bottom: 20px;
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    blockquote {
+      background: rgba(0, 229, 255, 0.05);
+      border-left: 3px solid var(--cyan);
+      padding: 16px 20px;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 24px;
+      font-style: italic;
+      color: #fff;
+      font-size: 15px;
+    }
+
+    /* Features list */
+    .features-list {
+      list-style: none;
+      margin: 24px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .features-list li {
+      position: relative;
+      padding-left: 20px;
+      font-size: 15.5px;
+      color: var(--text);
+      line-height: 1.6;
+      text-align: left;
+    }
+
+    .features-list li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 10px; /* Vertically aligns perfectly with Heebo 15.5px first line */
+      width: 6px;
+      height: 6px;
+      background-color: var(--cyan);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--cyan);
+    }
+
+    /* Images */
+    .slide-image-wrap {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(43, 143, 255, 0.2);
+      border-radius: 8px;
+      padding: 12px;
+      margin: 30px 0 10px;
+      text-align: left;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+    }
+
+    .slide-image {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+      filter: drop-shadow(0 0 15px rgba(0,229,255,0.15));
+      transition: all 0.4s ease;
+    }
+
+    .slide-image:hover {
+      transform: scale(1.02);
+      filter: drop-shadow(0 0 25px rgba(0,229,255,0.3));
+    }
+
+    .slide-image-caption {
+      font-size: 12px;
+      color: var(--text-faint);
+      margin-top: 10px;
+      font-family: 'Share Tech Mono', monospace;
+      letter-spacing: 0.5px;
+    }
+
+    /* Reusable 2-column grid for side-by-side text/image layout */
+    .slide-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 30px;
+      align-items: center;
+      margin-top: 20px;
+    }
+    
+    .slide-grid-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+    
+    .slide-grid-media {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      width: 100%;
+    }
+    
+    .slide-grid-media .slide-image-wrap {
+      margin: 0; /* Clear default vertical margins inside the grid */
+    }
+    
+    @media (max-width: 768px) {
+      .slide-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        margin-top: 15px;
+      }
+    }
+
+    /* Slide specific styles */
+    .cover-logo-wrap {
+      text-align: left;
+      margin-bottom: 30px;
+    }
+    
+    .cover-logo {
+      width: 100%;
+      max-width: 540px;
+      height: auto;
+      filter: drop-shadow(0 0 24px rgba(43,143,255,0.45));
+    }
+
+    /* Table styling */
+    .b2b-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 25px 0;
+      font-size: 14px;
+    }
+
+    .b2b-table th, .b2b-table td {
+      border: 1px solid rgba(43, 143, 255, 0.15);
+      padding: 12px 14px;
+      text-align: left;
+    }
+
+    .b2b-table th {
+      background-color: rgba(43, 143, 255, 0.1);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .b2b-table tr:nth-child(even) {
+      background-color: rgba(255, 255, 255, 0.01);
+    }
+
+    .b2b-table td strong {
+      color: var(--cyan);
+    }
+
+    /* ASCII flowcharts */
+    .ascii-chart {
+      background: rgba(0,0,0,0.5);
+      border: 1px dashed rgba(43, 143, 255, 0.3);
+      border-radius: 6px;
+      padding: 16px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 12px;
+      line-height: 1.4;
+      overflow-x: auto;
+      color: var(--cyan);
+      margin: 20px 0;
+    }
+
+    /* Bottom footer spacing */
+    .footer-spacing {
+      height: 100px;
+    }
+    
+    .contact-card {
+      border-left: 3px solid var(--police);
+      background: linear-gradient(90deg, rgba(26,109,255,0.06), transparent);
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .contact-item {
+      background: rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 6px;
+      padding: 12px 16px;
+    }
+
+    .contact-lbl {
+      font-size: 11px;
+      color: var(--text-faint);
+      text-transform: uppercase;
+      font-family: 'Share Tech Mono', monospace;
+    }
+
+    .contact-val {
+      font-size: 15px;
+      color: #fff;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+    
+    .contact-val a {
+      color: var(--cyan);
+      text-decoration: none;
+    }
+    .contact-val a:hover {
+      text-decoration: underline;
+    }
+
+    /* Print styles to format as clean, beautiful PDF pages */
+    @media print {
+      body {
+        background: #03060d !important;
+        color: #d6e0f0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      body::before {
+        display: none !important;
+      }
+      .nav-bar {
+        display: none !important;
+      }
+      .container {
+        max-width: 100% !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      .slide-card {
+        page-break-after: always !important;
+        break-after: page !important;
+        margin: 0 0 20px 0 !important;
+        padding: 40px !important;
+        background: #060a14 !important;
+        border: 1px solid rgba(43, 143, 255, 0.2) !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        display: block !important;
+        height: auto !important;
+        min-height: 297mm; /* Standard A4 page height equivalent to avoid empty gaps */
+        box-sizing: border-box !important;
+      }
+      .slide-card::before {
+        background: linear-gradient(90deg, #00e5ff, #1a6dff) !important;
+        height: 4px !important;
+      }
+      .slide-image-wrap {
+        background: #03060d !important;
+        border: 1px solid rgba(43, 143, 255, 0.15) !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      .slide-image {
+        max-height: 400px !important;
+        object-fit: contain !important;
+      }
+      blockquote {
+        background: rgba(0, 229, 255, 0.05) !important;
+        border-left: 3px solid #00e5ff !important;
+      }
+      .b2b-table th {
+        background-color: rgba(43, 143, 255, 0.15) !important;
+      }
+      .ascii-chart {
+        background: #03060d !important;
+        border: 1px dashed rgba(43, 143, 255, 0.25) !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+    }
+
+    /* Prevent unnecessary wrapping of labels and terms */
+    .features-list li strong,
+    .b2b-table td strong,
+    .contact-lbl {
+      white-space: nowrap;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- ==================== Slide 1: Cover Page ==================== -->
+    <div id="slide1" class="slide-card">
+      <span class="slide-tag">Slide 01 // Product Cover</span>
+      <div class="cover-logo-wrap" style="text-align: left;">
+        <img class="cover-logo" src="assets/tomorrow-logo.png" style="margin-left: 0; display: block;" alt="TOMORROW — B2B Enterprise Product Brochure" />
+      </div>
+      <h1 class="slide-title" style="text-align:left;">TOMORROW</h1>
+      <p style="text-align:left; font-size:18px; color:#fff; font-weight:700; margin-bottom: 8px;">
+        District Crime Prediction & Tactical Fusion Platform
+      </p>
+      <p style="text-align:left; color:var(--text-dim); font-size: 14px; margin-bottom:0;">
+        High-End Enterprise Predictive Policing Command Center
+      </p>
+      <blockquote style="text-align:left; margin-top:25px; margin-bottom:0; border-left: 3px solid var(--cyan); border-radius: 0 8px 8px 0; padding-left: 20px;">
+        "Global Intelligence, Local Prevention."<br/>
+        <span style="font-size:12.5px; opacity:0.8; font-style:normal; display:block; margin-top:5px;">A data-driven, preemptive command and control system designed for modern law enforcement.</span>
+      </blockquote>
+    </div>
+
+    <!-- ==================== Slide 2: Introduction ==================== -->
+    <div id="slide2" class="slide-card">
+      <span class="slide-tag">Slide 02 // Introduction</span>
+      <h2 class="slide-title">Preemptive <span>District Intelligence</span></h2>
+      <div class="slide-subtitle">Anticipate, allocate, and secure the municipal sector.</div>
+      <blockquote>
+        "When we predict tomorrow, we prevent crime today."
+      </blockquote>
+      <p>
+        We are here to ensure that your district's operational resources are dispatched to the exact right places, at the exact right times. <strong>Tomorrow</strong> enables command centers to preempt incidents, optimize police patrol distribution, and create a visible, scientific layer of deterrence before the first emergency call is ever placed.
+      </p>
+    </div>
+
+    <!-- ==================== Slide 3: Mission Statement ==================== -->
+    <div id="slide3" class="slide-card">
+      <span class="slide-tag">Slide 03 // Mission Statement</span>
+      <h2 class="slide-title">Helping Police <span>Protect Their Cities</span></h2>
+      <div class="slide-subtitle">Bridging raw data and field operations.</div>
+      <div class="slide-grid">
+        <div class="slide-grid-content">
+          <p>
+            The <strong>Tomorrow</strong> platform integrates multi-layered historical, contextual, and open-source intelligence (OSINT) to provide dispatchers and commanders with an actionable, preemptive district threat grid.
+          </p>
+          <ul class="features-list" style="margin: 0;">
+            <li><strong>Micro-Level Spatial Accuracy:</strong> Tactical patrol grids divided into ultra-precise 150m x 150m risk cells.</li>
+            <li><strong>Real-Time Open-Source Fusion:</strong> Automated scanning and NLP entity extraction from public networks and channels.</li>
+            <li><strong>Proportional AVL & Mutual Aid:</strong> Distance-based patrol vehicle routing with dynamic cross-station resource sharing.</li>
+            <li><strong>Explainable AI (XAI) Patrol Orders:</strong> Single-click official printable patrol briefs with transparent risk reasoning.</li>
+          </ul>
+        </div>
+        <div class="slide-grid-media">
+          <div class="slide-image-wrap">
+            <img class="slide-image" src="assets/police-tactical.png" alt="Tomorrow Tactical Mobile Command Unit" />
+            <div class="slide-image-caption">Figure 1.1: Elite tactical commander coordinating municipal operations inside a high-tech mobile command unit.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== Slide 4: Threat Landscape ==================== -->
+    <div id="slide4" class="slide-card">
+      <span class="slide-tag">Slide 04 // Threat Landscape</span>
+      <h2 class="slide-title">The <span>Urban Threat Grid</span></h2>
+      <div class="slide-subtitle">Traditional policing models are no longer sufficient.</div>
+      <p>
+        Reactive policing (dispatching officers <em>after</em> a crime has been reported) is no longer sufficient to counter sophisticated, rapidly moving urban threats.
+      </p>
+      <p>
+        Property burglary, auto theft, assault, and public disorder are highly dynamic. They are influenced by a complex web of calendar events, environmental factors, and real-time social signals. To achieve true deterrence, commanders must possess tools that anticipate these vectors.
+      </p>
+    </div>
+
+    <!-- ==================== Slide 5: District Threat Vectors ==================== -->
+    <div id="slide5" class="slide-card">
+      <span class="slide-tag">Slide 05 // Tactical Fusion Vectors</span>
+      <h2 class="slide-title">Multi-Layered <span>Threat Fusion</span></h2>
+      <div class="slide-subtitle">Dynamic data convergence inside a single prediction engine.</div>
+      <div class="slide-grid">
+        <div class="slide-grid-content">
+          <p>
+            <strong>Tomorrow</strong> synthesizes five distinct environmental, historical, and real-time data streams into a single, cohesive district risk score:
+          </p>
+          <div class="ascii-chart" style="margin: 10px 0 0 0;">
+                            ┌──────────────────────────┐
+                            │  Historical Crime Records│
+                            └─────────────┬────────────┘
+                                          │
+ ┌─────────────────────────┐              ▼              ┌─────────────────────────┐
+ │  Temporal Peak Patterns ├───────►  [ TOMORROW ]  ◄────┤ Environmental GIS Layers│
+ │  (Hour, Weekend Uplift) │       │  Prediction  │      │(Nightlife, ATMs, Lights)│
+ └─────────────────────────┘       │    Engine    │      └─────────────────────────┘
+ ┌─────────────────────────┐              ▲              ┌─────────────────────────┐
+ │ Strategic Calendar Events├──────────────┼─────────────┤ Real-Time OSINT Signals │
+ │ (Protests, Arena matches)│              │             │(Social Media, Telegram) │
+ └─────────────────────────┘              │             └─────────────────────────┘
+                                          ▼
+                            ┌──────────────────────────┐
+                            │ Tactical Threat Grid(DTI)│
+                            └──────────────────────────┘
+          </div>
+        </div>
+        <div class="slide-grid-media">
+          <div class="slide-image-wrap">
+            <img class="slide-image" src="assets/threat-vectors.png" alt="Tomorrow District Threat Network Grid" />
+            <div class="slide-image-caption">Figure 1.0: Holographic tactical grid displaying crime network nodes & threat vectors.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== Slide 6: Traditional Overview ==================== -->
+    <div id="slide6" class="slide-card">
+      <span class="slide-tag">Slide 06 // Traditional Limitations</span>
+      <h2 class="slide-title">Why Static <span>Heatmaps Fail</span></h2>
+      <div class="slide-subtitle">Operational bottlenecks in conventional crime-mapping tools.</div>
+      <ul class="features-list">
+        <li><strong>Outdated Reports (Weekly Delays):</strong> Static heatmaps are updated days or weeks after crimes occur, rendering them useless for immediate tactical patrol planning.</li>
+        <li><strong>Context Blindness (No Context):</strong> Classic databases have no awareness of ongoing public protests, major stadium events, or missing streetlighting in high-risk alleys.</li>
+        <li><strong>Black Box Dispatches:</strong> Traditional ML models do not explain <em>why</em> an area is high-risk, leaving patrol officers without tactical guidance or explanations.</li>
+      </ul>
+    </div>
+
+    <!-- ==================== Slide 7: The Disruption ==================== -->
+    <div id="slide7" class="slide-card">
+      <span class="slide-tag">Slide 07 // The Disruption</span>
+      <h2 class="slide-title">Redefining <span>Patrol Management</span></h2>
+      <div class="slide-subtitle">A side-by-side comparison of old and new methodologies.</div>
+      
+      <table class="b2b-table">
+        <thead>
+          <tr>
+            <th>Capability</th>
+            <th>Traditional Static Heatmaps</th>
+            <th>The TOMORROW Platform</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Update Cadence</strong></td>
+            <td>Weekly / Monthly</td>
+            <td><strong>Real-Time Dynamic (24-Hour Scrubber)</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Environmental Context</strong></td>
+            <td>Historical records only</td>
+            <td><strong>RTM Active Layers (ATMs, Lights, Pubs)</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Social Intelligence</strong></td>
+            <td>Manually reviewed after hours</td>
+            <td><strong>Automated OSINT Crawler & Spatial Boost</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Decision Transparency</strong></td>
+            <td>Black-box opacity</td>
+            <td><strong>Explainable AI (XAI) Factor Breakdown</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Fleet Coordination</strong></td>
+            <td>Manual voice dispatch</td>
+            <td><strong>Proportional AVL Routing & Mutual Aid</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ==================== Slide 8: Positioning ==================== -->
+    <div id="slide8" class="slide-card">
+      <span class="slide-tag">Slide 08 // Operational Positioning</span>
+      <h2 class="slide-title">Strategic <span>Market Position</span></h2>
+      <div class="slide-subtitle">Maximum prevention coupled with real-time tactical action.</div>
+      <div class="ascii-chart" style="font-size:13px; text-align: left;">
+  Preemptive Actionability (Prediction Engine)
+  ▲
+  │                                                   [TOMORROW]
+  │                                              Maximum Protection &
+  │                                            Dynamic Tactical Dispatch
+  │
+  │                    [Lookout/GIS]
+  │                  Traditional Map Layers
+  │
+  │
+  ├─────────────────────────────────────────────────────────────────► Operational Readiness
+  │                                                                   (Real-Time Action)
+  │
+  │     [Standard Call Logs]
+  │    Reactive Post-Incident Logs
+  │
+      </div>
+    </div>
+
+    <!-- ==================== Slide 9: Modular Solution ==================== -->
+    <div id="slide9" class="slide-card">
+      <span class="slide-tag">Slide 09 // The Platform Suite</span>
+      <h2 class="slide-title">Smart <span>Modular Suite</span></h2>
+      <div class="slide-subtitle">Advanced core pillars working in absolute synergy.</div>
+      <div class="slide-grid">
+        <div class="slide-grid-content">
+          <ul class="features-list" style="margin: 0;">
+            <li><strong>Predictive Hotspot Grid:</strong> Divides the municipal sector into a highly visible 150m grid. Powered by a high-fidelity Gradient Boosting Machine (GBM) ML engine that analyzes crime records, lighting, weather anomalies, and strategic calendar events to calibrate a dynamic District Threat Index (DTI) for each hour of the shift.</li>
+            <li><strong>Multi-Source OSINT Fusion Layer:</strong> An automated background crawler that scans public Telegram channels, WhatsApp groups, X (Twitter), Reddit, and local forums. Using advanced NLP entity extraction, it automatically isolates geo-coordinates and applies localized spatial boosts (up to 600m) to the threat grid.</li>
+            <li><strong>Smart AVL & Mutual Aid Dispatcher:</strong> Tracks active patrol vehicle positions in real-time, automates curvilinear Bezier routing on the map, and utilizes an intelligent allocator to coordinate cross-station resource sharing when local sectors hit zero availability.</li>
+          </ul>
+        </div>
+        <div class="slide-grid-media">
+          <div class="slide-image-wrap">
+            <img class="slide-image" src="assets/modular-solution.png" alt="Tomorrow Smart Modular B2B Security Suite" />
+            <div class="slide-image-caption">Figure 2.0: Isometric 3D rendering of the Tomorrow Modular B2B Product Suite.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== Slide 10: Value Proposition ==================== -->
+    <div id="slide10" class="slide-card">
+      <span class="slide-tag">Slide 10 // Advanced Capabilities</span>
+      <h2 class="slide-title">Closing <span>The Tactical Loop</span></h2>
+      <div class="slide-subtitle">Autonomous, AI-driven responses transforming data points into physical security.</div>
+      <ul class="features-list">
+        <li><strong>AI Dispatch Co-Pilot:</strong> An integrated LLM agent that analyzes incoming incidents in real-time, cross-references historical spatial forecasts, and provides dispatchers with instant tactical briefs and optimized unit recommendations.</li>
+        <li><strong>Autonomous UAV Interceptor Layer:</strong> High-risk predictions automatically trigger autonomous drone launches from municipal docking nests, providing real-time aerial surveillance and visual deterrence over crime hotspots.</li>
+        <li><strong>Cellular Triangulation & Anomaly Detector:</strong> Real-time cellular tracking and movement anomaly detection that flags unusual traffic patterns or unauthorized presence of flagged individuals in restricted municipal zones.</li>
+        <li><strong>Explainable AI (XAI) Patrol Briefs:</strong> One-click generation of official, print-ready tactical briefs with transparent risk factor breakdowns (History, OSINT, Weather, Temporal) to guide field officers.</li>
+      </ul>
+    </div>
+
+    <!-- ==================== Slide 11: Use Case 1 ==================== -->
+    <div id="slide11" class="slide-card">
+      <span class="slide-tag">Slide 11 // Operational Use Case I</span>
+      <h2 class="slide-title">Crowd <span>& Event Control</span></h2>
+      <div class="slide-subtitle">Managing high-risk sectors during massive city-wide rallies.</div>
+      <div class="slide-grid">
+        <div class="slide-grid-content">
+          <blockquote>
+            <strong>Scenario:</strong> A massive public demonstration at the Central Metropolitan Hub increases property disorder risks in surrounding sectors, straining local police resources.
+          </blockquote>
+          <p><strong>The Tomorrow Resolution:</strong></p>
+          <ul class="features-list" style="margin: 0;">
+            <li>The dispatcher activates the <strong>"Metropolitan Protest"</strong> layer in the Strategic Events control panel.</li>
+            <li>The multi-factor ML engine instantly recalibrates, applying real-time crime boosts to the affected 150m grid cells.</li>
+            <li>The interactive map dynamically highlights high-risk sectors in warning colors, breaking down the specific risk indicators (XAI).</li>
+            <li>The commander prints official tactical patrol briefs for the high-risk zones, automatically saturating the area with preventive units.</li>
+          </ul>
+        </div>
+        <div class="slide-grid-media">
+          <div class="slide-image-wrap">
+            <img class="slide-image" src="assets/aerial-patrol.png" alt="Tomorrow Autonomous Aerial Surveillance Drone" />
+            <div class="slide-image-caption">Figure 2.1: Autonomous tactical UAV deploying from municipal docking nests for high-fidelity aerial surveillance.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== Slide 12: Use Case 2 ==================== -->
+    <div id="slide12" class="slide-card">
+      <span class="slide-tag">Slide 12 // Operational Use Case II</span>
+      <h2 class="slide-title">LPR <span>Vehicle Interception</span></h2>
+      <div class="slide-subtitle">Resolving high-priority stolen vehicle hits via Mutual Aid dispatches.</div>
+      <blockquote>
+        <strong>Scenario:</strong> A stolen vehicle is flagged by an LPR camera in the high-density Residential Sector. The local precinct (Precinct B Station) has zero available units due to active dispatches.
+      </blockquote>
+      <p><strong>The Tomorrow Resolution:</strong></p>
+      <ul class="features-list">
+        <li>The real-time LPR alert feed receives an active hit from camera node 17, cross-referenced against the national database.</li>
+        <li>The dispatcher triggers the closed-loop <strong>"Dispatch"</strong> sequence directly from the alert interface.</li>
+        <li>The <strong>Mutual Aid</strong> allocator scans neighboring precincts and identifies an available patrol unit at Precinct A Station.</li>
+        <li>The AVL system dispatches the Precinct A unit, animating its curvilinear path directly from its actual coordinates with glowing radar rings.</li>
+        <li>The patrol unit arrives at the LPR camera site, apprehends the suspect, secures the scene, and automatically updates the alert card status to `Secured` in green.</li>
+      </ul>
+    </div>
+
+    <!-- ==================== Slide 13: Summary ==================== -->
+    <div id="slide13" class="slide-card">
+      <span class="slide-tag">Slide 13 // Tactical Summary</span>
+      <h2 class="slide-title">Scientific <span>Deterrence Layer</span></h2>
+      <div class="slide-subtitle">More than a tactical map — Tomorrow is an active prevention platform.</div>
+      <div class="slide-grid">
+        <div class="slide-grid-content">
+          <p style="margin-bottom: 0;">
+            The <strong>Tomorrow</strong> platform bridges the gap between raw intelligence and physical field operations. It empowers police commanders to make data-backed deployment decisions, validate prediction accuracy via the Backtesting simulator, and create an active layer of safety that saves resources and protects urban communities.
+          </p>
+        </div>
+        <div class="slide-grid-media">
+          <div class="slide-image-wrap">
+            <img class="slide-image" src="assets/tactical-gear.png" alt="Tomorrow Professional Tactical Law Enforcement Equipment" />
+            <div class="slide-image-caption">Figure 2.2: Consolidating high-tech communication systems, tactical smartwatches, and B2B sensors into a unified system.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== Slide 14-17: Deep-Dive ==================== -->
+    <div id="slide14" class="slide-card">
+      <span class="slide-tag">Slide 14 // Technical Deep-Dive</span>
+      <h2 class="slide-title">Module <span>Specifications</span></h2>
+      <div class="slide-subtitle">Under the hood of Tomorrow's high-tech production infrastructure.</div>
+      <ul class="features-list">
+        <li><strong>Prediction Engine (prediction.js):</strong> A multi-factor Gradient Boosting Machine (GBM) model combining historical records, public lighting levels, weather indexes, and live 911 calls with geographic coastline clamping.</li>
+        <li><strong>OSINT & Web Crawler (osint.js):</strong> Background scanner executing MTProto userbots and web scrapers to crawl Telegram, WhatsApp, and social media. Uses custom NLP for location extraction and applies up to a 600m spatial grid boost to prediction threat scores.</li>
+        <li><strong>Intelligence & Cellular Fusion:</strong> API integrations with cellular triangulation feeds and prisoner/parolee databases, mapping anomalies and authorized zone breaches directly onto a unified suspect profile panel.</li>
+        <li><strong>Smart AVL Dispatcher (dispatch.js):</strong> Curvilinear Bezier pathing to coordinate active fleets, dynamic radar pulsing, and distance-proportional travel speeds with automated cross-station Mutual Aid resource sharing.</li>
+      </ul>
+    </div>
+
+    <!-- ==================== Slide 18: Backtesting ==================== -->
+    <div id="slide18" class="slide-card">
+      <span class="slide-tag">Slide 18 // Model Validation</span>
+      <h2 class="slide-title">Accurate <span>Model Backtesting</span></h2>
+      <div class="slide-subtitle">Scientific proof of platform hit-rates and prediction accuracy.</div>
+      <div class="slide-grid">
+        <div class="slide-grid-content">
+          <p>
+            Designed for procurement officers, chiefs, and analysts:
+          </p>
+          <ul class="features-list" style="margin: 0;">
+            <li><strong>Confusion Matrix:</strong> Displays true positives, false positives, false negatives, and true negatives.</li>
+            <li><strong>ROC Curve Canvas:</strong> Dynamic plot drawing the Receiver Operating Characteristic curve in real-time.</li>
+            <li><strong>Replay & Recalibrate:</strong> Simulates 30 days of past dispatches and actual crime occurrences, showing the platform's high-tech hit-rate.</li>
+          </ul>
+        </div>
+        <div class="slide-grid-media">
+          <div class="slide-image-wrap">
+            <img class="slide-image" src="assets/validation-dashboard.png" alt="Tomorrow Backtesting Model Validation Dashboard" />
+            <div class="slide-image-caption">Figure 3.0: High-tech B2B backtesting and ROC Curve evaluation monitor.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== Slide 19: Technology Stack ==================== -->
+    <div id="slide19" class="slide-card">
+      <span class="slide-tag">Slide 19 // Technology Stack</span>
+      <h2 class="slide-title">The <span>Platform Stack</span></h2>
+      <div class="slide-subtitle">Built with enterprise-grade, lightweight, and high-performance Web APIs.</div>
+      <ul class="features-list">
+        <li><strong>Frontend Core:</strong> HTML5, CSS3 with glassmorphic backdrop filters, custom SVG topographic overlays, and Vanilla JS (IIFE Module structure).</li>
+        <li><strong>Mapping Framework:</strong> Leaflet JS + CartoDB Dark Tiles + Leaflet.heat (dynamic crime heatmaps).</li>
+        <li><strong>Real-time Sync & Integration:</strong> Firebase Realtime Database, MTProto userbot, and National Law Enforcement REST APIs.</li>
+      </ul>
+    </div>
+
+    <!-- ==================== Slide 20: Contact ==================== -->
+    <div id="slide20" class="slide-card contact-card">
+      <span class="slide-tag">Slide 20 // Procurement & Contact</span>
+      <h2 class="slide-title">Tomorrow's Security, <span>Today's Strategy</span></h2>
+      <div class="slide-subtitle">Contact our development & procurement team for scheduling a demo.</div>
+      
+      <div class="contact-grid">
+        <div class="contact-item">
+          <div class="contact-lbl">Development Director</div>
+          <div class="contact-val">ELCHAI FINE</div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-lbl">Marketing Director</div>
+          <div class="contact-val">B. General (r) Guy Nir</div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-lbl">B2B Sales & Marketing Phone</div>
+          <div class="contact-val" style="font-size: 14px; line-height: 1.6;">
+            <span style="font-size: 11px; color: var(--cyan); font-family: 'Share Tech Mono', monospace; display: inline-block; width: 65px; letter-spacing: 0.5px;">GUY:</span> +972-50-627-8071<br/>
+            <span style="font-size: 11px; color: var(--cyan); font-family: 'Share Tech Mono', monospace; display: inline-block; width: 65px; letter-spacing: 0.5px;">ELCHAI:</span> +972-54-201-2000
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-lbl">Platform URL</div>
+          <div class="contact-val"><a href="https://elchai.github.io/Tomorrow/" target="_blank">elchai.github.io/Tomorrow</a></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-spacing"></div>
+
+  </div>
+
+  <!-- Interactive Navigation Bar -->
+  <div class="nav-bar">
+    <button id="btnPrev" class="nav-btn">◀ Prev</button>
+    <span id="slideIndicator" style="display: flex; align-items: center; justify-content: center; font-family: 'Share Tech Mono', monospace; color: var(--cyan); font-size: 14px; min-width: 120px;">Slide 01 of 17</span>
+    <button id="btnNext" class="nav-btn">Next ▶</button>
+    <div style="width: 1px; background: rgba(43, 143, 255, 0.2); margin: 0 4px;"></div>
+    <button id="btnToggleView" class="nav-btn" title="Toggle between presentation slides or scrollable document mode">Scroll Mode</button>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const slides = Array.from(document.querySelectorAll('.slide-card'));
+      const btnPrev = document.getElementById('btnPrev');
+      const btnNext = document.getElementById('btnNext');
+      const slideIndicator = document.getElementById('slideIndicator');
+      const btnToggleView = document.getElementById('btnToggleView');
+      
+      let currentIdx = 0;
+      let presentationMode = true; // start in high-end slide-deck mode
+      
+      function updateDeck() {
+        if (!presentationMode) return;
+        
+        slides.forEach((slide, idx) => {
+          if (idx === currentIdx) {
+            slide.style.display = 'block';
+            slide.style.opacity = '0';
+            // Smooth fade-in
+            setTimeout(() => {
+              slide.style.transition = 'opacity 0.4s ease';
+              slide.style.opacity = '1';
+            }, 50);
+          } else {
+            slide.style.display = 'none';
+          }
+        });
+        
+        // Update slide text
+        const currentNum = String(currentIdx + 1).padStart(2, '0');
+        const totalNum = String(slides.length).padStart(2, '0');
+        slideIndicator.textContent = `Slide ${currentNum} of ${totalNum}`;
+        
+        // Disabled states
+        btnPrev.disabled = currentIdx === 0;
+        btnPrev.style.opacity = currentIdx === 0 ? '0.3' : '1';
+        btnPrev.style.cursor = currentIdx === 0 ? 'default' : 'pointer';
+        
+        btnNext.disabled = currentIdx === slides.length - 1;
+        btnNext.style.opacity = currentIdx === slides.length - 1 ? '0.3' : '1';
+        btnNext.style.cursor = currentIdx === slides.length - 1 ? 'default' : 'pointer';
+      }
+      
+      function toggleViewMode() {
+        presentationMode = !presentationMode;
+        if (presentationMode) {
+          btnToggleView.textContent = 'Scroll Mode';
+          btnToggleView.classList.remove('active');
+          document.body.style.overflowY = 'hidden';
+          window.scrollTo(0, 0);
+          updateDeck();
+        } else {
+          btnToggleView.textContent = 'Slide Mode';
+          btnToggleView.classList.add('active');
+          document.body.style.overflowY = 'auto';
+          slides.forEach(slide => {
+            slide.style.display = 'block';
+            slide.style.opacity = '1';
+            slide.style.transition = 'none';
+          });
+          slideIndicator.textContent = "All Slides";
+          btnPrev.disabled = true;
+          btnPrev.style.opacity = '0.3';
+          btnNext.disabled = true;
+          btnNext.style.opacity = '0.3';
+        }
+      }
+      
+      // Event listeners
+      btnPrev.addEventListener('click', () => {
+        if (currentIdx > 0 && presentationMode) {
+          currentIdx--;
+          updateDeck();
+          window.scrollTo(0, 0);
+        }
+      });
+      
+      btnNext.addEventListener('click', () => {
+        if (currentIdx < slides.length - 1 && presentationMode) {
+          currentIdx++;
+          updateDeck();
+          window.scrollTo(0, 0);
+        }
+      });
+      
+      btnToggleView.addEventListener('click', toggleViewMode);
+      
+      // Keyboard Navigation
+      document.addEventListener('keydown', (e) => {
+        if (!presentationMode) return;
+        if (e.key === 'ArrowRight' || e.key === ' ') {
+          e.preventDefault();
+          if (currentIdx < slides.length - 1) {
+            currentIdx++;
+            updateDeck();
+          }
+        } else if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          if (currentIdx > 0) {
+            currentIdx--;
+            updateDeck();
+          }
+        }
+      });
+      
+      // Initial Setup
+      document.body.style.overflowY = 'hidden'; // clean full-screen look
+      updateDeck();
+    });
+  </script>
+
+</body>
+</html>

@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
   slider.addEventListener('input', () => {
     const h = parseInt(slider.value);
     TomorrowState.forecast_hour = (h === nowHour) ? null : h;
-    readout.textContent = (h === nowHour) ? 'עכשיו' : `${String(h).padStart(2,'0')}:00`;
+    readout.textContent = (h === nowHour) ? T('forecast.now') : `${String(h).padStart(2,'0')}:00`;
     if (window.TomorrowPrediction) TomorrowPrediction.refresh();
   });
 

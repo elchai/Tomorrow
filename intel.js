@@ -71,7 +71,7 @@ window.TomorrowIntel = (function () {
       <div class="intel-targets" style="display:flex; gap:6px; padding:10px 14px; border-bottom: 1px solid var(--line-soft); overflow-x:auto;">
         ${TARGETS.map(t => `
           <button class="intel-target-chip ${t.id === activeTargetId ? 'active' : ''}" data-target-id="${t.id}">
-            ${t.id} · ${t.alias}
+            ${t.id} · ${T(t.alias)}
           </button>
         `).join('')}
       </div>
@@ -84,6 +84,7 @@ window.TomorrowIntel = (function () {
 
   function renderTarget() {
     const t = TARGETS.find(x => x.id === activeTargetId) || TARGETS[0];
+    const isActive = ['פעיל', 'Ativo', 'Active'].includes(t.status);
     return `
       <!-- Profile card -->
       <div class="intel-profile">
@@ -91,18 +92,18 @@ window.TomorrowIntel = (function () {
           <div class="intel-avatar"><i data-lucide="user"></i></div>
           <div class="intel-profile-meta">
             <div class="intel-profile-id">${t.id}</div>
-            <div class="intel-profile-alias">${t.alias}</div>
-            <div class="intel-profile-sub">${T('intel.age')} ${t.age} · <span class="intel-status ${t.status === 'פעיל' || t.status === 'Ativo' || t.status === 'Active' ? 'active' : ''}">${t.status}</span></div>
+            <div class="intel-profile-alias">${T(t.alias)}</div>
+            <div class="intel-profile-sub">${T('intel.age')} ${t.age} · <span class="intel-status ${isActive ? 'active' : ''}">${T(t.status)}</span></div>
           </div>
         </div>
-        <div class="intel-affiliation">${t.affiliation}</div>
+        <div class="intel-affiliation">${T(t.affiliation)}</div>
       </div>
 
       <!-- Criminal record -->
       <div class="intel-section">
         <div class="intel-section-head"><i data-lucide="gavel"></i>${T('intel.record')}</div>
         <ul class="intel-record">
-          ${t.record.map(r => `<li>${r}</li>`).join('')}
+          ${t.record.map(r => `<li>${T(r)}</li>`).join('')}
         </ul>
       </div>
 
@@ -112,7 +113,7 @@ window.TomorrowIntel = (function () {
         <div class="intel-cell">
           <div class="intel-cell-line"><span class="intel-cell-lbl">${T('intel.location') !== 'intel.location' ? T('intel.location') : 'Location'}</span><span class="intel-cell-val">${t.last_cell.lat.toFixed(4)}, ${t.last_cell.lng.toFixed(4)}</span></div>
           <div class="intel-cell-line"><span class="intel-cell-lbl">${T('intel.precision') !== 'intel.precision' ? T('intel.precision') : 'Precision'}</span><span class="intel-cell-val">~${t.last_cell.precision}m</span></div>
-          <div class="intel-cell-line"><span class="intel-cell-lbl">${T('intel.when') !== 'intel.when' ? T('intel.when') : 'When'}</span><span class="intel-cell-val">${t.last_cell.when}</span></div>
+          <div class="intel-cell-line"><span class="intel-cell-lbl">${T('intel.when') !== 'intel.when' ? T('intel.when') : 'When'}</span><span class="intel-cell-val">${T(t.last_cell.when)}</span></div>
           <button class="intel-focus-btn" onclick="TomorrowMap.getMap().flyTo([${t.last_cell.lat}, ${t.last_cell.lng}], 17, {duration:1.1}); TomorrowIntel.close();">
             <i data-lucide="navigation"></i><span>${T('intel.locate')}</span>
           </button>
@@ -126,8 +127,8 @@ window.TomorrowIntel = (function () {
           ${t.osint.map(o => `
             <div class="intel-osint-row">
               <a href="https://t.me/${o.src.slice(1)}" target="_blank" rel="noopener noreferrer" class="src-link">${o.src}<i data-lucide="external-link"></i></a>
-              <div class="intel-osint-text">"${o.text}"</div>
-              <div class="intel-osint-when">${o.when}</div>
+              <div class="intel-osint-text">"${T(o.text)}"</div>
+              <div class="intel-osint-when">${T(o.when)}</div>
             </div>
           `).join('')}
         </div>

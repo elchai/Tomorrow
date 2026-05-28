@@ -898,15 +898,16 @@ input:checked + .slider-round .slider-knob {
   width: 320px;
   max-width: 92vw;
   z-index: 1000;
-  border-inline-start: 1px solid rgba(43, 143, 255, 0.2);
+  border-inline-end: 1px solid rgba(43, 143, 255, 0.2);
   background: linear-gradient(180deg, rgba(11, 19, 34, 0.94), rgba(7, 12, 24, 0.94));
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.55);
   display: flex;
   flex-direction: column;
   transition: transform 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
 }
+html[dir="ltr"] .drawer-panel { box-shadow: 10px 0 30px rgba(0, 0, 0, 0.55); }
+html[dir="rtl"] .drawer-panel { box-shadow: -10px 0 30px rgba(0, 0, 0, 0.55); }
 /* Closed positions — toward the leading edge so drawer disappears past the nav-rail.
    In LTR drawer is at left:rail-w so we translate negatively. In RTL it's the opposite.
    Same-specificity selectors for .open so it wins via cascade order. */

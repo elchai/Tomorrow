@@ -117,13 +117,13 @@ window.TomorrowLpr = (function () {
           <div class="lpr-photo"><i data-lucide="car-front"></i></div>
           <div class="lpr-meta">
             <div class="lpr-plate">${a.plate}</div>
-            <div class="lpr-model">${a.model}</div>
+            <div class="lpr-model">${T(a.model)}</div>
           </div>
           <div class="lpr-status">${statusLbl}</div>
         </div>
-        <div class="lpr-camera"><i data-lucide="map-pin"></i><span>${a.camera.name}</span></div>
-        <div class="lpr-match"><i data-lucide="link"></i><span>${a.match_src}</span></div>
-        ${eta ? `<div class="lpr-eta"><i data-lucide="timer"></i><span>ETA <b>${eta.eta} ${T('forecast.eta')}</b> · ${eta.station.name} (${eta.km.toFixed(1)} km)</span></div>` : ''}
+        <div class="lpr-camera"><i data-lucide="map-pin"></i><span>${T(a.camera.name)}</span></div>
+        <div class="lpr-match"><i data-lucide="link"></i><span>${T(a.match_src)}</span></div>
+        ${eta ? `<div class="lpr-eta"><i data-lucide="timer"></i><span>ETA <b>${eta.eta} ${T('forecast.eta')}</b> · ${T(eta.station.name)} (${eta.km.toFixed(1)} km)</span></div>` : ''}
         <div class="lpr-row-bottom">
           <span class="lpr-when"><i data-lucide="clock"></i>${T('lpr.minsAgo', { n: a.mins_ago })}</span>
           <div class="lpr-actions">

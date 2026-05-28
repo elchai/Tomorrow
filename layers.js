@@ -70,6 +70,23 @@ window.TomorrowLayers = (function () {
 
     // Build layers selector modal dynamically
     buildLayersControlUI();
+
+    // Dynamically rebuild layers and modal when language changes
+    document.addEventListener('tomorrow-lang-change', () => {
+      if (map) {
+        layerGroups.bars.clearLayers();
+        layerGroups.atms.clearLayers();
+        layerGroups.dark.clearLayers();
+        
+        buildBarsLayer();
+        buildAtmsLayer();
+        buildDarkZonesLayer();
+        
+        const oldModal = document.getElementById('layers-modal');
+        if (oldModal) oldModal.remove();
+        buildLayersControlUI();
+      }
+    });
   }
 
   function buildBarsLayer() {
@@ -83,10 +100,11 @@ window.TomorrowLayers = (function () {
         "><i data-lucide="beer" style="width:11px; height:11px; stroke-width:2.5;"></i></div>`,
         className: '', iconSize: [20, 20], iconAnchor: [10, 10]
       });
+      const popupDir = window.TomorrowI18n ? TomorrowI18n.getMeta().dir : 'ltr';
       L.marker([b.lat, b.lng], { icon })
-        .bindPopup(`<div class="tac-popup" dir="rtl" style="--rc:#ffd000; min-width: 180px; padding: 8px 10px 10px;">
+        .bindPopup(`<div class="tac-popup" dir="${popupDir}" style="--rc:#ffd000; min-width: 180px; padding: 8px 10px 10px;">
            <div style="font-size:9px; color:var(--text-faint); font-weight:700;">${window.T ? T('layers.popup.bars.tag') : 'GIS LAYER · Friction'}</div>
-           <div style="font-size:13px; font-weight:700; color:#ffd000; margin-top:3px;"><i data-lucide="beer" style="width:13px; height:13px; margin-inline-end:4px; vertical-align:middle;"></i>${b.name}</div>
+           <div style="font-size:13px; font-weight:700; color:#ffd000; margin-top:3px;"><i data-lucide="beer" style="width:13px; height:13px; margin-inline-end:4px; vertical-align:middle;"></i>${T(b.name)}</div>
            <div style="font-size:11px; color:var(--text-dim); margin-top:5px;">${window.T ? T('layers.popup.bars.desc') : ''}</div>
          </div>`, { className: 'tac-popup-wrap' })
         .on('popupopen', () => TomorrowApp.renderIcons())
@@ -105,10 +123,11 @@ window.TomorrowLayers = (function () {
         "><i data-lucide="banknote" style="width:11px; height:11px; stroke-width:2.5;"></i></div>`,
         className: '', iconSize: [20, 20], iconAnchor: [10, 10]
       });
+      const popupDir = window.TomorrowI18n ? TomorrowI18n.getMeta().dir : 'ltr';
       L.marker([a.lat, a.lng], { icon })
-        .bindPopup(`<div class="tac-popup" dir="rtl" style="--rc:#00e5ff; min-width: 180px; padding: 8px 10px 10px;">
+        .bindPopup(`<div class="tac-popup" dir="${popupDir}" style="--rc:#00e5ff; min-width: 180px; padding: 8px 10px 10px;">
            <div style="font-size:9px; color:var(--text-faint); font-weight:700;">${window.T ? T('layers.popup.atms.tag') : 'GIS LAYER · Financial'}</div>
-           <div style="font-size:13px; font-weight:700; color:#00e5ff; margin-top:3px;"><i data-lucide="banknote" style="width:13px; height:13px; margin-inline-end:4px; vertical-align:middle;"></i>${a.name}</div>
+           <div style="font-size:13px; font-weight:700; color:#00e5ff; margin-top:3px;"><i data-lucide="banknote" style="width:13px; height:13px; margin-inline-end:4px; vertical-align:middle;"></i>${T(a.name)}</div>
            <div style="font-size:11px; color:var(--text-dim); margin-top:5px;">${window.T ? T('layers.popup.atms.desc') : ''}</div>
          </div>`, { className: 'tac-popup-wrap' })
         .on('popupopen', () => TomorrowApp.renderIcons())
@@ -118,6 +137,7 @@ window.TomorrowLayers = (function () {
 
   function buildDarkZonesLayer() {
     DARK_ZONES_DATA.forEach(d => {
+      const popupDir = window.TomorrowI18n ? TomorrowI18n.getMeta().dir : 'ltr';
       L.circle([d.lat, d.lng], {
         radius: d.radius,
         color: '#ff1f4b',
@@ -127,9 +147,9 @@ window.TomorrowLayers = (function () {
         dashArray: '3,5',
         className: 'rtm-dark-circle'
       })
-      .bindPopup(`<div class="tac-popup" dir="rtl" style="--rc:#ff1f4b; min-width: 180px; padding: 8px 10px 10px;">
+      .bindPopup(`<div class="tac-popup" dir="${popupDir}" style="--rc:#ff1f4b; min-width: 180px; padding: 8px 10px 10px;">
          <div style="font-size:9px; color:var(--text-faint); font-weight:700;">${window.T ? T('layers.popup.dark.tag') : 'GIS LAYER · Dark'}</div>
-         <div style="font-size:13px; font-weight:700; color:#ff1f4b; margin-top:3px;"><i data-lucide="moon" style="width:13px; height:13px; margin-inline-end:4px; vertical-align:middle;"></i>${d.name}</div>
+         <div style="font-size:13px; font-weight:700; color:#ff1f4b; margin-top:3px;"><i data-lucide="moon" style="width:13px; height:13px; margin-inline-end:4px; vertical-align:middle;"></i>${T(d.name)}</div>
          <div style="font-size:11px; color:var(--text-dim); margin-top:5px;">${window.T ? T('layers.popup.dark.desc') : ''}</div>
        </div>`, { className: 'tac-popup-wrap' })
       .on('popupopen', () => TomorrowApp.renderIcons())
@@ -162,6 +182,7 @@ window.TomorrowLayers = (function () {
     if (!modal) {
       modal = document.createElement('div');
       modal.id = 'layers-modal';
+      const meta = window.TomorrowI18n ? TomorrowI18n.getMeta() : { dir: 'ltr' };
       modal.style.cssText = `
         position: absolute;
         bottom: 74px;
@@ -175,8 +196,8 @@ window.TomorrowLayers = (function () {
         z-index: 10000;
         box-shadow: 0 8px 30px rgba(0,0,0,0.6);
         display: none;
-        direction: rtl;
-        text-align: right;
+        direction: ${meta.dir};
+        text-align: ${meta.dir === 'rtl' ? 'right' : 'left'};
       `;
       modal.innerHTML = `
         <div style="font-size:12px; font-weight:700; color:#fff; border-bottom:1px solid var(--line-soft); padding-bottom:6px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">

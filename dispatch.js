@@ -148,7 +148,7 @@ window.TomorrowDispatch = (function () {
           // Arrival at crime scene
           onSceneSecure(toLatLng[0], toLatLng[1], color);
           if (window.TomorrowSounds) TomorrowSounds.arrival();
-          TomorrowApp.logEvent('status', 3, window.TomorrowI18n ? TomorrowI18n.t('toast.arrived', { cs: unit.callsign, target: unit.dest || '—', min: etaMin.toFixed(0) }) : `${unit.callsign} arrived at ${unit.dest || '—'}`);
+          TomorrowApp.logEvent('status', 3, window.TomorrowI18n ? TomorrowI18n.t('toast.arrived', { cs: unit.callsign, target: T(unit.dest || '—'), min: etaMin.toFixed(0) }) : `${unit.callsign} arrived at ${T(unit.dest || '—')}`);
 
           // on-scene phase: unit dwells at the target
           unit.status = 'onscene';
@@ -178,7 +178,7 @@ window.TomorrowDispatch = (function () {
             const station = CONFIG.station(unit.station_id);
             if (station) {
               unit.status = 'returning';
-              unit.text = (window.TomorrowI18n ? TomorrowI18n.t('units.returning') : 'returning to station') + ' · ' + station.name;
+              unit.text = (window.TomorrowI18n ? TomorrowI18n.t('units.returning') : 'returning to station') + ' · ' + T(station.name);
               renderUnits();
               TomorrowApp.logEvent('status', 2, window.TomorrowI18n ? TomorrowI18n.t('toast.returning', { cs: unit.callsign }) : `${unit.callsign} returning`);
               dispatchVehicle(unit, toLatLng, [station.lat, station.lng], color, onArrive, true);
@@ -321,16 +321,16 @@ window.TomorrowDispatch = (function () {
     const mutualCount = chosen.length - primaryCount;
 
     if (mutualCount > 0) {
-      TomorrowApp.toast(tr('toast.dispatchMutual', { n: chosen.length, mut: mutualCount, id: h.id, zone: h.zone }), 'success');
-      TomorrowApp.logEvent('dispatch', h.risk, tr('toast.dispatchLogMutual', { n: chosen.length, id: h.id, zone: h.zone, pct: h.probability, mut: mutualCount }));
+      TomorrowApp.toast(tr('toast.dispatchMutual', { n: chosen.length, mut: mutualCount, id: h.id, zone: T(h.zone) }), 'success');
+      TomorrowApp.logEvent('dispatch', h.risk, tr('toast.dispatchLogMutual', { n: chosen.length, id: h.id, zone: T(h.zone), pct: h.probability, mut: mutualCount }));
     } else {
-      TomorrowApp.toast(tr('toast.dispatch', { n: chosen.length, id: h.id, zone: h.zone }), 'success');
-      TomorrowApp.logEvent('dispatch', h.risk, tr('toast.dispatchLog', { n: chosen.length, id: h.id, zone: h.zone, pct: h.probability }));
+      TomorrowApp.toast(tr('toast.dispatch', { n: chosen.length, id: h.id, zone: T(h.zone) }), 'success');
+      TomorrowApp.logEvent('dispatch', h.risk, tr('toast.dispatchLog', { n: chosen.length, id: h.id, zone: T(h.zone), pct: h.probability }));
     }
 
     chosen.forEach((u, idx) => {
       u.status = 'dispatched';
-      u.text = window.TomorrowI18n ? TomorrowI18n.t('toast.enroute', { zone: h.zone }) : `en route to ${h.zone}`;
+      u.text = window.TomorrowI18n ? TomorrowI18n.t('toast.enroute', { zone: T(h.zone) }) : `en route to ${T(h.zone)}`;
       u.dest = h.zone;
       u.hotspot_id = h.id;
       // starting point is the unit's actual home station!
@@ -374,7 +374,7 @@ window.TomorrowDispatch = (function () {
 
     // Lock unit as dispatched
     u.status = 'dispatched';
-    u.text = trL('toast.lprChase', { cam: a.camera.name });
+    u.text = trL('toast.lprChase', { cam: T(a.camera.name) });
     u.dest = a.camera.name;
     u.lpr_alert_id = a.id;
 
@@ -392,12 +392,12 @@ window.TomorrowDispatch = (function () {
     const isMutual = u.station_id !== station.id;
     if (isMutual) {
       const statusLbl = trL(a.status === 'stolen' ? 'lpr.status.stolen' : 'lpr.status.flagged');
-      TomorrowApp.toast(trL('toast.lprMutual', { cs: u.callsign, st: uStation.name, cam: a.camera.name }), 'success');
-      TomorrowApp.logEvent('dispatch', 2, trL('toast.lprLogMutual', { cs: u.callsign, status: statusLbl, plate: a.plate, cam: a.camera.name }));
+      TomorrowApp.toast(trL('toast.lprMutual', { cs: u.callsign, st: T(uStation.name), cam: T(a.camera.name) }), 'success');
+      TomorrowApp.logEvent('dispatch', 2, trL('toast.lprLogMutual', { cs: u.callsign, status: statusLbl, plate: a.plate, cam: T(a.camera.name) }));
     } else {
       const statusLbl = trL(a.status === 'stolen' ? 'lpr.status.stolen' : 'lpr.status.flagged');
-      TomorrowApp.toast(trL('toast.lpr', { cs: u.callsign, st: uStation.name, cam: a.camera.name }), 'success');
-      TomorrowApp.logEvent('dispatch', 1, trL('toast.lprLog', { cs: u.callsign, status: statusLbl, plate: a.plate, cam: a.camera.name }));
+      TomorrowApp.toast(trL('toast.lpr', { cs: u.callsign, st: T(uStation.name), cam: T(a.camera.name) }), 'success');
+      TomorrowApp.logEvent('dispatch', 1, trL('toast.lprLog', { cs: u.callsign, status: statusLbl, plate: a.plate, cam: T(a.camera.name) }));
     }
 
     if (window.TomorrowSounds) TomorrowSounds.dispatch();

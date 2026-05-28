@@ -194,7 +194,7 @@ window.TomorrowApp = (function () {
     const chips = [{ id: null, name: allLabel }, ...CONFIG.STATIONS];
     host.innerHTML = chips.map(s => `
       <button class="station-chip ${ (s.id || null) === current ? 'active' : '' }" data-id="${s.id || ''}">
-        ${s.name}
+        ${window.T ? T(s.name) : s.name}
       </button>
     `).join('');
     host.querySelectorAll('.station-chip').forEach(btn => {
@@ -303,7 +303,7 @@ window.TomorrowApp = (function () {
           transition: all 0.2s ease;
         ">
           <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span style="font-size:12.5px; font-weight:700; color:${active ? '#fff' : 'var(--text-dim)'};">${ev.name}</span>
+            <span style="font-size:12.5px; font-weight:700; color:${active ? '#fff' : 'var(--text-dim)'};">${window.T ? T(ev.name) : ev.name}</span>
             <label class="switch" style="position:relative; display:inline-block; width:28px; height:16px;">
               <input type="checkbox" class="event-checkbox" data-key="${ev.key}" ${active ? 'checked' : ''} style="opacity:0; width:0; height:0; cursor:pointer;" />
               <span class="slider-round" style="
@@ -320,7 +320,7 @@ window.TomorrowApp = (function () {
               </span>
             </label>
           </div>
-          <div style="font-size:10.5px; color:var(--text-faint); margin-top:4px; line-height:1.35;">${ev.description}</div>
+          <div style="font-size:10.5px; color:var(--text-faint); margin-top:4px; line-height:1.35;">${window.T ? T(ev.description) : ev.description}</div>
         </div>
       `;
     }).join('');
@@ -328,18 +328,17 @@ window.TomorrowApp = (function () {
     list.querySelectorAll('.event-checkbox').forEach(chk => {
       chk.addEventListener('change', (e) => {
         const key = e.target.dataset.key;
+        const ev = CONFIG.STRATEGIC_EVENTS.find(x => x.key === key);
         if (e.target.checked) {
           if (!State.active_events.includes(key)) {
             State.active_events.push(key);
           }
-          const ev = CONFIG.STRATEGIC_EVENTS.find(x => x.key === key);
-          logEvent('system', 2, window.TomorrowI18n ? TomorrowI18n.t('event.strategicOnLog', { name: ev.name }) : `Strategic event activated: ${ev.name}`);
-          toast(window.TomorrowI18n ? TomorrowI18n.t('event.strategicOn', { name: ev.name }) : `Event activated: ${ev.name}`, 'info');
+          logEvent('system', 2, window.TomorrowI18n ? TomorrowI18n.t('event.strategicOnLog', { name: T(ev.name) }) : `Strategic event activated: ${T(ev.name)}`);
+          toast(window.TomorrowI18n ? TomorrowI18n.t('event.strategicOn', { name: T(ev.name) }) : `Event activated: ${T(ev.name)}`, 'info');
         } else {
           State.active_events = State.active_events.filter(k => k !== key);
-          const ev = CONFIG.STRATEGIC_EVENTS.find(x => x.key === key);
-          logEvent('system', 3, window.TomorrowI18n ? TomorrowI18n.t('event.strategicOffLog', { name: ev.name }) : `Strategic event deactivated: ${ev.name}`);
-          toast(window.TomorrowI18n ? TomorrowI18n.t('event.strategicOff', { name: ev.name }) : `Event deactivated: ${ev.name}`, 'info');
+          logEvent('system', 3, window.TomorrowI18n ? TomorrowI18n.t('event.strategicOffLog', { name: T(ev.name) }) : `Strategic event deactivated: ${T(ev.name)}`);
+          toast(window.TomorrowI18n ? TomorrowI18n.t('event.strategicOff', { name: T(ev.name) }) : `Event deactivated: ${T(ev.name)}`, 'info');
         }
         
         saveState();
@@ -438,8 +437,9 @@ window.TomorrowApp = (function () {
     
     const r = CONFIG.RISK[h.risk];
     const station = CONFIG.station(h.station_id) || nearestStation(h.lat, h.lng);
-    const dateStr = new Date().toLocaleDateString('he-IL', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
-    const timeStr = new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
+    const locale = window.TomorrowI18n ? TomorrowI18n.getMeta().locale : 'en-US';
+    const dateStr = new Date().toLocaleDateString(locale, { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
+    const timeStr = new Date().toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
     
     // Calculate Explainable weights
     const baseW = Math.round(CONFIG.FACTORS.base * 20);
@@ -460,19 +460,23 @@ window.TomorrowApp = (function () {
       const boostVal = ev.crime_boosts[h.crime] || 0;
       if (isZoneMatch && boostVal > 0) {
         eventBoost += boostVal;
-        eventFactors.push(`${ev.name} (+${boostVal}%)`);
+        eventFactors.push(`${T(ev.name)} (+${boostVal}%)`);
       }
     });
 
     const rtmSum = lightingW + barsW + atmsW;
     
+    const activeLang = window.TomorrowI18n ? TomorrowI18n.getLang() : 'en';
+    const activeDir = window.TomorrowI18n ? TomorrowI18n.getMeta().dir : 'ltr';
+    const country = window.TomorrowCountries ? TomorrowCountries.get() : { flagEmoji: '🇧🇷' };
+
     const printWindow = window.open('', '_blank', 'width=800,height=900');
     printWindow.document.write(`
       <!DOCTYPE html>
-      <html lang="he" dir="rtl">
+      <html lang="${activeLang}" dir="${activeDir}">
       <head>
         <meta charset="UTF-8">
-        <title>פקודת סיור מונחה - תא סיכון #${h.id}</title>
+        <title>${TomorrowI18n.t('print.title')} #${h.id}</title>
         <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
         <style>
           body {
@@ -480,7 +484,7 @@ window.TomorrowApp = (function () {
             color: #000;
             background: #fff;
             padding: 30px;
-            direction: rtl;
+            direction: ${activeDir};
             line-height: 1.5;
             position: relative;
             overflow: hidden;
@@ -488,14 +492,14 @@ window.TomorrowApp = (function () {
           /* DEMO watermark — diagonal repeating text, visible on screen + print.
              Stops a screenshot from being mistaken for a real police order. */
           body::before {
-            content: 'תצוגת דמו · לא לשימוש מבצעי · DEMO · NOT FOR OPERATIONAL USE';
+            content: '${TomorrowI18n.t('print.watermark')}';
             position: fixed;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%) rotate(-32deg);
             font-family: 'Heebo', sans-serif;
             font-weight: 900;
-            font-size: 54px;
-            color: rgba(255, 31, 75, 0.13);
+            font-size: 48px;
+            color: rgba(255, 31, 75, 0.11);
             letter-spacing: 4px;
             white-space: nowrap;
             pointer-events: none;
@@ -504,7 +508,7 @@ window.TomorrowApp = (function () {
           }
           @media print {
             body::before {
-              color: rgba(255, 31, 75, 0.18);
+              color: rgba(255, 31, 75, 0.16);
               -webkit-print-color-adjust: exact;
               print-color-adjust: exact;
             }
@@ -548,7 +552,7 @@ window.TomorrowApp = (function () {
           .meta-table th, .meta-table td {
             border: 1px solid #ddd;
             padding: 10px;
-            text-align: right;
+            text-align: start;
             font-size: 14px;
           }
           .meta-table th {
@@ -611,7 +615,7 @@ window.TomorrowApp = (function () {
             font-size: 13px;
           }
           .bullet-list {
-            margin-right: 20px;
+            margin-inline-start: 20px;
             margin-bottom: 15px;
           }
           .bullet-list li {
@@ -633,95 +637,95 @@ window.TomorrowApp = (function () {
             border-radius: 4px;
             margin-bottom: 20px;
             display: block;
-            margin-left: auto;
+            margin-inline-start: auto;
           }
         </style>
       </head>
       <body>
-        <button class="print-btn" onclick="window.print()">שגר להדפסה ⎙</button>
+        <button class="print-btn" onclick="window.print()">${TomorrowI18n.t('print.button')}</button>
         
         <div class="header">
-          <div class="emblem">🇮🇱</div>
-          <h1>מדינת ישראל — משטרת ישראל</h1>
-          <h2>מחוז תל אביב • אגף המבצעים • ענף סיור ושיטור מונחה</h2>
-          <div class="confidential">תצוגת דמו — לא לשימוש מבצעי</div>
+          <div class="emblem">${country.flagEmoji}</div>
+          <h1>${TomorrowI18n.t('print.header.country')}</h1>
+          <h2>${TomorrowI18n.t('print.header.district')}</h2>
+          <div class="confidential">${TomorrowI18n.t('print.confidential')}</div>
         </div>
 
-        <h1>פקודת נוכחות מונעת מבצעית</h1>
-        <p>צו נוכחות מונעת זה מופק על ידי מערכת <b>TOMORROW</b> על בסיס היתוך מודיעיני רב-שכבתי וניתוח סיכון מרחבי-זמני. מטרת הפעילות היא שיבוש ומניעת עבירות פשיעה על ידי יצירת נוכחות משטרתית בולטת בתא המטרה.</p>
+        <h1>${TomorrowI18n.t('print.title')}</h1>
+        <p>${TomorrowI18n.t('print.desc')}</p>
 
-        <div class="section-title">פרטי גזרת הסיור ומטרה</div>
+        <div class="section-title">${TomorrowI18n.t('print.section.details')}</div>
         <table class="meta-table">
           <tr>
-            <th>מזהה תא סיכון</th>
+            <th>${TomorrowI18n.t('print.meta.cellId')}</th>
             <td>#${h.id}</td>
-            <th>תחנת אם / מרחב</th>
-            <td>${station ? station.name : 'כללי'}</td>
+            <th>${TomorrowI18n.t('print.meta.station')}</th>
+            <td>${station ? T(station.name) : '—'}</td>
           </tr>
           <tr>
-            <th>עבירת יעד עיקרית</th>
-            <td><b>${h.crime_name} (${h.code})</b></td>
-            <th>טווח שעות פעילות מומלץ</th>
+            <th>${TomorrowI18n.t('print.meta.crime')}</th>
+            <td><b>${CONFIG.crimeName(h.crime)} (${h.code})</b></td>
+            <th>${TomorrowI18n.t('print.meta.hours')}</th>
             <td>${h.window}</td>
           </tr>
           <tr>
-            <th>נ"צ מרכזי לתא</th>
+            <th>${TomorrowI18n.t('print.meta.coordinates')}</th>
             <td style="font-family: monospace;">${h.lat.toFixed(5)}, ${h.lng.toFixed(5)}</td>
-            <th>שכונה / אזור גזרתי</th>
-            <td>${h.zone}</td>
+            <th>${TomorrowI18n.t('print.meta.zone')}</th>
+            <td>${T(h.zone)}</td>
           </tr>
           <tr>
-            <th>תאריך הפקה</th>
+            <th>${TomorrowI18n.t('print.meta.date')}</th>
             <td>${dateStr}</td>
-            <th>שעת הפקה</th>
+            <th>${TomorrowI18n.t('print.meta.time')}</th>
             <td>${timeStr}</td>
           </tr>
         </table>
 
-        <div class="section-title">הסתברות ורמת איום</div>
+        <div class="section-title">${TomorrowI18n.t('print.section.threat')}</div>
         <div style="font-size: 15px; margin-bottom: 8px;">
-          הסתברות מצרפית לפעילות עבריינית בתא זה במשמרת הנוכחית עומדת על: <b>${h.probability}%</b> (רמת רגישות: <b>${r.label}</b>).
+          ${TomorrowI18n.t('print.threat.desc', { prob: h.probability, sens: T('forecast.severity.' + r.key) })}
         </div>
         <div class="gauge-container">
           <div class="gauge-fill" style="width: ${h.probability}%;"></div>
-          <div class="gauge-text">${h.probability}% סבירות פשיעה צפויה</div>
+          <div class="gauge-text">${TomorrowI18n.t('print.threat.expected', { prob: h.probability })}</div>
         </div>
 
-        <div class="section-title">ביסוס ונימוקי מודל החיזוי (שקיפות מודל)</div>
+        <div class="section-title">${TomorrowI18n.t('print.section.explainability')}</div>
         <ul class="bullet-list">
-          <li><b>רקע סטטיסטי היסטורי (נתוני עבר):</b> ${baseW + histW}% השפעה. תא זה מתאפיין בפעילות פלילית מוגברת היסטורית ביממה זו של החודש.</li>
-          <li><b>התאמה למחזוריות זמנית (שעות שיא):</b> ${fitW}% השפעה. השעות המוגדרות תואמות סטטיסטית לשעות השיא של ביצוע העבירה.</li>
-          ${h.osint ? `<li><b>התראות מודיעין שטח (רשתות חברתיות וערוצים):</b> מהימנות גבוהה מדפי רשתות חברתיות בשעות האחרונות בטווח תא זה.</li>` : ''}
-          ${rtmSum > 0 ? `<li><b>נתוני שטח סביבתיים (מוקדי סיכון):</b> קרבה לגורמי סיכון פיזיים גאוגרפיים (תאורה לקויה, מוקדי חיי לילה או כספומטים פיננסיים).</li>` : ''}
-          ${eventBoost > 0 ? `<li><b>אירועים אסטרטגיים פעילים:</b> ${eventFactors.join(', ')}.</li>` : ''}
+          <li>${TomorrowI18n.t('print.explain.historic', { val: baseW + histW })}</li>
+          <li>${TomorrowI18n.t('print.explain.temporal', { val: fitW })}</li>
+          ${h.osint ? `<li>${TomorrowI18n.t('print.explain.osint')}</li>` : ''}
+          ${rtmSum > 0 ? `<li>${TomorrowI18n.t('print.explain.rtm')}</li>` : ''}
+          ${eventBoost > 0 ? `<li>${TomorrowI18n.t('print.explain.events', { events: eventFactors.join(', ') })}</li>` : ''}
         </ul>
 
-        <div class="section-title">גורמי סיכון פעילים ומאומתים בגזרה</div>
+        <div class="section-title">${TomorrowI18n.t('print.section.factors')}</div>
         <div style="margin-bottom: 15px;">
-          ${h.factors.map(f => `<span class="factor-tag">${f}</span>`).join('')}
+          ${h.factors.map(f => `<span class="factor-tag">${T('factor.' + f)}</span>`).join('')}
         </div>
 
-        <div class="section-title">הנחיות פעולה וטקטיקה לצוותי הסיור</div>
+        <div class="section-title">${TomorrowI18n.t('print.section.tactics')}</div>
         <ul class="bullet-list">
-          <li><b>בולטות משטרתית (נוכחות גלויה):</b> נסיעה איטית בתוך תא הסיכון עם אורות כחולים מהבהבים (צ'קלקות) למשך 15 דקות לפחות בתוך חלון הזמן המיועד.</li>
-          <li><b>פטרול רגלי יזום (סיור רגלי):</b> ירידה מהניידת וביצוע סיורים רגליים בנקודות תורפה ספציפיות כגון כניסות לעסקים, כספומטים, וסמטאות חשוכות.</li>
-          <li><b>תשאול ועמידה במחסומים:</b> הקמת מחסום פתע בכניסות/יציאות מהגזרה המלבנית וביצוע בדיקות רכבים חשודים בהתאם לחשד סביר.</li>
-          <li><b>שילוב מודיעין בזמן אמת:</b> שמירה על קשר רציף עם פקמ"צ התחנה לקבלת עדכונים שוטפים מערוצי ה-OSINT והיתוך המידע של המערכת.</li>
+          <li>${TomorrowI18n.t('print.tactic.visibility')}</li>
+          <li>${TomorrowI18n.t('print.tactic.foot')}</li>
+          <li>${TomorrowI18n.t('print.tactic.checkpoint')}</li>
+          <li>${TomorrowI18n.t('print.tactic.intelligence')}</li>
         </ul>
 
         <div class="signature-section">
           <div class="sig-box">
-            <div class="sig-line">חתימת מפקח/קצין תורן תחנה (הנפקת צו)</div>
+            <div class="sig-line">${TomorrowI18n.t('print.sig.officer')}</div>
           </div>
           <div class="sig-box">
-            <div class="sig-line">חתימת מפקד כוח הסיור (אישור ביצוע פקודה)</div>
+            <div class="sig-line">${TomorrowI18n.t('print.sig.commander')}</div>
           </div>
         </div>
       </body>
       </html>
     `);
     printWindow.document.close();
-    logEvent('system', 2, `⎙ הונפקה פקודת סיור מונחת מודפסת לתא סיכון #${h.id} (ייצוא רשמי)`);
+    logEvent('system', 2, window.TomorrowI18n ? TomorrowI18n.t('toast.printOrder', { id: h.id }) : `Printed directed-patrol order issued for risk cell #${h.id}`);
   }
 
   // ---------- Init ----------

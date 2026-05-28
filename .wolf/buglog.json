@@ -128,6 +128,822 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-05-28T07:17:21.869Z"
+    },
+    {
+      "id": "bug-009",
+      "timestamp": "2026-05-28T07:38:57.144Z",
+      "error_message": "CSS fix: max-width",
+      "file": "style.css",
+      "root_cause": "max-width: 768px) { → 100vw",
+      "fix": "Changed max-width: 768px) { → 100vw",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 5,
+      "last_seen": "2026-05-28T07:46:31.740Z"
+    },
+    {
+      "id": "bug-010",
+      "timestamp": "2026-05-28T07:41:10.341Z",
+      "error_message": "Incorrect value in code",
+      "file": "index.html",
+      "root_cause": "Had \"height: calc(100% - 130px - 210px); flex: 1;\"",
+      "fix": "Changed to \"flex: 1 1 0; min-height: 0;\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T07:41:10.341Z"
+    },
+    {
+      "id": "bug-011",
+      "timestamp": "2026-05-28T07:47:08.976Z",
+      "error_message": "Wrong reference: 400 should be 600",
+      "file": "_audit_smoke.mjs",
+      "root_cause": "Used \"400\" instead of \"600\"",
+      "fix": "Changed 400 → 600",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "mjs"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T07:47:08.976Z"
+    },
+    {
+      "id": "bug-012",
+      "timestamp": "2026-05-28T08:16:45.453Z",
+      "error_message": "Missing guard clause",
+      "file": "osint.js",
+      "root_cause": "No early return/throw for edge case: v == null",
+      "fix": "Added guard clause: if (v == null)",
+      "tags": [
+        "auto-detected",
+        "guard-clause",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T08:16:45.453Z"
+    },
+    {
+      "id": "bug-013",
+      "timestamp": "2026-05-28T08:18:21.228Z",
+      "error_message": "Significant refactor of ",
+      "file": "index.html",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 16→19 lines (2 removed) | Also: <script src=\"https://cdnjs.cloudflare.com/ajax/lib; <script src=\"https://cdn.jsdelivr.net/npm/leaflet. | Also: <!-- UI wiring (timeline + control buttons) -->; <script>",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-05-28T08:19:40.690Z"
+    },
+    {
+      "id": "bug-014",
+      "timestamp": "2026-05-28T08:21:02.169Z",
+      "error_message": "Missing guard clause",
+      "file": "app.js",
+      "root_cause": "No early return/throw for edge case: !raw",
+      "fix": "Added guard clause: if (!raw)",
+      "tags": [
+        "auto-detected",
+        "guard-clause",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T08:21:02.169Z"
+    },
+    {
+      "id": "bug-015",
+      "timestamp": "2026-05-28T08:21:44.133Z",
+      "error_message": "Significant refactor of ",
+      "file": "analytics.js",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 6→26 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T08:21:44.133Z"
+    },
+    {
+      "id": "bug-016",
+      "timestamp": "2026-05-28T08:22:41.758Z",
+      "error_message": "CSS fix: max-width, grid-template-columns",
+      "file": "style.css",
+      "root_cause": "max-width: 768px) { → 600px) {; grid-template-columns: var(--rail-w) 240px 1fr 220px → var(--rail-w) 200px 1fr 180px",
+      "fix": "Changed max-width: 768px) { → 600px) {; grid-template-columns: var(--rail-w) 240px 1fr 220px → var(--rail-w) 200px 1fr 180px",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-05-28T08:23:31.609Z"
+    },
+    {
+      "id": "bug-017",
+      "timestamp": "2026-05-28T08:22:56.931Z",
+      "error_message": "Wrong reference: 768px should be 600px",
+      "file": "style.css",
+      "root_cause": "Used \"768px\" instead of \"600px\"",
+      "fix": "Changed 768px → 600px",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T08:22:56.931Z"
+    },
+    {
+      "id": "bug-018",
+      "timestamp": "2026-05-28T08:23:57.292Z",
+      "error_message": "Incorrect value in code",
+      "file": "lpr.js",
+      "root_cause": "Had 'stolencar · גניבת רכב 2026-05-20'",
+      "fix": "Changed to 'דמו · stolencar · גניבת רכב 2026-05-20'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 4,
+      "last_seen": "2026-05-28T08:24:14.539Z"
+    },
+    {
+      "id": "bug-019",
+      "timestamp": "2026-05-28T08:36:08.305Z",
+      "error_message": "CSS fix: --demo-ribbon-h",
+      "file": "style.css",
+      "root_cause": "--demo-ribbon-h: 22px → 0px",
+      "fix": "Changed --demo-ribbon-h: 22px → 0px",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-28T08:39:20.867Z"
+    },
+    {
+      "id": "bug-020",
+      "timestamp": "2026-05-28T08:41:58.718Z",
+      "error_message": "Significant refactor of ",
+      "file": "config.js",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 4→17 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T08:41:58.718Z"
+    },
+    {
+      "id": "bug-021",
+      "timestamp": "2026-05-28T08:43:25.137Z",
+      "error_message": "Null/undefined access in ",
+      "file": "prediction.js",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T08:43:25.137Z"
+    },
+    {
+      "id": "bug-022",
+      "timestamp": "2026-05-28T08:43:44.264Z",
+      "error_message": "Significant refactor of ",
+      "file": "prediction.js",
+      "root_cause": "9 lines replaced/restructured",
+      "fix": "Rewrote 13→4 lines (9 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T08:43:44.264Z"
+    },
+    {
+      "id": "bug-023",
+      "timestamp": "2026-05-28T08:44:46.271Z",
+      "error_message": "Missing guard clause",
+      "file": "intel.js",
+      "root_cause": "No early return/throw for edge case: prop === 'length'",
+      "fix": "Added guard clause: if (prop === 'length')",
+      "tags": [
+        "auto-detected",
+        "guard-clause",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T08:44:46.271Z"
+    },
+    {
+      "id": "bug-024",
+      "timestamp": "2026-05-28T08:45:08.252Z",
+      "error_message": "Missing guard clause",
+      "file": "lpr.js",
+      "root_cause": "No early return/throw for edge case: prop === 'length'",
+      "fix": "Added guard clause: if (prop === 'length')",
+      "tags": [
+        "auto-detected",
+        "guard-clause",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T08:45:08.252Z"
+    },
+    {
+      "id": "bug-025",
+      "timestamp": "2026-05-28T08:46:37.869Z",
+      "error_message": "Significant refactor of ",
+      "file": "index.html",
+      "root_cause": "7 lines replaced/restructured",
+      "fix": "Rewrote 25→49 lines (7 removed) | Also: <span class=\"app-footer-tag\">TOMORROW · רשת ניבוי ; פותח ע״י",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-28T08:48:40.421Z"
+    },
+    {
+      "id": "bug-026",
+      "timestamp": "2026-05-28T08:47:02.631Z",
+      "error_message": "Incorrect value in code",
+      "file": "index.html",
+      "root_cause": "Had \"הפעל קול\"",
+      "fix": "Changed to \"title:hud.muteOn\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T08:47:02.631Z"
+    },
+    {
+      "id": "bug-027",
+      "timestamp": "2026-05-28T08:49:19.649Z",
+      "error_message": "Missing error handling in unknown",
+      "file": "wiring.js",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T08:49:19.649Z"
+    },
+    {
+      "id": "bug-028",
+      "timestamp": "2026-05-28T08:50:44.159Z",
+      "error_message": "Incorrect value in code",
+      "file": "intel.js",
+      "root_cause": "Had 'תיק יעד מודיעיני'",
+      "fix": "Changed to 'intel.title'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-28T08:51:04.830Z"
+    },
+    {
+      "id": "bug-029",
+      "timestamp": "2026-05-28T08:52:14.431Z",
+      "error_message": "Incorrect value in code",
+      "file": "lpr.js",
+      "root_cause": "Had 'התראות LPR — זיהוי לוחיות רישוי'",
+      "fix": "Changed to 'lpr.title'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T08:52:14.431Z"
+    },
+    {
+      "id": "bug-030",
+      "timestamp": "2026-05-28T08:53:30.443Z",
+      "error_message": "Significant refactor of ",
+      "file": "app.js",
+      "root_cause": "4 lines replaced/restructured",
+      "fix": "Rewrote 4→5 lines (4 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T08:53:30.443Z"
+    },
+    {
+      "id": "bug-031",
+      "timestamp": "2026-05-28T08:53:40.113Z",
+      "error_message": "Wrong reference: Level should be span",
+      "file": "index.html",
+      "root_cause": "Used \"Level\" instead of \"span\"",
+      "fix": "Changed Level → span",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T08:53:40.113Z"
+    },
+    {
+      "id": "bug-032",
+      "timestamp": "2026-05-28T08:53:57.184Z",
+      "error_message": "Incorrect value in code",
+      "file": "analytics.js",
+      "root_cause": "Had 'אנליטיקה וכיול מודל'",
+      "fix": "Changed to 'analytics.title'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 6,
+      "last_seen": "2026-05-28T08:55:07.723Z"
+    },
+    {
+      "id": "bug-033",
+      "timestamp": "2026-05-28T08:55:57.852Z",
+      "error_message": "Significant refactor of ",
+      "file": "osint.js",
+      "root_cause": "4 lines replaced/restructured",
+      "fix": "Rewrote 11→11 lines (4 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T08:55:57.852Z"
+    },
+    {
+      "id": "bug-034",
+      "timestamp": "2026-05-28T09:06:55.892Z",
+      "error_message": "Incorrect value in code",
+      "file": "app.js",
+      "root_cause": "Had 'כל המרחב'",
+      "fix": "Changed to 'hud.allDistrict'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-28T09:08:07.989Z"
+    },
+    {
+      "id": "bug-035",
+      "timestamp": "2026-05-28T09:07:09.969Z",
+      "error_message": "Missing error handling in init",
+      "file": "app.js",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T09:07:09.969Z"
+    },
+    {
+      "id": "bug-036",
+      "timestamp": "2026-05-28T09:09:28.449Z",
+      "error_message": "Incorrect value in code",
+      "file": "prediction.js",
+      "root_cause": "Had '🔄 מודל הניבוי הורץ מחדש'",
+      "fix": "Changed to 'event.regenToast'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T09:09:28.449Z"
+    },
+    {
+      "id": "bug-037",
+      "timestamp": "2026-05-28T09:19:27.707Z",
+      "error_message": "Missing guard clause",
+      "file": "config.js",
+      "root_cause": "No early return/throw for edge case: window.TomorrowI18n",
+      "fix": "Added guard clause: if (window.TomorrowI18n)",
+      "tags": [
+        "auto-detected",
+        "guard-clause",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T09:19:27.707Z"
+    },
+    {
+      "id": "bug-038",
+      "timestamp": "2026-05-28T09:20:06.888Z",
+      "error_message": "Incorrect value in code",
+      "file": "dispatch.js",
+      "root_cause": "Had '<div class=\"",
+      "fix": "Changed to `<div class=\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 4,
+      "last_seen": "2026-05-28T09:21:00.509Z"
+    },
+    {
+      "id": "bug-039",
+      "timestamp": "2026-05-28T09:20:17.188Z",
+      "error_message": "Significant refactor of ",
+      "file": "dispatch.js",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 8→8 lines (2 removed) | Also: type, type_name: ut.name,; status: 'available', text: 'זמינה · בתחנה',",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-28T09:21:40.036Z"
+    },
+    {
+      "id": "bug-040",
+      "timestamp": "2026-05-28T09:20:23.280Z",
+      "error_message": "Incorrect value in code",
+      "file": "i18n.js",
+      "root_cause": "Had 'units.available'",
+      "fix": "Changed to 'units.empty'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-05-28T09:20:37.427Z"
+    },
+    {
+      "id": "bug-041",
+      "timestamp": "2026-05-28T09:23:00.612Z",
+      "error_message": "Incorrect value in code",
+      "file": "layers.js",
+      "root_cause": "Had '<i data-lucide=\"",
+      "fix": "Changed to `<i data-lucide=\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T09:23:00.612Z"
+    },
+    {
+      "id": "bug-042",
+      "timestamp": "2026-05-28T09:54:44.952Z",
+      "error_message": "CSS fix: box-shadow",
+      "file": "style.css",
+      "root_cause": "box-shadow: -10px 0 30px rgba(0, 0, 0, 0.55) → 10px 0 30px rgba(0, 0, 0, 0.55)",
+      "fix": "Changed box-shadow: -10px 0 30px rgba(0, 0, 0, 0.55) → 10px 0 30px rgba(0, 0, 0, 0.55)",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-05-28T09:56:01.938Z"
+    },
+    {
+      "id": "bug-043",
+      "timestamp": "2026-05-28T09:54:58.679Z",
+      "error_message": "Significant refactor of ",
+      "file": "analytics.js",
+      "root_cause": "16 lines replaced/restructured",
+      "fix": "Rewrote 19→6 lines (16 removed) | Also: // honor the side nav-rail width (set as CSS var; ; const railOpen = getComputedStyle(document.documen",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-28T09:55:07.702Z"
+    },
+    {
+      "id": "bug-044",
+      "timestamp": "2026-05-28T10:00:15.077Z",
+      "error_message": "Incorrect value in code",
+      "file": "app.js",
+      "root_cause": "Had `📅 אירוע אסטרטגי הופעל: ${ev.name}`",
+      "fix": "Changed to 'event.strategicOnLog'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 8,
+      "last_seen": "2026-05-28T10:02:04.104Z"
+    },
+    {
+      "id": "bug-045",
+      "timestamp": "2026-05-28T10:01:11.369Z",
+      "error_message": "Significant refactor of ",
+      "file": "prediction.js",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 3→6 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T10:01:11.369Z"
+    },
+    {
+      "id": "bug-046",
+      "timestamp": "2026-05-28T10:01:21.778Z",
+      "error_message": "Incorrect value in code",
+      "file": "layers.js",
+      "root_cause": "Had 'קרבה למוקדי חיכוך / חיי לילה'",
+      "fix": "Changed to 'barsNearby'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-05-28T10:01:34.212Z"
+    },
+    {
+      "id": "bug-047",
+      "timestamp": "2026-05-28T10:01:41.694Z",
+      "error_message": "Incorrect value in code",
+      "file": "prediction.js",
+      "root_cause": "Had `).join('",
+      "fix": "Changed to 'factor.'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T10:01:41.694Z"
+    },
+    {
+      "id": "bug-048",
+      "timestamp": "2026-05-28T10:03:05.031Z",
+      "error_message": "Incorrect value in code",
+      "file": "analytics.js",
+      "root_cause": "Had 'אין נתוני פשיעה זמינים'",
+      "fix": "Changed to 'analytics.noCrimeData'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-28T10:03:12.306Z"
+    },
+    {
+      "id": "bug-049",
+      "timestamp": "2026-05-28T10:03:20.459Z",
+      "error_message": "Incorrect value in code",
+      "file": "dispatch.js",
+      "root_cause": "Had `${unit.callsign} הגיעה ל${unit.dest || '",
+      "fix": "Changed to 'toast.arrived'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 9,
+      "last_seen": "2026-05-28T10:04:48.670Z"
+    },
+    {
+      "id": "bug-050",
+      "timestamp": "2026-05-28T10:05:11.720Z",
+      "error_message": "Incorrect value in code",
+      "file": "lpr.js",
+      "root_cause": "Had `טופל בהצלחה ע״י צוות ${callsign || '",
+      "fix": "Changed to 'toast.lprResolved'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T10:05:11.720Z"
+    },
+    {
+      "id": "bug-051",
+      "timestamp": "2026-05-28T10:05:23.343Z",
+      "error_message": "Significant refactor of ",
+      "file": "osint.js",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 3→4 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T10:05:23.343Z"
+    },
+    {
+      "id": "bug-052",
+      "timestamp": "2026-05-28T10:05:33.398Z",
+      "error_message": "Missing guard clause",
+      "file": "osint.js",
+      "root_cause": "No early return/throw for edge case: s.mins_ago != null",
+      "fix": "Added guard clause: if (s.mins_ago != null)",
+      "tags": [
+        "auto-detected",
+        "guard-clause",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T10:05:33.398Z"
+    },
+    {
+      "id": "bug-053",
+      "timestamp": "2026-05-28T10:06:12.349Z",
+      "error_message": "Incorrect value in code",
+      "file": "wiring.js",
+      "root_cause": "Had 'עכשיו'",
+      "fix": "Changed to 'forecast.now'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-05-28T10:06:32.659Z"
+    },
+    {
+      "id": "bug-054",
+      "timestamp": "2026-05-28T10:07:34.050Z",
+      "error_message": "Wrong reference: div should be $",
+      "file": "layers.js",
+      "root_cause": "Used \"div\" instead of \"$\"",
+      "fix": "Changed div → $",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 6,
+      "last_seen": "2026-05-28T10:08:33.751Z"
+    },
+    {
+      "id": "bug-055",
+      "timestamp": "2026-05-28T10:10:11.898Z",
+      "error_message": "CSS fix: left",
+      "file": "style.css",
+      "root_cause": "left: rail-w so we translate negatively. In RTL it's the opposite. */ → rail-w so we translate negatively. In RTL it's the opposite.",
+      "fix": "Changed left: rail-w so we translate negatively. In RTL it's the opposite. */ → rail-w so we translate negatively. In RTL it's the opposite.",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T10:10:11.898Z"
+    },
+    {
+      "id": "bug-056",
+      "timestamp": "2026-05-28T10:11:35.089Z",
+      "error_message": "Incorrect value in code",
+      "file": "app.js",
+      "root_cause": "Had 'he-IL'",
+      "fix": "Changed to 'en-US'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-28T10:11:43.198Z"
+    },
+    {
+      "id": "bug-057",
+      "timestamp": "2026-05-28T10:13:34.192Z",
+      "error_message": "Significant refactor of ",
+      "file": "osint.js",
+      "root_cause": "7 lines replaced/restructured",
+      "fix": "Rewrote 21→42 lines (7 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T10:13:34.192Z"
+    },
+    {
+      "id": "bug-058",
+      "timestamp": "2026-05-28T10:19:03.290Z",
+      "error_message": "CSS fix: background",
+      "file": "style.css",
+      "root_cause": "background: radial-gradient(ellipse at 30% 0%, rgba(26,109,255,0.10), transparent 55%), → /* Brochure-style topographic contour overlay — very low alpha so dashboard",
+      "fix": "Changed background: radial-gradient(ellipse at 30% 0%, rgba(26,109,255,0.10), transparent 55%), → /* Brochure-style topographic contour overlay — very low alpha so dashboard",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 8,
+      "last_seen": "2026-05-28T10:21:19.879Z"
+    },
+    {
+      "id": "bug-059",
+      "timestamp": "2026-05-28T10:20:43.511Z",
+      "error_message": "Wrong reference: cyan should be accent",
+      "file": "style.css",
+      "root_cause": "Used \"cyan\" instead of \"accent\"",
+      "fix": "Changed cyan → accent",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T10:20:43.511Z"
     }
   ]
 }
