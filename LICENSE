@@ -1,0 +1,46 @@
+TOMORROW — Non-Commercial / Demo License
+Copyright (c) 2026 Elchai Fine
+
+This software is a demonstration prototype for a predictive-policing dashboard
+concept ("the Software"). It is provided FOR EVALUATION, EDUCATIONAL, AND
+NON-COMMERCIAL DEMONSTRATION PURPOSES ONLY.
+
+By cloning, viewing, running, or otherwise using the Software, you agree to
+the following terms:
+
+1. Non-commercial use only
+   You may study, fork, modify, and run the Software locally for personal,
+   academic, or internal-evaluation purposes. You may NOT use it — in whole
+   or in part — for any commercial purpose, including resale, hosting it as a
+   paid service, or incorporating it into a commercial product, without prior
+   written permission from the copyright holder.
+
+2. No operational policing use
+   The Software contains FICTIONAL data only. It is NOT a real policing
+   system. It must NOT be used to dispatch personnel, allocate resources,
+   profile individuals, generate operational orders, or inform any real-world
+   law-enforcement decision. The watermarked "patrol order" pages and the
+   on-screen DEMO banner make this explicit. Any deployment in an operational
+   context is a violation of this license and is undertaken solely at the
+   deployer's own risk and liability.
+
+3. Attribution
+   If you publish derivative works (a fork, a write-up, a demo video), credit
+   the original project with a link to the source repository
+   (https://github.com/elchai/Tomorrow).
+
+4. Third-party assets
+   - Leaflet (BSD-2-Clause), leaflet.heat (BSD-2-Clause)
+   - Lucide icons (ISC)
+   - Heebo + Share Tech Mono (Open Font License)
+   - CartoDB tiles (CC BY 3.0, attribution required at runtime)
+   Each retains its own license; this file does not modify them.
+
+5. No warranty
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL
+   THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY ARISING
+   FROM OR IN CONNECTION WITH THE SOFTWARE OR ITS USE.
+
+For commercial-license enquiries, contact: elchaifinn@gmail.com

@@ -448,6 +448,32 @@ window.TomorrowApp = (function () {
             padding: 30px;
             direction: rtl;
             line-height: 1.5;
+            position: relative;
+            overflow: hidden;
+          }
+          /* DEMO watermark — diagonal repeating text, visible on screen + print.
+             Stops a screenshot from being mistaken for a real police order. */
+          body::before {
+            content: 'תצוגת דמו · לא לשימוש מבצעי · DEMO · NOT FOR OPERATIONAL USE';
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) rotate(-32deg);
+            font-family: 'Heebo', sans-serif;
+            font-weight: 900;
+            font-size: 54px;
+            color: rgba(255, 31, 75, 0.13);
+            letter-spacing: 4px;
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 9999;
+            user-select: none;
+          }
+          @media print {
+            body::before {
+              color: rgba(255, 31, 75, 0.18);
+              -webkit-print-color-adjust: exact;
+              print-color-adjust: exact;
+            }
           }
           .header {
             text-align: center;
@@ -584,7 +610,7 @@ window.TomorrowApp = (function () {
           <div class="emblem">🇮🇱</div>
           <h1>מדינת ישראל — משטרת ישראל</h1>
           <h2>מחוז תל אביב • אגף המבצעים • ענף סיור ושיטור מונחה</h2>
-          <div class="confidential">סודי — לשימוש מבצעי בלבד</div>
+          <div class="confidential">תצוגת דמו — לא לשימוש מבצעי</div>
         </div>
 
         <h1>פקודת נוכחות מונעת מבצעית</h1>

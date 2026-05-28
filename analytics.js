@@ -54,8 +54,8 @@ window.TomorrowAnalytics = (function () {
     panelEl.id = 'analytics-panel';
     panelEl.className = 'panel';
     panelEl.style.cssText = `
-      position: absolute;
-      top: 0;
+      position: fixed;
+      top: calc(var(--demo-ribbon-h) + var(--hud-h));
       bottom: 0;
       right: -310px;
       width: 300px;
@@ -231,10 +231,11 @@ window.TomorrowAnalytics = (function () {
     // honor the side nav-rail width (set as CSS var; 0 on mobile)
     const railOpen = getComputedStyle(document.documentElement).getPropertyValue('--rail-w').trim() || '0px';
     panelEl.style.right = isOpen ? railOpen : '-310px';
-    
+    panelEl.classList.toggle('open', isOpen);  // CSS hook for mobile-fixed override
+
     const btn = document.getElementById('btn-analytics');
     if (btn) btn.classList.toggle('active', isOpen);
-    
+
     if (window.TomorrowSounds) TomorrowSounds.uiClick();
     if (isOpen) refresh();
   }
