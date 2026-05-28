@@ -377,6 +377,7 @@ window.TomorrowApp = (function () {
       if (window.TomorrowAnalytics) TomorrowAnalytics.init();
       if (window.TomorrowIntel) TomorrowIntel.init();
       if (window.TomorrowLpr) TomorrowLpr.init();
+      if (window.TomorrowSysLog) TomorrowSysLog.init();
       renderStrategicEvents();
       updateThreatLevel();
       renderIcons();   // convert any remaining static [data-lucide] in the HUD/timeline
@@ -395,7 +396,8 @@ window.TomorrowApp = (function () {
     const map = [
       { id: 'btn-analytics', label: window.TomorrowI18n ? TomorrowI18n.t('rail.analytics') : 'Analytics' },
       { id: 'btn-intel',     label: window.TomorrowI18n ? TomorrowI18n.t('rail.intel')     : 'Intel'  },
-      { id: 'btn-lpr',       label: 'LPR'      }
+      { id: 'btn-lpr',       label: 'LPR'      },
+      { id: 'btn-syslog',    label: window.TomorrowI18n ? TomorrowI18n.t('syslog.title')   : 'System Log' }
     ];
     map.forEach(({ id, label }) => {
       const btn = document.getElementById(id);
@@ -418,7 +420,7 @@ window.TomorrowApp = (function () {
     // and tells Leaflet to recompute its size so map tiles don't go gray.
     // Per-button mutual-exclusion listener (event delegation on rail fails because
     // lucide replaces children mid-flight and closest() can resolve to detached nodes).
-    ['btn-analytics', 'btn-intel', 'btn-lpr'].forEach(id => {
+    ['btn-analytics', 'btn-intel', 'btn-lpr', 'btn-syslog'].forEach(id => {
       const btn = document.getElementById(id);
       if (!btn) return;
       btn.addEventListener('click', () => {
@@ -435,7 +437,8 @@ window.TomorrowApp = (function () {
     const drawers = [
       { btn: 'btn-analytics', panel: 'analytics-panel', external: () => window.TomorrowAnalytics?.toggle?.() },
       { btn: 'btn-intel',     panel: 'intel-panel',     external: () => window.TomorrowIntel?.close?.() },
-      { btn: 'btn-lpr',       panel: 'lpr-panel',       external: () => window.TomorrowLpr?.close?.() }
+      { btn: 'btn-lpr',       panel: 'lpr-panel',       external: () => window.TomorrowLpr?.close?.() },
+      { btn: 'btn-syslog',    panel: 'syslog-panel',    external: () => window.TomorrowSysLog?.close?.() }
     ];
     drawers.forEach(({ btn, panel, external }) => {
       if (btn === exceptBtnId) return;

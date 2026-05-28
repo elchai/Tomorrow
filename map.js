@@ -106,17 +106,25 @@ window.TomorrowMap = (function () {
     m.bindPopup(popupHtml(h), { className: 'tac-popup-wrap' });
     m.on('popupopen', (e) => {
       TomorrowApp.renderIcons();
-      // CSP blocks inline onclick — bind the dispatch button in JS instead.
+      // CSP blocks inline onclick — bind buttons in JS instead.
       // (Use data-id and look up the live hotspot at click time so a stale
       // forecast-regenerate still resolves correctly.)
       const root = e.popup.getElement();
-      const btn = root && root.querySelector('.tp-dispatch');
-      if (btn && !btn.dataset.wired) {
-        btn.dataset.wired = '1';
-        btn.addEventListener('click', () => {
-          const id = parseInt(btn.dataset.id, 10);
+      const dispBtn = root && root.querySelector('.tp-dispatch');
+      if (dispBtn && !dispBtn.dataset.wired) {
+        dispBtn.dataset.wired = '1';
+        dispBtn.addEventListener('click', () => {
+          const id = parseInt(dispBtn.dataset.id, 10);
           const hot = TomorrowState.forecast.find(x => x.id === id);
           if (hot) TomorrowDispatch.dispatchToHotspot(hot);
+        });
+      }
+      const printBtn = root && root.querySelector('.tp-print');
+      if (printBtn && !printBtn.dataset.wired) {
+        printBtn.dataset.wired = '1';
+        printBtn.addEventListener('click', () => {
+          const id = parseInt(printBtn.dataset.id, 10);
+          if (TomorrowApp.printPatrolOrder) TomorrowApp.printPatrolOrder(id);
         });
       }
     });
@@ -181,9 +189,14 @@ window.TomorrowMap = (function () {
           <span class="tp-prob-lbl">${T('map.probabilityLabel')}</span>
         </div>
         
-        <button class="tp-dispatch" data-id="${h.id}">
-          <i data-lucide="navigation"></i><span>${T('map.dispatch')}</span>
-        </button>
+        <div class="tp-actions">
+          <button class="tp-dispatch" data-id="${h.id}">
+            <i data-lucide="navigation"></i><span>${T('map.dispatch')}</span>
+          </button>
+          <button class="tp-print" data-id="${h.id}" data-i18n-attr="title:print.button;aria-label:print.button">
+            <i data-lucide="printer"></i><span>${T('print.button')}</span>
+          </button>
+        </div>
       </div>`;
   }
 

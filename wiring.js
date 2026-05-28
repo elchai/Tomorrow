@@ -120,29 +120,40 @@ document.addEventListener('DOMContentLoaded', () => {
   const slider = document.getElementById('tl-slider');
   const readout = document.getElementById('tl-readout');
 
-  // P1-6 fix: keep nowHour current even when the wall clock crosses an
-  // hour boundary mid-session. Without this, after a long session the
-  // slider's "now" label drifts off the actual current hour.
+  // Forecast scrubber — forward-only, in 4-hour jumps.
+  //   • Slider value is an OFFSET from "now" (0, 4, 8, 12, 16, 20 hours ahead).
+  //   • Forecast_hour stored on State is the absolute hour-of-day the offset
+  //     resolves to (so prediction.js can look it up against the bucketed model).
+  // Backward scrubbing intentionally disabled until sectoral history is wired
+  // (showing a forecast for a past hour while saying "now" was confusing — see
+  // user feedback). When the history layer lands, change `min` to a negative
+  // offset and use State.history to back-fill.
   let nowHour = new Date().getHours();
-  slider.value = nowHour;
+  slider.value = 0;
+  if (window.TomorrowState) TomorrowState.forecast_hour = null;
 
+  function offsetToHour(off) { return (nowHour + parseInt(off, 10) + 24) % 24; }
   function refreshNowHour() {
     const h = new Date().getHours();
     if (h !== nowHour) {
       nowHour = h;
-      // If the slider was at "now", follow the rollover.
+      // If user was at "now" (offset 0), keep them pinned to the new now.
       if (TomorrowState.forecast_hour == null) {
-        slider.value = nowHour;
+        slider.value = 0;
         readout.textContent = window.TomorrowI18n ? TomorrowI18n.t('forecast.now') : 'now';
+        if (window.TomorrowPrediction) TomorrowPrediction.refresh();
       }
     }
   }
   setInterval(refreshNowHour, 30 * 1000);
 
   slider.addEventListener('input', () => {
-    const h = parseInt(slider.value);
-    TomorrowState.forecast_hour = (h === nowHour) ? null : h;
-    readout.textContent = (h === nowHour) ? T('forecast.now') : `${String(h).padStart(2,'0')}:00`;
+    const off = parseInt(slider.value, 10);
+    const hour = offsetToHour(off);
+    TomorrowState.forecast_hour = (off === 0) ? null : hour;
+    readout.textContent = (off === 0)
+      ? T('forecast.now')
+      : `${String(hour).padStart(2,'0')}:00 · +${off}h`;
     if (window.TomorrowPrediction) TomorrowPrediction.refresh();
   });
 

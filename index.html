@@ -115,6 +115,7 @@
       <li class="hm-item" data-trigger="btn-analytics"><i data-lucide="bar-chart-3"></i><span data-i18n="menu.analytics">Analytics &amp; Calibration</span></li>
       <li class="hm-item" data-trigger="btn-intel"><i data-lucide="scan-face"></i><span data-i18n="menu.intel">Target Intel</span></li>
       <li class="hm-item" data-trigger="btn-lpr"><i data-lucide="camera"></i><span data-i18n="menu.lpr">LPR Alerts</span></li>
+      <li class="hm-item" data-trigger="btn-syslog"><i data-lucide="scroll-text"></i><span data-i18n="syslog.title">System Log</span></li>
       <li class="hm-item" data-trigger="btn-osint"><i data-lucide="radio-tower"></i><span data-i18n="menu.osint">OSINT Layer</span></li>
       <li class="hm-item" data-trigger="btn-layers"><i data-lucide="layers"></i><span data-i18n="menu.layers">Context Layers (RTM)</span></li>
       <li class="hm-item" data-trigger="btn-mute"><i data-lucide="volume-2"></i><span data-i18n="menu.sound">Sound / Mute</span></li>
@@ -229,10 +230,14 @@
           <span class="tl-title"><i data-lucide="clock"></i><span data-i18n="forecast.timeline">Forecast Timeline · 24h</span></span>
           <span id="tl-readout" class="tl-readout" data-i18n="forecast.now">now</span>
         </div>
-        <input id="tl-slider" type="range" min="0" max="23" step="1" />
+        <!-- Forward-only forecast scrubber: 4-hour jumps from "now". History
+             slot will reopen the backward direction once sectoral history
+             is wired (see TODO in wiring.js). min + max are reset from
+             nowHour on every refresh tick. -->
+        <input id="tl-slider" type="range" min="0" max="20" step="4" value="0" />
         <div class="tl-foot">
-          <div class="tl-marks">
-            <span>00</span><span>06</span><span>12</span><span>18</span><span>23</span>
+          <div class="tl-marks" id="tl-marks">
+            <span data-i18n="forecast.now">now</span><span>+4h</span><span>+8h</span><span>+12h</span><span>+16h</span><span>+20h</span>
           </div>
           <div class="tl-legend">
             <span class="tl-legend-item"><span class="dot" style="background:#ff1f4b"></span><span data-i18n="forecast.severity.critical">Critical</span></span>
@@ -265,14 +270,13 @@
     <div class="app-footer-inner">
       <span class="app-footer-tag" data-i18n="footer.tag">TOMORROW · Crime Prediction Network</span>
       <span class="app-footer-credit">
-        <span data-i18n="app.poweredBy">Powered by</span>
-        <a href="https://www.daghazahav.com" target="_blank" rel="noopener noreferrer" class="app-footer-link" data-i18n="app.brand">Dag Hazahav</a>
-        · <span data-i18n="app.builtBy">Built by Elchai Fine</span> ·
-        <a href="mailto:elchaifinn@gmail.com" rel="noopener noreferrer" class="app-footer-link" data-i18n="app.contact">Contact</a>
+        <span data-i18n="footer.dev">Development:</span>
+        <a href="https://www.daghazahav.com" target="_blank" rel="noopener noreferrer" class="app-footer-link">www.daghazahav.com</a>
       </span>
     </div>
   </footer>
 
+  <!-- ===== Scripts ===== -->
   <!-- ===== Scripts ===== -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"
           integrity="sha384-NElt3Op+9NBMCYaef5HxeJmU4Xeard/Lku8ek6hoPTvYkQPh3zLIrJP7KiRocsxO"
@@ -296,6 +300,7 @@
   <script src="analytics.js"></script>
   <script src="intel.js"></script>
   <script src="lpr.js"></script>
+  <script src="syslog.js"></script>
 
   <!-- UI wiring (timeline + control buttons) — external for strict CSP -->
   <script src="wiring.js"></script>
