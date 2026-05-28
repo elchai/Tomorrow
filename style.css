@@ -816,7 +816,11 @@ input:checked + .slider-round .slider-knob {
   display: flex; flex-direction: column;
   align-items: center; gap: 6px;
   padding: 12px 6px;
-  z-index: 100;
+  /* z-index needs `position` to apply; raise above the drawer-panel (1000)
+     so the rail (and its language button + popup) stays clickable when
+     any drawer is open. */
+  position: relative;
+  z-index: 1500;
 }
 .nav-rail-btn {
   width: 46px !important; height: 46px !important;
@@ -1123,6 +1127,37 @@ html[dir="rtl"] .drawer-panel.open   { transform: translateX(0); }
 
 .hm-foot { padding: 12px 16px; border-top: 1px solid var(--line-soft);
   font-family: var(--font-mono); font-size: 10px; color: var(--text-faint); text-align: center; flex-shrink: 0; }
+
+/* Language sub-section inside the hamburger menu — section header + 3 rows */
+.hm-section-head {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 18px 6px; margin-top: 6px;
+  font-family: var(--font-he); font-weight: 700; font-size: 11px;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--text-faint);
+  border-top: 1px solid var(--line-soft);
+  list-style: none;
+}
+.hm-section-head svg { width: 14px; height: 14px; color: var(--cyan); flex: 0 0 auto; }
+
+.hm-lang-item {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 12px 18px; min-height: 44px;
+  font-family: var(--font-he); font-weight: 500; font-size: 14px; color: var(--text);
+  cursor: pointer; transition: background .15s;
+  list-style: none;
+}
+.hm-lang-item:hover:not(.is-disabled), .hm-lang-item:active:not(.is-disabled) { background: rgba(43, 143, 255, .15); }
+.hm-lang-item.is-active { background: rgba(43, 143, 255, .22); color: #fff; }
+.hm-lang-item.is-disabled { cursor: not-allowed; opacity: .55; }
+.hm-lang-item .lang-soon {
+  font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+  letter-spacing: .5px; color: var(--high);
+  background: rgba(255, 122, 24, 0.10);
+  border: 1px solid rgba(255, 122, 24, 0.35);
+  border-radius: 3px; padding: 2px 6px; text-transform: uppercase;
+  white-space: nowrap;
+}
 
 /* mobile only — show hamburger, hide individual HUD action buttons that the menu replaces */
 @media (max-width: 600px) {

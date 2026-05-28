@@ -53,22 +53,15 @@ document.addEventListener('DOMContentLoaded', () => {
         opt.addEventListener('click', (e) => {
           if (opt.disabled) { e.stopPropagation(); return; }
           const lang = opt.dataset.lang;
-          // Clearing forecast + intel-log avoids the stale-mixed-language
-          // problem (HE template + PT/EN data, or vice versa) shown in
-          // the user's screenshot. Storage is overwritten by setLang's
-          // saveState path on the very next emission.
-          try {
-            const raw = localStorage.getItem('tomorrow_state_v2');
-            if (raw) {
-              const parsed = JSON.parse(raw);
-              if (parsed && parsed.state) {
-                parsed.state.intel_log = [];
-                parsed.state.forecast = [];
-                parsed.state.units = [];
-                localStorage.setItem('tomorrow_state_v2', JSON.stringify(parsed));
-              }
-            }
-          } catch (_) { /* ignore */ }
+          // Bind language to a natural region: HE → Israel (so the dataset
+          // matches the language and the user doesn't see Hebrew UI with
+          // Portuguese neighborhood names), EN/PT → Brazil. The Region
+          // picker on the login screen still allows manual override.
+          const defaultCountry = (lang === 'he') ? 'israel' : 'brazil';
+          if (window.TomorrowCountries) TomorrowCountries.set(defaultCountry);
+          // Wipe persisted forecast/units/log so the new language+country
+          // re-renders from scratch (no stale entries from a prior mode).
+          try { localStorage.removeItem('tomorrow_state_v2'); } catch (_) { /* ignore */ }
           TomorrowI18n.setLang(lang);
           setOpen(false);
           location.reload();   // full reload so every module re-renders cleanly
@@ -174,6 +167,30 @@ document.addEventListener('DOMContentLoaded', () => {
       const target = document.getElementById(item.dataset.trigger);
       toggleHam(false);
       if (target) setTimeout(() => target.click(), 220);   // wait for menu fade
+    });
+  });
+
+  // Mobile language picker — same behaviour as the desktop rail popup,
+  // just inline rows inside the hamburger menu.
+  const markActiveLang = () => {
+    if (!window.TomorrowI18n) return;
+    const cur = TomorrowI18n.getLang();
+    menu.querySelectorAll('.hm-lang-item').forEach(li => {
+      li.classList.toggle('is-active', li.dataset.lang === cur);
+    });
+  };
+  markActiveLang();
+  document.addEventListener('tomorrow-lang-change', markActiveLang);
+  menu.querySelectorAll('.hm-lang-item').forEach(item => {
+    item.addEventListener('click', () => {
+      if (item.classList.contains('is-disabled')) return;
+      const lang = item.dataset.lang;
+      const defaultCountry = (lang === 'he') ? 'israel' : 'brazil';
+      if (window.TomorrowCountries) TomorrowCountries.set(defaultCountry);
+      try { localStorage.removeItem('tomorrow_state_v2'); } catch (_) { /* ignore */ }
+      if (window.TomorrowI18n) TomorrowI18n.setLang(lang);
+      toggleHam(false);
+      setTimeout(() => location.reload(), 280);
     });
   });
 });
