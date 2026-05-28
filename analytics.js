@@ -41,7 +41,7 @@ window.TomorrowAnalytics = (function () {
     const btn = document.createElement('button');
     btn.id = 'btn-analytics';
     btn.className = 'icon-btn';
-    btn.title = 'אנליטיקה וכיול מודל';
+    btn.title = T('analytics.title');
     btn.style.marginInlineEnd = '8px';
     btn.innerHTML = '<i data-lucide="bar-chart-3"></i>';
     
@@ -71,14 +71,14 @@ window.TomorrowAnalytics = (function () {
 
     panelEl.innerHTML = `
       <div class="panel-head" style="flex-shrink: 0;">
-        <span class="panel-title"><i data-lucide="bar-chart-3"></i><span>אנליטיקה וכיול מודל</span></span>
+        <span class="panel-title"><i data-lucide="bar-chart-3"></i><span>${T('analytics.title')}</span></span>
         <button id="btn-close-analytics" class="icon-btn" style="border:none; background:transparent; cursor:pointer;" title="סגור"><i data-lucide="x"></i></button>
       </div>
 
       <!-- B2B Tabs Header -->
       <div style="display:flex; border-bottom: 1px solid var(--line-soft); background: rgba(0,0,0,0.2); flex-shrink: 0;">
-        <button id="an-tab-kpi" style="flex: 1; background: transparent; border: none; border-bottom: 2px solid var(--police); color: #fff; padding: 10px 0; font-size: 12.5px; font-weight: 700; cursor: pointer; transition: all 0.2s ease;">מדדי פעילות</button>
-        <button id="an-tab-val" style="flex: 1; background: transparent; border: none; border-bottom: 2px solid transparent; color: var(--text-dim); padding: 10px 0; font-size: 12.5px; font-weight: 700; cursor: pointer; transition: all 0.2s ease;">אימות מודל (B2B)</button>
+        <button id="an-tab-kpi" style="flex: 1; background: transparent; border: none; border-bottom: 2px solid var(--police); color: #fff; padding: 10px 0; font-size: 12.5px; font-weight: 700; cursor: pointer; transition: all 0.2s ease;">${T('analytics.tab.kpi')}</button>
+        <button id="an-tab-val" style="flex: 1; background: transparent; border: none; border-bottom: 2px solid transparent; color: var(--text-dim); padding: 10px 0; font-size: 12.5px; font-weight: 700; cursor: pointer; transition: all 0.2s ease;">${T('analytics.tab.val')}</button>
       </div>
 
       <!-- Tab 1 Container: KPIs & Sliders -->
@@ -215,7 +215,7 @@ window.TomorrowAnalytics = (function () {
 
         <!-- Run Backtest Button -->
         <button id="btn-run-backtest" style="width: 100%; border-radius: 4px; height: 38px; font-family: var(--font-ui); font-size: 13px; font-weight:700; display:flex; justify-content:center; align-items:center; gap:8px; background:var(--police); border:1px solid var(--police-br); color:#fff; cursor:pointer; transition:all 0.2s ease; flex-shrink: 0;">
-          <i data-lucide="play-circle"></i><span>הפעל סימולציית הדגמה (30 יום)</span>
+          <i data-lucide="play-circle"></i><span>${T('analytics.backtest')}</span>
         </button>
       </div>
     `;
@@ -600,7 +600,7 @@ window.TomorrowAnalytics = (function () {
       btn.style.background = '#4a5568';
       btn.style.borderColor = '#4a5568';
       btn.style.cursor = 'not-allowed';
-      btn.innerHTML = '<i data-lucide="loader" class="spin"></i><span>מריץ סימולציית הדגמה...</span>';
+      btn.innerHTML = `<i data-lucide="loader" class="spin"></i><span>${T('analytics.backtest.running')}</span>`;
       TomorrowApp.renderIcons();
     }
 
@@ -609,7 +609,7 @@ window.TomorrowAnalytics = (function () {
       TomorrowSounds.alert(3);
     }
     
-    TomorrowApp.toast('📊 מתחיל סימולציית הדגמה (30 ימי פשיעה סינתטיים)...', 'info');
+    TomorrowApp.toast(T('analytics.backtest.startToast'), 'info');
 
     let progress = 0;
     const duration = 1500; // 1.5s
@@ -675,12 +675,12 @@ window.TomorrowAnalytics = (function () {
           btn.style.background = 'var(--police)';
           btn.style.borderColor = 'var(--police-br)';
           btn.style.cursor = 'pointer';
-          btn.innerHTML = '<i data-lucide="play-circle"></i><span>הפעל סימולציית הדגמה (30 יום)</span>';
+          btn.innerHTML = `<i data-lucide="play-circle"></i><span>${T('analytics.backtest')}</span>`;
           TomorrowApp.renderIcons();
         }
 
         // Notification and logs
-        TomorrowApp.toast('✅ סימולציית ההדגמה הסתיימה (נתונים סינתטיים)', 'success');
+        TomorrowApp.toast(T('analytics.backtest.doneToast'), 'success');
         TomorrowApp.logEvent('model', 2, `📊 אימות מודל (Backtest) מול 30 ימי עבר בוצע בהצלחה: ROC-AUC = ${finalRoc}, Precision = ${finalPrec}%, Recall = ${finalRec}%`);
         
         if (window.TomorrowSounds && TomorrowSounds.online) {

@@ -10,39 +10,19 @@ window.TomorrowLpr = (function () {
   let panelEl = null;
   let isOpen  = false;
 
-  // ---- Demo LPR feed (placeholder; later wired to live camera grid + stolencar API) ----
-  const ALERTS = [
-    {
-      id: 'lpr-7012', plate: '12-345-67', mins_ago: 2,
-      camera: { name: 'מצלמה 14 · אלנבי × רוטשילד', lat: 32.0640, lng: 34.7725 },
-      status: 'stolen',   model: 'Hyundai i20 לבן',  match_src: 'דמו · stolencar · גניבת רכב 2026-05-20',
-      dispatchable: true
-    },
-    {
-      id: 'lpr-7011', plate: '88-219-44', mins_ago: 6,
-      camera: { name: 'מצלמה 22 · דיזנגוף סנטר',   lat: 32.0760, lng: 34.7751 },
-      status: 'flagged',  model: 'Kia Picanto אפור', match_src: 'דמו · מודיעין · רכב משמש בעבירות חוזרות',
-      dispatchable: true
-    },
-    {
-      id: 'lpr-7010', plate: '45-901-22', mins_ago: 11,
-      camera: { name: 'מצלמה 08 · יפו / שוק הפשפשים', lat: 32.0530, lng: 34.7530 },
-      status: 'clean',    model: 'Toyota Corolla שחור', match_src: '—',
-      dispatchable: false
-    },
-    {
-      id: 'lpr-7009', plate: '63-882-91', mins_ago: 18,
-      camera: { name: 'מצלמה 31 · נווה שאנן',       lat: 32.0590, lng: 34.7790 },
-      status: 'stolen',   model: 'Mazda 3 כסוף',     match_src: 'דמו · stolencar · גניבת רכב 2026-05-22',
-      dispatchable: true
-    },
-    {
-      id: 'lpr-7008', plate: '77-114-58', mins_ago: 27,
-      camera: { name: 'מצלמה 17 · פלורנטין',         lat: 32.0570, lng: 34.7700 },
-      status: 'flagged',  model: 'Volkswagen Polo אדום', match_src: 'דמו · BOLO · התראת מפקד',
-      dispatchable: true
+  // LPR alerts now come from the active country profile (countries.js).
+  function getAlerts() {
+    return (CONFIG.LPR_ALERTS && CONFIG.LPR_ALERTS.length) ? CONFIG.LPR_ALERTS : [];
+  }
+  const ALERTS = new Proxy([], {
+    get(_t, prop) {
+      const live = getAlerts();
+      if (prop === 'length') return live.length;
+      if (typeof prop === 'string' && /^\d+$/.test(prop)) return live[+prop];
+      const v = Array.prototype[prop];
+      return typeof v === 'function' ? v.bind(live) : live[prop];
     }
-  ];
+  });
 
   function init() {
     injectHUDButton();
@@ -57,7 +37,7 @@ window.TomorrowLpr = (function () {
     const btn = document.createElement('button');
     btn.id = 'btn-lpr';
     btn.className = 'icon-btn';
-    btn.title = 'התראות LPR — זיהוי לוחיות רישוי';
+    btn.title = T('lpr.title');
     btn.style.marginInlineEnd = '8px';
     btn.innerHTML = `<i data-lucide="camera"></i><span class="hud-badge" id="lpr-badge">0</span>`;
     muteBtn.parentElement.insertBefore(btn, muteBtn);
@@ -103,14 +83,14 @@ window.TomorrowLpr = (function () {
   function renderPanel() {
     return `
       <div class="panel-head" style="flex-shrink: 0;">
-        <span class="panel-title"><i data-lucide="camera"></i><span>התראות LPR</span></span>
-        <button id="btn-close-lpr" class="icon-btn" style="border:none; background:transparent;" title="סגור"><i data-lucide="x"></i></button>
+        <span class="panel-title"><i data-lucide="camera"></i><span>${T('lpr.title')}</span></span>
+        <button id="btn-close-lpr" class="icon-btn" style="border:none; background:transparent;"><i data-lucide="x"></i></button>
       </div>
 
       <div class="lpr-summary">
-        <span class="lpr-summary-stat"><span class="num" style="color:var(--critical)">${ALERTS.filter(a => a.status === 'stolen').length}</span> גנובים</span>
-        <span class="lpr-summary-stat"><span class="num" style="color:var(--high)">${ALERTS.filter(a => a.status === 'flagged').length}</span> מסומנים</span>
-        <span class="lpr-summary-stat"><span class="num" style="color:var(--low)">${ALERTS.filter(a => a.status === 'clean').length}</span> נקיים</span>
+        <span class="lpr-summary-stat"><span class="num" style="color:var(--critical)">${ALERTS.filter(a => a.status === 'stolen').length}</span> ${T('lpr.status.stolen')}</span>
+        <span class="lpr-summary-stat"><span class="num" style="color:var(--high)">${ALERTS.filter(a => a.status === 'flagged').length}</span> ${T('lpr.status.flagged')}</span>
+        <span class="lpr-summary-stat"><span class="num" style="color:var(--low)">${ALERTS.filter(a => a.status === 'clean').length}</span> ${T('lpr.status.clean')}</span>
       </div>
 
       <div id="lpr-feed" class="scroll-list" style="padding:10px 12px; flex:1; overflow-y:auto;">
@@ -119,14 +99,17 @@ window.TomorrowLpr = (function () {
 
       <div class="intel-disclaimer">
         <i data-lucide="info"></i>
-        פיד דמו. הצלבה בפועל מול stolencar.gov.il מצריכה אינטגרציית API משטרת ישראל.
+        ${T('lpr.disclaimer')}
       </div>
     `;
   }
 
   function renderAlert(a) {
     const cls = `lpr-alert lpr-${a.status}`;
-    const statusLbl = a.status === 'stolen' ? 'רכב גנוב' : (a.status === 'flagged' ? 'מסומן' : (a.status === 'secured' ? 'טופל בהצלחה' : 'נקי'));
+    const statusLbl = a.status === 'stolen' ? T('lpr.status.stolen')
+                    : a.status === 'flagged' ? T('lpr.status.flagged')
+                    : a.status === 'secured' ? T('lpr.status.secured')
+                    : T('lpr.status.clean');
     const eta = TomorrowApp.nearestEta(a.camera.lat, a.camera.lng);
     return `
       <div class="${cls}">
@@ -140,12 +123,12 @@ window.TomorrowLpr = (function () {
         </div>
         <div class="lpr-camera"><i data-lucide="map-pin"></i><span>${a.camera.name}</span></div>
         <div class="lpr-match"><i data-lucide="link"></i><span>${a.match_src}</span></div>
-        ${eta ? `<div class="lpr-eta"><i data-lucide="timer"></i><span>ETA <b>${eta.eta} דק׳</b> מ${eta.station.name} (${eta.km.toFixed(1)} ק״מ)</span></div>` : ''}
+        ${eta ? `<div class="lpr-eta"><i data-lucide="timer"></i><span>ETA <b>${eta.eta} ${T('forecast.eta')}</b> · ${eta.station.name} (${eta.km.toFixed(1)} km)</span></div>` : ''}
         <div class="lpr-row-bottom">
-          <span class="lpr-when"><i data-lucide="clock"></i>לפני ${a.mins_ago} דק׳</span>
+          <span class="lpr-when"><i data-lucide="clock"></i>${T('lpr.minsAgo', { n: a.mins_ago })}</span>
           <div class="lpr-actions">
-            <button class="lpr-btn" data-focus="${a.id}"><i data-lucide="navigation"></i>מקד</button>
-            ${a.dispatchable ? `<button class="lpr-btn primary" data-dispatch="${a.id}"><i data-lucide="siren"></i>הזנק</button>` : ''}
+            <button class="lpr-btn" data-focus="${a.id}"><i data-lucide="navigation"></i>${T('lpr.focus')}</button>
+            ${a.dispatchable ? `<button class="lpr-btn primary" data-dispatch="${a.id}"><i data-lucide="siren"></i>${T('lpr.dispatch')}</button>` : ''}
           </div>
         </div>
       </div>

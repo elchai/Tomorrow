@@ -148,7 +148,7 @@ window.TomorrowLayers = (function () {
         existingSimBtn.id = 'btn-layers';
         existingSimBtn.className = 'sim-btn';
         existingSimBtn.style.cssText = 'color: var(--cyan); background: rgba(0, 229, 255, 0.08); border-color: rgba(0, 229, 255, 0.4); display: flex; align-items: center; gap: 6px; cursor:pointer;';
-        existingSimBtn.innerHTML = '<i data-lucide="layers"></i><span>שכבות הקשר (RTM)</span>';
+        existingSimBtn.innerHTML = `<i data-lucide="layers"></i><span data-i18n="layers.title">${window.TomorrowI18n ? TomorrowI18n.t('layers.title') : 'Context Layers (RTM)'}</span>`;
         
         // Remove old click handler and replace
         const newBtn = existingSimBtn.cloneNode(true);

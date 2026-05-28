@@ -141,24 +141,24 @@ window.TomorrowOsint = (function () {
 
         <!-- NLP entity extraction breakdown -->
         <div style="margin-top: 8px; font-size: 11px; color: var(--text-dim); background: rgba(0, 229, 255, 0.03); border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 4px; padding: 6px 8px; line-height: 1.45;">
-          <div style="font-weight:700; color:var(--cyan); margin-bottom:4px;">עיבוד ישויות NLP גולמיות:</div>
+          <div style="font-weight:700; color:var(--cyan); margin-bottom:4px;">${escapeHtml(window.T ? T('osint.popup.nlpHeader') : 'NLP entity extraction:')}</div>
           <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
-            <span>סיווג אירוע חזוי:</span>
+            <span>${escapeHtml(window.T ? T('osint.popup.classifier') : 'Predicted event:')}</span>
             <span style="font-weight:700; color:#fff;">${safeCrimeName}</span>
           </div>
           <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
-            <span>נ״צ גאוגרפי שחולץ:</span>
+            <span>${escapeHtml(window.T ? T('osint.popup.coords') : 'Extracted coords:')}</span>
             <span style="font-family:var(--font-mono); color:#fff;">${lat}, ${lng}</span>
           </div>
           <div style="display:flex; justify-content:space-between;">
-            <span>מקור היתוך מידע:</span>
-            <span style="color:#fff;">פיד מודיעין OSINT (דמו)</span>
+            <span>${escapeHtml(window.T ? T('osint.popup.source') : 'Source:')}</span>
+            <span style="color:#fff;">${escapeHtml(window.T ? T('osint.popup.sourceLabel') : 'OSINT intelligence feed (demo)')}</span>
           </div>
         </div>
 
         <div class="tp-row" style="margin-top: 10px;">
           <span class="tp-window"><i data-lucide="clock"></i>${escapeHtml(timeAgo(sig))}</span>
-          <span class="risk-chip" style="--rc:#00e5ff">מהימנות ${conf}%</span>
+          <span class="risk-chip" style="--rc:#00e5ff">${escapeHtml(window.T ? T('osint.popup.confidence') : 'Confidence')} ${conf}%</span>
         </div>
       </div>`, { className: 'tac-popup-wrap' });
     mk.on('popupopen', () => TomorrowApp.renderIcons());
@@ -206,7 +206,10 @@ window.TomorrowOsint = (function () {
 
     // reflect the boost in the forecast + map
     if (window.TomorrowPrediction) TomorrowPrediction.refresh();
-    TomorrowApp.toast(`📡 ${list.length} אותות OSINT נטענו ${live ? '(חי · Firebase)' : '(דמו)'}`, 'info', 3500);
+    TomorrowApp.toast(
+      (window.T ? T('osint.loaded', { n: list.length }) : `${list.length} OSINT signals loaded`)
+      + ' ' + (window.T ? (live ? T('osint.liveSuffix') : T('osint.demoSuffix')) : (live ? '(live)' : '(demo)')),
+      'info', 3500);
     TomorrowApp.register('osint', { onStationChange: renderMarkers });
 
     // live polling when a Firebase source is configured

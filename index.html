@@ -23,43 +23,61 @@
   <div id="login">
     <div class="login-grid"></div>
     <div class="login-scan"></div>
-    <div class="login-classification">DEMONSTRATION ENVIRONMENT // NOT A LIVE SYSTEM</div>
-    <div class="login-demo-disclaimer">תצוגת דמו · נתונים פיקטיביים · ללא אבטחה אמיתית · קוד גישה קוסמטי</div>
+
+    <!-- Language + country pickers (top-right) -->
+    <div class="login-locale">
+      <label class="locale-row">
+        <span class="locale-label" data-i18n="login.language">Language</span>
+        <select id="lang-picker" class="locale-select" aria-label="Language">
+          <option value="en">English</option>
+          <option value="he">עברית</option>
+          <option value="pt">Português</option>
+        </select>
+      </label>
+      <label class="locale-row">
+        <span class="locale-label" data-i18n="login.country">Region</span>
+        <select id="country-picker" class="locale-select" aria-label="Region">
+          <option value="brazil">🇧🇷 Brasil — São Paulo</option>
+          <option value="israel">🇮🇱 ישראל — תל אביב</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="login-classification" data-i18n="app.classification">DEMONSTRATION ENVIRONMENT // NOT A LIVE SYSTEM</div>
+    <div class="login-demo-disclaimer" data-i18n="app.disclaimer">Demo · Fictional data · No real security · Access code is cosmetic</div>
 
     <div class="login-box">
       <img class="login-logo" src="assets/tomorrow-logo.png" alt="TOMORROW · Crime Prediction System" />
       <div class="login-sub">
-        <span class="login-sub-he">רשת ניבוי פשיעה</span>
+        <span class="login-sub-he" data-i18n="app.sub">Crime Prediction Network</span>
       </div>
 
       <div class="login-field">
-        <label for="login-input">קוד גישה מבצעי</label>
+        <label for="login-input" data-i18n="login.codeLabel">Operational Access Code</label>
         <input id="login-input" type="password" autocomplete="off" autocorrect="off" spellcheck="false"
                data-lpignore="true" data-1p-ignore data-form-type="other" name="tmrw-access" maxlength="10"
-               inputmode="numeric" placeholder="• • • •" aria-label="קוד גישה" />
+               inputmode="numeric" placeholder="• • • •" aria-label="Access code"
+               data-i18n-attr="placeholder:login.codePlaceholder" />
       </div>
-      <button id="login-btn" class="login-btn">כניסה למערכת ▸</button>
+      <button id="login-btn" class="login-btn" data-i18n="login.enter">Enter System ▸</button>
       <div id="login-error" class="login-error"></div>
     </div>
 
-    <div class="login-footer">נבנה ע״י אלחי פיין · <a href="mailto:elchaifinn@gmail.com" rel="noopener noreferrer">צור קשר</a></div>
+    <div class="login-footer">
+      <span data-i18n="app.builtBy">Built by Elchai Fine</span> ·
+      <a href="mailto:elchaifinn@gmail.com" rel="noopener noreferrer" data-i18n="app.contact">Contact</a>
+    </div>
   </div>
 
   <!-- ===== Boot screen ===== -->
   <div id="boot">
     <div class="boot-inner">
       <img class="boot-logo-img" src="assets/tomorrow-logo.png" alt="TOMORROW" />
-      <div class="boot-sub">רשת ניבוי פשיעה</div>
+      <div class="boot-sub" data-i18n="app.sub">Crime Prediction Network</div>
       <div class="boot-progress"><div id="boot-bar"></div></div>
       <div id="boot-lines" class="boot-lines"></div>
     </div>
     <div class="scanlines"></div>
-  </div>
-
-  <!-- ===== DEMO ribbon (always visible) ===== -->
-  <div id="demo-ribbon" class="demo-ribbon" aria-label="הודעת דמו">
-    <i data-lucide="alert-triangle"></i>
-    <span>תצוגת דמו · נתונים פיקטיביים · ללא שימוש מבצעי</span>
   </div>
 
   <!-- ===== Header HUD ===== -->
@@ -75,46 +93,46 @@
     <div class="hud-right">
       <div class="threat-box">
         <span id="threat-dot" class="threat-dot low"></span>
-        <span id="threat-level" class="threat-level">DTI: רגישות רגילה (Level 4)</span>
+        <span id="threat-level" class="threat-level">DTI: —</span>
       </div>
       <div class="clock-box">
         <div id="hud-clock" class="clock">--:--:--</div>
         <div id="hud-date" class="date">—</div>
       </div>
-      <button id="btn-mute" class="icon-btn muted" title="הפעל קול"><i data-lucide="volume-x"></i></button>
-      <button id="btn-hamburger" class="icon-btn hamburger-btn" title="תפריט מערכת" aria-label="תפריט מערכת" aria-expanded="false"><i data-lucide="menu"></i></button>
+      <button id="btn-mute" class="icon-btn muted" data-i18n-attr="title:hud.muteOn"><i data-lucide="volume-x"></i></button>
+      <button id="btn-hamburger" class="icon-btn hamburger-btn" data-i18n-attr="title:hud.menu;aria-label:hud.menu" aria-expanded="false"><i data-lucide="menu"></i></button>
     </div>
   </header>
 
-  <!-- ===== Mobile hamburger menu (visible ≤768px) ===== -->
+  <!-- ===== Mobile hamburger menu (visible ≤600px) ===== -->
   <div id="hamburger-overlay" aria-hidden="true"></div>
   <aside id="hamburger-menu" class="hamburger-menu" aria-hidden="true">
     <div class="hm-head">
-      <span class="hm-title"><i data-lucide="layout-grid"></i><span>תפריט מערכת</span></span>
-      <button id="btn-close-hamburger" class="icon-btn" style="border:none;background:transparent" title="סגור"><i data-lucide="x"></i></button>
+      <span class="hm-title"><i data-lucide="layout-grid"></i><span data-i18n="hud.menu">System Menu</span></span>
+      <button id="btn-close-hamburger" class="icon-btn" style="border:none;background:transparent"><i data-lucide="x"></i></button>
     </div>
     <ul class="hm-list">
-      <li class="hm-item" data-trigger="btn-analytics"><i data-lucide="bar-chart-3"></i><span>אנליטיקה וכיול מודל</span></li>
-      <li class="hm-item" data-trigger="btn-intel"><i data-lucide="scan-face"></i><span>תיק יעד מודיעיני</span></li>
-      <li class="hm-item" data-trigger="btn-lpr"><i data-lucide="camera"></i><span>התראות LPR</span></li>
-      <li class="hm-item" data-trigger="btn-osint"><i data-lucide="radio-tower"></i><span>שכבת OSINT</span></li>
-      <li class="hm-item" data-trigger="btn-layers"><i data-lucide="layers"></i><span>שכבות הקשר (RTM)</span></li>
-      <li class="hm-item" data-trigger="btn-mute"><i data-lucide="volume-2"></i><span>קול / השתקה</span></li>
-      <li class="hm-item hm-item-logout" data-trigger="btn-logout"><i data-lucide="log-out"></i><span>יציאה</span></li>
+      <li class="hm-item" data-trigger="btn-analytics"><i data-lucide="bar-chart-3"></i><span data-i18n="menu.analytics">Analytics &amp; Calibration</span></li>
+      <li class="hm-item" data-trigger="btn-intel"><i data-lucide="scan-face"></i><span data-i18n="menu.intel">Target Intel</span></li>
+      <li class="hm-item" data-trigger="btn-lpr"><i data-lucide="camera"></i><span data-i18n="menu.lpr">LPR Alerts</span></li>
+      <li class="hm-item" data-trigger="btn-osint"><i data-lucide="radio-tower"></i><span data-i18n="menu.osint">OSINT Layer</span></li>
+      <li class="hm-item" data-trigger="btn-layers"><i data-lucide="layers"></i><span data-i18n="menu.layers">Context Layers (RTM)</span></li>
+      <li class="hm-item" data-trigger="btn-mute"><i data-lucide="volume-2"></i><span data-i18n="menu.sound">Sound / Mute</span></li>
+      <li class="hm-item hm-item-logout" data-trigger="btn-logout"><i data-lucide="log-out"></i><span data-i18n="menu.logout">Logout</span></li>
     </ul>
-    <div class="hm-foot" id="hm-version">TOMORROW v0.6 · נבנה ע״י אלחי פיין</div>
+    <div class="hm-foot" id="hm-version">TOMORROW v0.6</div>
   </aside>
 
   <!-- ===== Main layout ===== -->
   <main id="layout">
 
-    <!-- Side navigation rail (RTL leading edge — visual right). Hidden on mobile (hamburger takes over). -->
+    <!-- Side navigation rail (leading edge). Hidden on mobile (hamburger takes over). -->
     <aside id="nav-rail" class="nav-rail">
       <!-- buttons (Analytics, Intel, LPR) get relocated here by app.js post-init, inserted ABOVE .nav-rail-bottom -->
       <div class="nav-rail-bottom">
-        <button id="btn-logout" class="icon-btn nav-rail-btn" title="יציאה לדף הכניסה">
+        <button id="btn-logout" class="icon-btn nav-rail-btn" data-i18n-attr="title:hud.logout;aria-label:hud.logout">
           <i data-lucide="log-out"></i>
-          <span class="nav-rail-label">יציאה</span>
+          <span class="nav-rail-label" data-i18n="hud.logout">Logout</span>
         </button>
       </div>
     </aside>
@@ -122,18 +140,18 @@
     <!-- Left: forecast feed -->
     <aside class="panel panel-left">
       <div class="panel-head">
-        <span class="panel-title"><i data-lucide="crosshair"></i><span>תחזית פשיעה</span></span>
+        <span class="panel-title"><i data-lucide="crosshair"></i><span data-i18n="forecast.title">Crime Forecast</span></span>
         <span id="forecast-badge" class="badge">0</span>
       </div>
       <div class="panel-actions">
-        <button id="btn-regen" class="btn btn-ghost"><i data-lucide="refresh-cw"></i><span>הרץ מודל</span></button>
-        <button id="btn-saturate" class="btn btn-primary"><i data-lucide="shield"></i><span>סיור מונע</span></button>
+        <button id="btn-regen" class="btn btn-ghost"><i data-lucide="refresh-cw"></i><span data-i18n="forecast.regen">Run Model</span></button>
+        <button id="btn-saturate" class="btn btn-primary"><i data-lucide="shield"></i><span data-i18n="forecast.saturate">Saturation Patrol</span></button>
       </div>
       <div id="forecast-list" class="scroll-list" style="flex: 1 1 0; min-height: 0;"></div>
 
       <!-- Strategic Events Registry -->
       <div class="panel-head" style="margin-top: 10px; border-top: 1px solid var(--line-soft); padding-top: 10px; flex-shrink: 0;">
-        <span class="panel-title"><i data-lucide="calendar"></i><span>אירועים אסטרטגיים</span></span>
+        <span class="panel-title"><i data-lucide="calendar"></i><span data-i18n="events.title">Strategic Events</span></span>
       </div>
       <div id="strategic-events-list" class="strategic-events-list" style="height: 190px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; padding: 4px 6px; flex-shrink: 0;">
         <!-- Dynamic strategic events populated by JS -->
@@ -145,7 +163,7 @@
       <div id="map"></div>
 
       <!-- OSINT layer toggle -->
-      <button id="btn-osint" class="osint-toggle" title="שכבת מודיעין OSINT — סריקת טלגרם">
+      <button id="btn-osint" class="osint-toggle" data-i18n-attr="title:menu.osint">
         <i data-lucide="radio-tower"></i>
         <span>OSINT</span>
         <span class="osint-badge" id="osint-count">0</span>
@@ -153,20 +171,19 @@
 
       <!-- Operational Stat strip -->
       <div class="stat-strip">
-        <div class="stat"><span class="stat-val" id="stat-hotspots">0</span><span class="stat-lbl">תאי סיכון</span></div>
-        <div class="stat"><span class="stat-val crit" id="stat-critical">0</span><span class="stat-lbl">איומי ליבה</span></div>
-        <div class="stat"><span class="stat-val" id="stat-units">0/0</span><span class="stat-lbl">פריסת כוחות</span></div>
-        <div class="stat"><span class="stat-val good" id="stat-coverage">0%</span><span class="stat-lbl">כיסוי סיור</span></div>
-        <!-- former "אותות היתוך" stat removed — duplicates the OSINT toggle badge -->
+        <div class="stat"><span class="stat-val" id="stat-hotspots">0</span><span class="stat-lbl" data-i18n="stats.crisis">Crisis Cells</span></div>
+        <div class="stat"><span class="stat-val crit" id="stat-critical">0</span><span class="stat-lbl" data-i18n="stats.attacksAverted">Attacks Averted</span></div>
+        <div class="stat"><span class="stat-val" id="stat-units">0/0</span><span class="stat-lbl" data-i18n="stats.unitsDeployed">Units Deployed</span></div>
+        <div class="stat"><span class="stat-val good" id="stat-coverage">0%</span><span class="stat-lbl" data-i18n="stats.coverage">Patrol Coverage</span></div>
         <span id="stat-intel" style="display:none">0</span>
       </div>
 
       <!-- 24h timeline scrubber + layers controller -->
       <div class="timeline">
         <div class="tl-head">
-          <button id="btn-sim" class="sim-btn" style="color: var(--cyan); background: rgba(0, 229, 255, 0.08); border-color: rgba(0, 229, 255, 0.4);"><i data-lucide="layers"></i><span>שכבות הקשר (RTM)</span></button>
-          <span class="tl-title"><i data-lucide="clock"></i><span>ציר תחזית · 24 שעות</span></span>
-          <span id="tl-readout" class="tl-readout">עכשיו</span>
+          <button id="btn-sim" class="sim-btn" style="color: var(--cyan); background: rgba(0, 229, 255, 0.08); border-color: rgba(0, 229, 255, 0.4);"><i data-lucide="layers"></i><span data-i18n="layers.title">Context Layers (RTM)</span></button>
+          <span class="tl-title"><i data-lucide="clock"></i><span data-i18n="forecast.timeline">Forecast Timeline · 24h</span></span>
+          <span id="tl-readout" class="tl-readout" data-i18n="forecast.now">now</span>
         </div>
         <input id="tl-slider" type="range" min="0" max="23" step="1" />
         <div class="tl-foot">
@@ -174,10 +191,10 @@
             <span>00</span><span>06</span><span>12</span><span>18</span><span>23</span>
           </div>
           <div class="tl-legend">
-            <span class="tl-legend-item"><span class="dot" style="background:#ff1f4b"></span>קריטי</span>
-            <span class="tl-legend-item"><span class="dot" style="background:#ff7a18"></span>גבוה</span>
-            <span class="tl-legend-item"><span class="dot" style="background:#ffd000"></span>בינוני</span>
-            <span class="tl-legend-item"><span class="dot" style="background:#38e08a"></span>נמוך</span>
+            <span class="tl-legend-item"><span class="dot" style="background:#ff1f4b"></span><span data-i18n="forecast.severity.critical">Critical</span></span>
+            <span class="tl-legend-item"><span class="dot" style="background:#ff7a18"></span><span data-i18n="forecast.severity.high">High</span></span>
+            <span class="tl-legend-item"><span class="dot" style="background:#ffd000"></span><span data-i18n="forecast.severity.medium">Moderate</span></span>
+            <span class="tl-legend-item"><span class="dot" style="background:#38e08a"></span><span data-i18n="forecast.severity.low">Low</span></span>
           </div>
         </div>
       </div>
@@ -186,13 +203,13 @@
     <!-- Right: units + intel -->
     <aside class="panel panel-right">
       <div class="panel-head">
-        <span class="panel-title"><i data-lucide="siren"></i><span>ניידות</span></span>
+        <span class="panel-title"><i data-lucide="siren"></i><span data-i18n="units.title">Units</span></span>
         <span id="units-badge" class="badge">0</span>
       </div>
       <div id="units-list" class="scroll-list units-scroll"></div>
 
       <div class="panel-head">
-        <span class="panel-title"><i data-lucide="radio"></i><span>יומן מבצעי</span></span>
+        <span class="panel-title"><i data-lucide="radio"></i><span data-i18n="log.title">Operational Log</span></span>
       </div>
       <div id="intel-feed" class="scroll-list intel-scroll"></div>
     </aside>
@@ -202,12 +219,12 @@
   <!-- ===== Site footer ===== -->
   <footer id="app-footer" class="app-footer">
     <div class="app-footer-inner">
-      <span class="app-footer-tag">TOMORROW · רשת ניבוי פשיעה</span>
+      <span class="app-footer-tag" data-i18n="footer.tag">TOMORROW · Crime Prediction Network</span>
       <span class="app-footer-credit">
-        פותח ע״י
+        <span data-i18n="app.poweredBy">Powered by</span>
         <a href="https://www.daghazahav.com" target="_blank" rel="noopener noreferrer" class="app-footer-link">דג הזהב</a>
-        · אלחי פיין ·
-        <a href="mailto:elchaifinn@gmail.com" rel="noopener noreferrer" class="app-footer-link">צור קשר</a>
+        · <span data-i18n="app.builtBy">Built by Elchai Fine</span> ·
+        <a href="mailto:elchaifinn@gmail.com" rel="noopener noreferrer" class="app-footer-link" data-i18n="app.contact">Contact</a>
       </span>
     </div>
   </footer>
@@ -222,6 +239,8 @@
   <script src="https://unpkg.com/lucide@0.474.0/dist/umd/lucide.min.js"
           integrity="sha384-wkxmY9HYHJVzx0oZ7k8stpLQ7g7ogSqBha75ozCZmxFadwtaIw5dzXKVWWfi9I36"
           crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="countries.js"></script>
+  <script src="i18n.js"></script>
   <script src="config.js"></script>
   <script src="sounds.js"></script>
   <script src="app.js"></script>

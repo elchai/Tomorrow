@@ -5,7 +5,37 @@
    script). Loaded last so all TomorrowXxx modules are available.
    ============================================================ */
 
+// Global shortcut so module code can write T('key') instead of TomorrowI18n.t('key').
+window.T = function (key, vars) {
+  return window.TomorrowI18n ? TomorrowI18n.t(key, vars) : key;
+};
+
 document.addEventListener('DOMContentLoaded', () => {
+  // ── i18n bootstrap — must run before anything else paints visible text ──
+  if (window.TomorrowI18n) {
+    TomorrowI18n.applyDom();
+    const langPicker = document.getElementById('lang-picker');
+    if (langPicker) {
+      langPicker.value = TomorrowI18n.getLang();
+      langPicker.addEventListener('change', () => {
+        TomorrowI18n.setLang(langPicker.value);
+      });
+    }
+  }
+  // ── Country picker — saves the choice + reloads so every module re-reads ──
+  if (window.TomorrowCountries) {
+    const countryPicker = document.getElementById('country-picker');
+    if (countryPicker) {
+      countryPicker.value = TomorrowCountries.getCode();
+      countryPicker.addEventListener('change', () => {
+        TomorrowCountries.set(countryPicker.value);
+        // Drop persisted forecast/units so the new country re-generates fresh.
+        try { localStorage.removeItem('tomorrow_state_v2'); } catch (_) { /* ignore */ }
+        location.reload();
+      });
+    }
+  }
+
   const slider = document.getElementById('tl-slider');
   const readout = document.getElementById('tl-readout');
 

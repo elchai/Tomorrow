@@ -17,31 +17,30 @@ window.TomorrowPrediction = (function () {
 
   const State = window.TomorrowState;
 
-  // Named hotspot zones across the district — each has a historical weight.
-  // (lat/lng are zone centroids; predictions scatter around them.)
-  const ZONES = [
-    { name: 'מתחם התחנה המרכזית',  lat: 32.0560, lng: 34.7820, weight: 0.95 },
-    { name: 'לב העיר / אלנבי',     lat: 32.0680, lng: 34.7710, weight: 0.80 },
-    { name: 'נמל יפו / שוק הפשפשים', lat: 32.0530, lng: 34.7530, weight: 0.78 },
-    { name: 'דיזנגוף סנטר',         lat: 32.0760, lng: 34.7750, weight: 0.62 },
-    { name: 'רובע פלורנטין',        lat: 32.0570, lng: 34.7700, weight: 0.70 },
-    { name: 'נווה שאנן',            lat: 32.0590, lng: 34.7790, weight: 0.88 },
-    { name: 'שפת הים / טיילת',      lat: 32.0810, lng: 34.7660, weight: 0.55 },
-    { name: 'אזור התעשייה צפון',    lat: 32.1180, lng: 34.8010, weight: 0.50 },
-    { name: 'הדר יוסף',            lat: 32.1080, lng: 34.8230, weight: 0.45 },
-    { name: 'מתחם רכבת השלום',      lat: 32.0730, lng: 34.7930, weight: 0.60 }
-  ];
+  // Hotspot zones come from the active country profile (countries.js). Each
+  // is assigned a stable weight via a hash of the name so the forecast
+  // distribution feels different per zone without needing a per-country
+  // weight column.
+  function hashWeight(s) {
+    let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) & 0xffff;
+    return 0.45 + (h % 1000) / 1000 * 0.55;   // 0.45 .. 1.00
+  }
+  function ZONES() {
+    const list = (CONFIG.ZONES && CONFIG.ZONES.length) ? CONFIG.ZONES : [];
+    return list.map(z => ({ name: z.name, lat: z.lat, lng: z.lng, weight: z.weight || hashWeight(z.name) }));
+  }
 
   // Deterministic pseudo-random so the forecast is stable within a session.
   let seed = 1337;
   function rng() { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; }
 
-  // Approx Tel Aviv–Jaffa Mediterranean coastline (lng as a function of lat).
-  // Anything west of this is sea → push it back inland so no hotspot lands in the water.
+  // Coastline guard — only TLV needs it (Mediterranean to the west of the
+  // demo's hotspot zones). São Paulo is inland; the function becomes a no-op.
   function coastLng(lat) { return 34.745 + (lat - 32.04) * 0.5; }
   function clampToLand(lat, lng, rng) {
-    const minLng = coastLng(lat) + 0.0025;            // small buffer east of the shore
-    return lng < minLng ? minLng + rng() * 0.004 : lng; // nudge a touch further inland
+    if (window.TomorrowCountries && TomorrowCountries.getCode() !== 'israel') return lng;
+    const minLng = coastLng(lat) + 0.0025;
+    return lng < minLng ? minLng + rng() * 0.004 : lng;
   }
 
   function scoreToRisk(score) {
@@ -84,12 +83,13 @@ window.TomorrowPrediction = (function () {
     const list = [];
     let id = 4000;
 
+    const zonesNow = ZONES();
     for (let hour = 0; hour < 24; hour++) {
       // 1–3 hotspots per hour, weighted by overall activity
       const count = 1 + Math.floor(rng() * 3);
       for (let n = 0; n < count; n++) {
         const crime = CONFIG.CRIME_TYPES[Math.floor(rng() * CONFIG.CRIME_TYPES.length)];
-        const zone = ZONES[Math.floor(rng() * ZONES.length)];
+        const zone = zonesNow[Math.floor(rng() * zonesNow.length)];
 
         // scatter around the zone, then keep it on land (east of the TLV coastline)
         const jLat = zone.lat + (rng() - 0.5) * 0.012;
@@ -174,8 +174,13 @@ window.TomorrowPrediction = (function () {
     const list = document.getElementById('forecast-list');
     if (!list) return;
     const items = getVisibleForecast();
+    const tr = (k) => (window.TomorrowI18n ? TomorrowI18n.t(k) : k);
+    const sevLabel = (riskId) => {
+      const map = { 1: 'forecast.severity.critical', 2: 'forecast.severity.high', 3: 'forecast.severity.medium', 4: 'forecast.severity.low' };
+      return tr(map[riskId] || map[4]);
+    };
     if (items.length === 0) {
-      list.innerHTML = '<div class="empty-state">אין תחזית לאזור / לשעה שנבחרו</div>';
+      list.innerHTML = `<div class="empty-state">${tr('forecast.empty')}</div>`;
     } else {
       list.innerHTML = items.map(h => {
         const r = CONFIG.RISK[h.risk];
@@ -185,13 +190,13 @@ window.TomorrowPrediction = (function () {
             <div class="fc-head">
               <span class="fc-icon"><i data-lucide="${h.glyph}"></i></span>
               <div class="fc-headtext">
-                <span class="fc-name">${h.crime_name}</span>
+                <span class="fc-name">${CONFIG.crimeName(h.crime)}</span>
                 <span class="fc-code">${h.code} · #${h.id}</span>
               </div>
               ${h.osint ? (h.osint_url
                 ? `<a href="${h.osint_url}" target="_blank" rel="noopener noreferrer" class="osint-tag osint-tag-link" title="פתח את הדיווח ב-${h.osint_source || 'טלגרם'}"><i data-lucide="radio-tower"></i>OSINT<i data-lucide="external-link"></i></a>`
                 : '<span class="osint-tag" title="מאומת במקור OSINT / טלגרם"><i data-lucide="radio-tower"></i>OSINT</span>') : ''}
-              <span class="risk-chip">${r.label}</span>
+              <span class="risk-chip">${sevLabel(h.risk)}</span>
             </div>
             <div class="fc-zone"><i data-lucide="map-pin"></i><span>${h.zone}</span></div>
             <div class="fc-readout">
@@ -201,10 +206,10 @@ window.TomorrowPrediction = (function () {
             <div class="fc-gauge"><div class="fc-gauge-fill" style="width:${h.probability}%"></div></div>
             ${(() => {
               const e = TomorrowApp.nearestEta(h.lat, h.lng, h.station_id);
-              return e ? `<div class="fc-eta"><i data-lucide="timer"></i><span class="fc-eta-min">${e.eta} דק׳</span><span class="fc-eta-from">מ${e.station.name} · ${e.km.toFixed(1)} ק״מ</span></div>` : '';
+              return e ? `<div class="fc-eta"><i data-lucide="timer"></i><span class="fc-eta-min">${e.eta} ${tr('forecast.eta')}</span><span class="fc-eta-from">${e.station.name} · ${e.km.toFixed(1)} km</span></div>` : '';
             })()}
             ${h.factors.length ? `<div class="fc-factors">${h.factors.map(f => `<span class="factor">${f}</span>`).join('')}</div>` : ''}
-            <button class="fc-dispatch" data-id="${h.id}"><i data-lucide="navigation"></i><span>הזנק ניידת ליעד</span></button>
+            <button class="fc-dispatch" data-id="${h.id}"><i data-lucide="navigation"></i><span>${tr('forecast.dispatch')}</span></button>
           </div>`;
       }).join('');
       TomorrowApp.renderIcons();
@@ -268,8 +273,9 @@ window.TomorrowPrediction = (function () {
     if (window.TomorrowOsint && typeof TomorrowOsint.reapplyBoost === 'function') {
       TomorrowOsint.reapplyBoost();
     }
-    TomorrowApp.toast('🔄 מודל הניבוי הורץ מחדש', 'info');
-    TomorrowApp.logEvent('model', 3, 'הרצת מודל ניבוי מחדש — תחזית 24 שעות עודכנה');
+    const tr = (k) => (window.TomorrowI18n ? TomorrowI18n.t(k) : k);
+    TomorrowApp.toast(tr('event.regenToast'), 'info');
+    TomorrowApp.logEvent('model', 3, tr('event.regenLog'));
   }
 
   return {

@@ -11,45 +11,21 @@ window.TomorrowIntel = (function () {
   let isOpen = false;
   let activeTargetId = 'T-1042';
 
-  // ---- Demo target dossier (placeholder; later wired to real OSINT pipeline) ----
-  const TARGETS = [
-    {
-      id: 'T-1042',
-      alias: 'הצעיר מפלורנטין',
-      age: 24, status: 'פעיל',
-      affiliation: 'שיוך ארגוני: ארגון פשיעה דרום',
-      record: ['פריצה לבית · 2024', 'תקיפה · 2025', 'איומים · 2026'],
-      last_cell: { lat: 32.0572, lng: 34.7705, when: 'לפני 17 דק׳', precision: 250 },
-      osint: [
-        { src: '@florentin_live_demo',         text: 'נראה ברחוב ויטל אתמול בלילה',                              when: 'לפני 4 שע׳' },
-        { src: '@south_tlv_news_demo',         text: 'דיווח על תקרית עם אדם בעל מאפיינים דומים סמוך לתחנה',  when: 'לפני 12 שע׳' },
-        { src: '@telaviv_police_scanner_demo', text: 'יחידת סיור מתבקשת לאיתור — איתות חיובי במצלמת LPR',     when: 'לפני יום' }
-      ]
-    },
-    {
-      id: 'T-1107',
-      alias: 'הסוחר מנווה שאנן',
-      age: 31, status: 'מעקב מודיעיני',
-      affiliation: 'שיוך ארגוני: רשת סחר סמים',
-      record: ['החזקת סמים בכוונת מכר · 2023', 'הלבנת הון · 2025'],
-      last_cell: { lat: 32.0592, lng: 34.7795, when: 'לפני 3 שעות', precision: 400 },
-      osint: [
-        { src: '@south_tlv_news_demo', text: 'התקהלות חשודה סמוך למתחם התחנה',     when: 'לפני 6 שע׳' },
-        { src: '@city_watch_tlv_demo', text: 'דיווח על עסקה במזומן בכיכר לבנה',    when: 'לפני יום' }
-      ]
-    },
-    {
-      id: 'T-1213',
-      alias: 'הכייס מדיזנגוף',
-      age: 19, status: 'פעיל',
-      affiliation: 'יחיד · ללא שיוך ארגוני',
-      record: ['גניבה · 2025 (×3)', 'כיסנות · 2026'],
-      last_cell: { lat: 32.0758, lng: 34.7751, when: 'לפני 42 דק׳', precision: 180 },
-      osint: [
-        { src: '@city_watch_tlv_demo', text: 'התראה על כיסנות בדיזנגוף סנטר בשעות הצהריים', when: 'לפני שעתיים' }
-      ]
+  // Target dossiers now come from the active country profile (countries.js).
+  // Getter rather than const so a country toggle is picked up on next open.
+  function getTargets() {
+    return (CONFIG.INTEL_TARGETS && CONFIG.INTEL_TARGETS.length) ? CONFIG.INTEL_TARGETS : [];
+  }
+  // Backwards-compatible alias so the rest of this file can still say TARGETS.
+  const TARGETS = new Proxy([], {
+    get(_t, prop) {
+      const live = getTargets();
+      if (prop === 'length') return live.length;
+      if (typeof prop === 'string' && /^\d+$/.test(prop)) return live[+prop];
+      const v = Array.prototype[prop];
+      return typeof v === 'function' ? v.bind(live) : live[prop];
     }
-  ];
+  });
 
   function init() {
     injectHUDButton();
@@ -63,7 +39,7 @@ window.TomorrowIntel = (function () {
     const btn = document.createElement('button');
     btn.id = 'btn-intel';
     btn.className = 'icon-btn';
-    btn.title = 'תיק יעד מודיעיני';
+    btn.title = T('intel.title');
     btn.style.marginInlineEnd = '8px';
     btn.innerHTML = '<i data-lucide="scan-face"></i>';
     muteBtn.parentElement.insertBefore(btn, muteBtn);
@@ -87,8 +63,8 @@ window.TomorrowIntel = (function () {
   function renderPanel() {
     return `
       <div class="panel-head" style="flex-shrink: 0;">
-        <span class="panel-title"><i data-lucide="scan-face"></i><span>תיק יעד מודיעיני</span></span>
-        <button id="btn-close-intel" class="icon-btn" style="border:none; background:transparent;" title="סגור"><i data-lucide="x"></i></button>
+        <span class="panel-title"><i data-lucide="scan-face"></i><span>${T('intel.title')}</span></span>
+        <button id="btn-close-intel" class="icon-btn" style="border:none; background:transparent;"><i data-lucide="x"></i></button>
       </div>
 
       <!-- Target picker -->
@@ -116,7 +92,7 @@ window.TomorrowIntel = (function () {
           <div class="intel-profile-meta">
             <div class="intel-profile-id">${t.id}</div>
             <div class="intel-profile-alias">${t.alias}</div>
-            <div class="intel-profile-sub">גיל ${t.age} · <span class="intel-status ${t.status === 'פעיל' ? 'active' : ''}">${t.status}</span></div>
+            <div class="intel-profile-sub">${T('intel.age')} ${t.age} · <span class="intel-status ${t.status === 'פעיל' || t.status === 'Ativo' || t.status === 'Active' ? 'active' : ''}">${t.status}</span></div>
           </div>
         </div>
         <div class="intel-affiliation">${t.affiliation}</div>
@@ -124,7 +100,7 @@ window.TomorrowIntel = (function () {
 
       <!-- Criminal record -->
       <div class="intel-section">
-        <div class="intel-section-head"><i data-lucide="gavel"></i>רקע פלילי</div>
+        <div class="intel-section-head"><i data-lucide="gavel"></i>${T('intel.record')}</div>
         <ul class="intel-record">
           ${t.record.map(r => `<li>${r}</li>`).join('')}
         </ul>
@@ -132,20 +108,20 @@ window.TomorrowIntel = (function () {
 
       <!-- Last cellular ping -->
       <div class="intel-section">
-        <div class="intel-section-head"><i data-lucide="map-pin"></i>איכון סלולארי אחרון</div>
+        <div class="intel-section-head"><i data-lucide="map-pin"></i>${T('intel.lastCell')}</div>
         <div class="intel-cell">
-          <div class="intel-cell-line"><span class="intel-cell-lbl">מיקום</span><span class="intel-cell-val">${t.last_cell.lat.toFixed(4)}, ${t.last_cell.lng.toFixed(4)}</span></div>
-          <div class="intel-cell-line"><span class="intel-cell-lbl">דיוק</span><span class="intel-cell-val">~${t.last_cell.precision}מ׳</span></div>
-          <div class="intel-cell-line"><span class="intel-cell-lbl">מתי</span><span class="intel-cell-val">${t.last_cell.when}</span></div>
+          <div class="intel-cell-line"><span class="intel-cell-lbl">${T('intel.location') !== 'intel.location' ? T('intel.location') : 'Location'}</span><span class="intel-cell-val">${t.last_cell.lat.toFixed(4)}, ${t.last_cell.lng.toFixed(4)}</span></div>
+          <div class="intel-cell-line"><span class="intel-cell-lbl">${T('intel.precision') !== 'intel.precision' ? T('intel.precision') : 'Precision'}</span><span class="intel-cell-val">~${t.last_cell.precision}m</span></div>
+          <div class="intel-cell-line"><span class="intel-cell-lbl">${T('intel.when') !== 'intel.when' ? T('intel.when') : 'When'}</span><span class="intel-cell-val">${t.last_cell.when}</span></div>
           <button class="intel-focus-btn" onclick="TomorrowMap.getMap().flyTo([${t.last_cell.lat}, ${t.last_cell.lng}], 17, {duration:1.1}); TomorrowIntel.close();">
-            <i data-lucide="navigation"></i><span>מקד על המפה</span>
+            <i data-lucide="navigation"></i><span>${T('intel.locate')}</span>
           </button>
         </div>
       </div>
 
       <!-- OSINT mentions feed -->
       <div class="intel-section">
-        <div class="intel-section-head"><i data-lucide="radio-tower"></i>אזכורים ב-OSINT</div>
+        <div class="intel-section-head"><i data-lucide="radio-tower"></i>${T('intel.osintMentions')}</div>
         <div class="intel-osint">
           ${t.osint.map(o => `
             <div class="intel-osint-row">
@@ -159,7 +135,7 @@ window.TomorrowIntel = (function () {
 
       <div class="intel-disclaimer">
         <i data-lucide="info"></i>
-        איכון/האזנות סלולאריות מותנים בצו שיפוטי. הנתונים כאן הם דמו לצורך תכן UI.
+        ${T('intel.disclaimer')}
       </div>
     `;
   }

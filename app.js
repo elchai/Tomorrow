@@ -10,7 +10,9 @@ window.TomorrowState = {
   units: [],                  // patrol units
   intel_log: [],              // audit / activity feed
   forecast_hour: null,        // selected hour on the timeline (null = "now")
-  active_events: ['protest_kaplan', 'summer_vacation'], // active strategic events by default
+  // Active strategic events: filled lazily after CONFIG resolves so the
+  // defaults match the selected country (TomorrowApp.applyCountryDefaults).
+  active_events: [],
   sim: { prevented: 0, occurred: 0 },  // shift-simulation score
   settings: { demo_seconds: 11, onscene_seconds: 7 }
 };
@@ -187,7 +189,8 @@ window.TomorrowApp = (function () {
     const host = document.getElementById('station-chips');
     if (!host) return;
     const current = State.current_station_id;
-    const chips = [{ id: null, name: 'כל המרחב' }, ...CONFIG.STATIONS];
+    const allLabel = (window.TomorrowI18n ? TomorrowI18n.t('hud.allDistrict') : 'All District');
+    const chips = [{ id: null, name: allLabel }, ...CONFIG.STATIONS];
     host.innerHTML = chips.map(s => `
       <button class="station-chip ${ (s.id || null) === current ? 'active' : '' }" data-id="${s.id || ''}">
         ${s.name}
@@ -203,10 +206,11 @@ window.TomorrowApp = (function () {
     const boot = document.getElementById('boot');
     const bar = document.getElementById('boot-bar');
     const lines = document.getElementById('boot-lines');
+    const t = window.TomorrowI18n ? TomorrowI18n.t.bind(TomorrowI18n) : (k => k);
     const steps = [
-      'אתחול רשת ניבוי וטעינת שכבות הקשר (RTM)…',
-      'הרצת מודל חיזוי 24 שעות + סנכרון מודיעין…',
-      'TOMORROW מקוון.'
+      t('boot.line1'),
+      t('boot.line2'),
+      t('boot.line3')
     ];
     let i = 0;
     const iv = setInterval(() => {
@@ -237,10 +241,11 @@ window.TomorrowApp = (function () {
     const dot = document.getElementById('threat-dot');
     if (!el) return;
     let label, cls;
-    if (critical >= 2)      { label = 'DTI: רגישות קריטית (Level 1)'; cls = 'critical'; }
-    else if (critical >= 1) { label = 'DTI: רגישות גבוהה (Level 2)';  cls = 'high'; }
-    else if (high >= 2)     { label = 'DTI: רגישות מוגברת (Level 3)'; cls = 'medium'; }
-    else                    { label = 'DTI: רגישות רגילה (Level 4)';  cls = 'low'; }
+    const t = (k) => (window.TomorrowI18n ? TomorrowI18n.t(k) : k);
+    if (critical >= 2)      { label = `${t('hud.threat')}: ${t('hud.threatCritical')} (Level 1)`; cls = 'critical'; }
+    else if (critical >= 1) { label = `${t('hud.threat')}: ${t('hud.threatHigh')} (Level 2)`;     cls = 'high'; }
+    else if (high >= 2)     { label = `${t('hud.threat')}: ${t('hud.threatMed')} (Level 3)`;      cls = 'medium'; }
+    else                    { label = `${t('hud.threat')}: ${t('hud.threatLow')} (Level 4)`;      cls = 'low'; }
     el.textContent = label;
     if (dot) dot.className = `threat-dot ${cls}`;
   }
@@ -361,7 +366,7 @@ window.TomorrowApp = (function () {
       renderIcons();   // convert any remaining static [data-lucide] in the HUD/timeline
       relocateActionButtonsToNavRail();
       if (window.TomorrowSounds) TomorrowSounds.online();
-      logEvent('system', 4, '✅ מערכת הניבוי והיתוך המודיעין מקוונת — מודל RTM נטען בהצלחה');
+      logEvent('system', 4, window.TomorrowI18n ? TomorrowI18n.t('boot.online') : 'Prediction + intelligence fusion online');
       if (window.TomorrowOsint) TomorrowOsint.init();   // OSINT signals (async) — boosts forecast
     });
   }
@@ -719,6 +724,16 @@ window.TomorrowApp = (function () {
   }
 
   // ---------- Init ----------
+  function applyCountryDefaults() {
+    // If the user hasn't picked active events yet, default them to whatever
+    // the country marks as `active: true`.
+    if (!State.active_events || State.active_events.length === 0) {
+      State.active_events = (CONFIG.STRATEGIC_EVENTS || [])
+        .filter(ev => ev.active)
+        .map(ev => ev.key);
+    }
+  }
+
   function applyVersionLabels() {
     const v = (window.CONFIG && CONFIG.VERSION) || 'v0.6';
     const tag = document.getElementById('version-tag');
@@ -729,10 +744,19 @@ window.TomorrowApp = (function () {
 
   function init() {
     loadState();
+    applyCountryDefaults();
     applyVersionLabels();
     renderStationChips();
     renderIntelLog();
     startClock();
+    // Re-render any dynamically-built localized text whenever the user
+    // picks a new language. Static [data-i18n] elements are handled by
+    // TomorrowI18n.applyDom; this catches our JS-built fragments.
+    document.addEventListener('tomorrow-lang-change', () => {
+      renderStationChips();
+      updateThreatLevel();
+      // Drawers/feeds rebuild themselves the next time they're opened.
+    });
     showLogin(startSystem);   // login gate → boot → modules
   }
 

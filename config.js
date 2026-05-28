@@ -34,10 +34,23 @@ window.CONFIG = (function () {
   const PATROL_SPEED_KMH = 32;
   const PATROL_BASE_MIN  = 2;
 
-  // --- Map defaults (Tel Aviv metropolitan district) ---
-  const MAP_CENTER = [32.0760, 34.7850];
-  const MAP_ZOOM = 13;
+  // --- Map defaults (now driven by the active country profile via TomorrowCountries) ---
+  function activeCountry() {
+    return (window.TomorrowCountries && TomorrowCountries.get()) || {
+      mapCenter: [-23.5505, -46.6333], mapZoom: 13, stations: [], zones: [], strategicEvents: []
+    };
+  }
   const MAP_MAX_ZOOM = 19;
+  // Getter properties keep modules backwards-compatible — `CONFIG.MAP_CENTER`
+  // / `CONFIG.STATIONS` etc. transparently reflect the currently-selected
+  // country.
+  function get_MAP_CENTER() { return activeCountry().mapCenter; }
+  function get_MAP_ZOOM()   { return activeCountry().mapZoom; }
+  function get_STATIONS()   { return activeCountry().stations; }
+  function get_ZONES()      { return activeCountry().zones; }
+  function get_STRATEGIC_EVENTS() { return activeCountry().strategicEvents; }
+  function get_INTEL_TARGETS() { return activeCountry().intelTargets || []; }
+  function get_LPR_ALERTS()    { return activeCountry().lprAlerts || []; }
 
   // --- Prediction Weights (adjustable in analytics) ---
   const FACTORS = {
@@ -82,14 +95,8 @@ window.CONFIG = (function () {
     { key: 'command',  name: 'נייד פיקוד',     glyph: 'radio',      speed_kmh: 55, staffing: 3 }
   ];
 
-  // --- Police stations (Tel Aviv district — representative coordinates) ---
-  const STATIONS = [
-    { id: 'lev-ta',   name: 'תחנת לב תל אביב', region: 'מרחב ירקון', lat: 32.0668, lng: 34.7790, cars: 6 },
-    { id: 'dizengoff', name: 'תחנת דיזנגוף',   region: 'מרחב ירקון', lat: 32.0809, lng: 34.7740, cars: 5 },
-    { id: 'yiftach',  name: 'תחנת יפתח (יפו)', region: 'מרחב איילון', lat: 32.0500, lng: 34.7600, cars: 5 },
-    { id: 'glilot',   name: 'תחנת גלילות',     region: 'מרחב ירקון', lat: 32.1300, lng: 34.8030, cars: 4 },
-    { id: 'shapira',  name: 'תחנת שפירא',      region: 'מרחב איילון', lat: 32.0530, lng: 34.7850, cars: 4 }
-  ];
+  // --- Police stations: now sourced from the active country profile.
+  // Legacy reference for fallback only — real list lives in countries.js. ---
 
   // --- Response cards: crime type + risk level → recommended unit mix ---
   // key = `${crimeKey}_${riskLevel}` ; value = array of unit type keys
@@ -124,24 +131,51 @@ window.CONFIG = (function () {
   };
 
   // --- Strategic / Calendar / Environmental Events ---
-  const STRATEGIC_EVENTS = [
-    { key: 'protest_kaplan', name: 'מחאת קפלן (הפגנה המונית)', active: true, crime_boosts: { disorder: 25, vandalism: 15 }, description: 'ריכוז קהל חריג במרכז העיר, הפרות סדר וחיכוך פוטנציאלי.', zones: ['מתחם רכבת השלום', 'לב העיר / אלנבי'] },
-    { key: 'derby_bloomfield', name: 'דרבי כדורגל (איצטדיון בלומפילד)', active: false, crime_boosts: { assault: 20, disorder: 15, vandalism: 10 }, description: 'הגעת אלפי אוהדים ופוטנציאל לחיכוך אלים בסביבת האצטדיון.', zones: ['נמל יפו / שוק הפשפשים', 'רובע פלורנטין', 'מתחם התחנה המרכזית'] },
-    { key: 'summer_vacation', name: 'חופשת הקיץ (ריכוז בני נוער)', active: true, crime_boosts: { vandalism: 12, theft: 10, auto_theft: 8 }, description: 'התקהלויות נוער בשעות לילה מאוחרות בגנים ציבוריים ובחופים.', zones: ['שפת הים / טיילת', 'הדר יוסף'] },
-    { key: 'heatwave', name: 'עומס חום קיצוני (שרב)', active: false, crime_boosts: { domestic: 18, assault: 15 }, description: 'טמפרטורות גבוהות המעלות סטטיסטית את מדד האלימות והחיכוך הבינאישי.', zones: [] }, // applied district-wide
-    { key: 'rosh_hashanah', name: 'ערב ראש השנה (בתים ריקים)', active: false, crime_boosts: { burglary: 28, theft: 15 }, description: 'עזיבת המונים לטובת ארוחות חג משאירה דירות מגורים ללא השגחה.', zones: ['לב העיר / אלנבי', 'הדר יוסף', 'אזור התעשייה צפון'] }
-  ];
+  // (Country-specific list now lives in countries.js — exposed via getter.)
 
-  return {
+  const exported = {
     VERSION,
     STORAGE_KEY, SYNC_DEBOUNCE_MS, ACCESS_CODE,
     FIREBASE_URL, SIGNALS_PATH, SIGNALS_SAMPLE, SIGNAL_BOOST_RADIUS_M, SIGNAL_REFRESH_MS,
     PATROL_SPEED_KMH, PATROL_BASE_MIN,
-    MAP_CENTER, MAP_ZOOM, MAP_MAX_ZOOM,
-    RISK, CRIME_TYPES, UNIT_TYPES, STATIONS, RESPONSE_CARDS, ROLES, FACTORS, STRATEGIC_EVENTS,
+    MAP_MAX_ZOOM,
+    RISK, CRIME_TYPES, UNIT_TYPES, RESPONSE_CARDS, ROLES, FACTORS,
     responseCard,
     crimeType: (k) => CRIME_TYPES.find(c => c.key === k) || CRIME_TYPES[0],
     unitType:  (k) => UNIT_TYPES.find(u => u.key === k) || UNIT_TYPES[0],
-    station:   (id) => STATIONS.find(s => s.id === id) || null
+    station:   (id) => get_STATIONS().find(s => s.id === id) || null,
+    // Localized display names — fall back to the static CONFIG name when i18n
+    // isn't ready yet (e.g. during early module init before wiring.js loads).
+    crimeName: (k) => {
+      if (window.TomorrowI18n) {
+        const v = TomorrowI18n.t('crime.' + k);
+        if (v !== 'crime.' + k) return v;
+      }
+      const c = CRIME_TYPES.find(x => x.key === k);
+      return c ? c.name : k;
+    },
+    unitName: (k) => {
+      if (window.TomorrowI18n) {
+        const v = TomorrowI18n.t('unit.' + k);
+        if (v !== 'unit.' + k) return v;
+      }
+      const u = UNIT_TYPES.find(x => x.key === k);
+      return u ? u.name : k;
+    }
   };
+
+  // Country-driven dynamic properties — getters so modules always see the
+  // active country's data (even after the user toggles the country on the
+  // login screen and triggers a re-init).
+  Object.defineProperties(exported, {
+    MAP_CENTER:        { get: get_MAP_CENTER,        enumerable: true },
+    MAP_ZOOM:          { get: get_MAP_ZOOM,          enumerable: true },
+    STATIONS:          { get: get_STATIONS,          enumerable: true },
+    ZONES:             { get: get_ZONES,             enumerable: true },
+    STRATEGIC_EVENTS:  { get: get_STRATEGIC_EVENTS,  enumerable: true },
+    INTEL_TARGETS:     { get: get_INTEL_TARGETS,     enumerable: true },
+    LPR_ALERTS:        { get: get_LPR_ALERTS,        enumerable: true }
+  });
+
+  return exported;
 })();

@@ -66,8 +66,9 @@ window.TomorrowDispatch = (function () {
         const ut = CONFIG.unitType(type);
         units.push({
           callsign: `${s.id.split('-')[0].toUpperCase().slice(0, 3)}-${i}`,
-          type, type_name: ut.name,
-          status: 'available', text: 'זמינה · בתחנה',
+          type, type_name: ut.name,                  // legacy fallback; rendering now uses CONFIG.unitName(u.type)
+          status: 'available',
+          text: window.TomorrowI18n ? TomorrowI18n.t('units.available') : 'available · at station',
           station_id: s.id
         });
       }
@@ -152,7 +153,7 @@ window.TomorrowDispatch = (function () {
           // on-scene phase: unit dwells at the target
           unit.status = 'onscene';
           const dwellSec = State.settings.onscene_seconds || 7;
-          unit.text = `בשטח · אבטחת מוקד (${dwellSec}ש׳)`;
+          unit.text = window.TomorrowI18n ? TomorrowI18n.t('units.onsceneSecuring', { sec: dwellSec }) : `on scene · securing (${dwellSec}s)`;
           renderUnits();
 
           // mark the hotspot as handled/secured
@@ -177,13 +178,13 @@ window.TomorrowDispatch = (function () {
             const station = CONFIG.station(unit.station_id);
             if (station) {
               unit.status = 'returning';
-              unit.text = `חזרה לתחנת ${station.name}`;
+              unit.text = (window.TomorrowI18n ? TomorrowI18n.t('units.returning') : 'returning to station') + ' · ' + station.name;
               renderUnits();
               TomorrowApp.logEvent('status', 2, `${unit.callsign} סיימה טיפול · בדרך חזרה לתחנה`);
               dispatchVehicle(unit, toLatLng, [station.lat, station.lng], color, onArrive, true);
             } else {
               unit.status = 'available';
-              unit.text = 'זמינה · בתחנה';
+              unit.text = window.TomorrowI18n ? TomorrowI18n.t('units.available') : 'available · at station';
               renderUnits();
             }
           }, dwellMs);
@@ -202,12 +203,12 @@ window.TomorrowDispatch = (function () {
           }, 220);
 
           unit.status = 'available';
-          unit.text = 'זמינה · בתחנה';
+          unit.text = window.TomorrowI18n ? TomorrowI18n.t('units.available') : 'available · at station';
           unit.dest = null;
           unit.hotspot_id = null;
           delete unit.lpr_alert_id;        // P1 bug fix: don't leak the alert id across return cycles
           renderUnits();
-          TomorrowApp.logEvent('status', 4, `🚔 ${unit.callsign} חזרה לתחנת האם · זמינה לשיגור`);
+          TomorrowApp.logEvent('status', 4, window.TomorrowI18n ? TomorrowI18n.t('event.returnArrival', { unit: unit.callsign }) : `${unit.callsign} back at home station`);
         }
 
         if (onArrive) onArrive();
@@ -405,7 +406,7 @@ window.TomorrowDispatch = (function () {
     if (!list) return;
     const items = getVisibleUnits();
     if (items.length === 0) {
-      list.innerHTML = '<div class="empty-state">אין יחידות בתחנה זו</div>';
+      list.innerHTML = `<div class="empty-state">${window.TomorrowI18n ? TomorrowI18n.t('units.empty') : 'No units at this station'}</div>`;
     } else {
       list.innerHTML = items.map(u => {
         const hasProgress = u.status === 'onscene';
@@ -420,7 +421,7 @@ window.TomorrowDispatch = (function () {
               <span class="u-cs">${u.callsign}</span>
               <span class="u-led"></span>
             </div>
-            <div class="u-type">${u.type_name}</div>
+            <div class="u-type">${CONFIG.unitName(u.type)}</div>
             <div class="u-text">${u.text}</div>
             ${progressHtml}
           </div>`;
