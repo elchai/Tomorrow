@@ -335,12 +335,32 @@ window.TomorrowAnalytics = (function () {
     if (uEl) uEl.textContent = `${utilizationRate}%`;
   }
 
+  // P1-11 ui: scale canvas backing store to devicePixelRatio so charts are crisp
+  // on retina/HiDPI displays. Stores logical W/H on the element so subsequent
+  // draws stay in CSS-pixel coordinates.
+  function setupDPR(canvas) {
+    const dpr = window.devicePixelRatio || 1;
+    const logicalW = canvas._logicalW || canvas.width;
+    const logicalH = canvas._logicalH || canvas.height;
+    canvas._logicalW = logicalW;
+    canvas._logicalH = logicalH;
+    const targetW = Math.round(logicalW * dpr);
+    const targetH = Math.round(logicalH * dpr);
+    if (canvas.width !== targetW || canvas.height !== targetH) {
+      canvas.width = targetW;
+      canvas.height = targetH;
+      canvas.style.width = logicalW + 'px';
+      canvas.style.height = logicalH + 'px';
+    }
+    const ctx = canvas.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);  // 1 unit = 1 CSS px
+    return { ctx, W: logicalW, H: logicalH };
+  }
+
   function drawTrendChart() {
     const canvas = document.getElementById('an-canvas-trend');
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    const W = canvas.width;
-    const H = canvas.height;
+    const { ctx, W, H } = setupDPR(canvas);
 
     ctx.clearRect(0, 0, W, H);
     ctx.strokeStyle = 'rgba(43, 143, 255, 0.08)';
@@ -427,9 +447,7 @@ window.TomorrowAnalytics = (function () {
   function drawMixChart() {
     const canvas = document.getElementById('an-canvas-mix');
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    const W = canvas.width;
-    const H = canvas.height;
+    const { ctx, W, H } = setupDPR(canvas);
 
     ctx.clearRect(0, 0, W, H);
 
@@ -490,9 +508,7 @@ window.TomorrowAnalytics = (function () {
   function drawRocCurve(progress = 1.0) {
     const canvas = document.getElementById('an-canvas-roc');
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    const W = canvas.width;
-    const H = canvas.height;
+    const { ctx, W, H } = setupDPR(canvas);
     
     ctx.clearRect(0, 0, W, H);
     

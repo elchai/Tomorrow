@@ -2,7 +2,8 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; img-src 'self' data: blob: https://*.basemaps.cartocdn.com; font-src https://fonts.gstatic.com; connect-src 'self' https://*.firebaseio.com;" />
   <title>TOMORROW · רשת ניבוי פשיעה</title>
   <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon.png">
   <link rel="apple-touch-icon" href="assets/favicon.png">
@@ -11,7 +12,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"
+        integrity="sha384-c6Rcwz4e4CITMbu/NBmnNS8yN2sC3cUElMEMfP3vqqKFp7GOYaaBBCqmaWBjmkjb"
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -39,7 +42,7 @@
       <div id="login-error" class="login-error"></div>
     </div>
 
-    <div class="login-footer">נבנה ע״י אלחי פיין · 054-201-2000</div>
+    <div class="login-footer">נבנה ע״י אלחי פיין · <a href="mailto:elchaifinn@gmail.com" rel="noopener noreferrer">צור קשר</a></div>
   </div>
 
   <!-- ===== Boot screen ===== -->
@@ -203,15 +206,22 @@
       <span class="app-footer-credit">
         פותח ע״י
         <a href="https://www.daghazahav.com" target="_blank" rel="noopener noreferrer" class="app-footer-link">דג הזהב</a>
-        · אלחי פיין · 054-201-2000
+        · אלחי פיין ·
+        <a href="mailto:elchaifinn@gmail.com" rel="noopener noreferrer" class="app-footer-link">צור קשר</a>
       </span>
     </div>
   </footer>
 
   <!-- ===== Scripts ===== -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
-  <script src="https://unpkg.com/lucide@0.474.0/dist/umd/lucide.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"
+          integrity="sha384-NElt3Op+9NBMCYaef5HxeJmU4Xeard/Lku8ek6hoPTvYkQPh3zLIrJP7KiRocsxO"
+          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdn.jsdelivr.net/npm/leaflet.heat@0.2.0/dist/leaflet-heat.js"
+          integrity="sha384-mFKkGiGvT5vo1fEyGCD3hshDdKmW3wzXW/x+fWriYJArD0R3gawT6lMvLboM22c0"
+          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://unpkg.com/lucide@0.474.0/dist/umd/lucide.min.js"
+          integrity="sha384-wkxmY9HYHJVzx0oZ7k8stpLQ7g7ogSqBha75ozCZmxFadwtaIw5dzXKVWWfi9I36"
+          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="config.js"></script>
   <script src="sounds.js"></script>
   <script src="app.js"></script>
@@ -224,71 +234,7 @@
   <script src="intel.js"></script>
   <script src="lpr.js"></script>
 
-  <!-- UI wiring (timeline + control buttons) -->
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const slider = document.getElementById('tl-slider');
-      const readout = document.getElementById('tl-readout');
-      const nowHour = new Date().getHours();
-      slider.value = nowHour;
-
-      slider.addEventListener('input', () => {
-        const h = parseInt(slider.value);
-        TomorrowState.forecast_hour = (h === nowHour) ? null : h;
-        readout.textContent = (h === nowHour) ? 'עכשיו' : `${String(h).padStart(2,'0')}:00`;
-        if (window.TomorrowPrediction) TomorrowPrediction.refresh();
-      });
-
-      document.getElementById('btn-regen').addEventListener('click', (e) => {
-        if (window.TomorrowPrediction) TomorrowPrediction.regenerate();
-        const btn = e.currentTarget;
-        btn.classList.add('flash-success');
-        setTimeout(() => btn.classList.remove('flash-success'), 1800);
-      });
-      document.getElementById('btn-saturate').addEventListener('click', () => {
-        if (window.TomorrowDispatch) TomorrowDispatch.saturateArea();
-      });
-      document.getElementById('btn-mute').addEventListener('click', (e) => {
-        const m = TomorrowSounds.toggle();
-        const btn = e.currentTarget;
-        btn.innerHTML = `<i data-lucide="${m ? 'volume-x' : 'volume-2'}"></i>`;
-        btn.classList.toggle('muted', m);
-        btn.title = m ? 'הפעל קול' : 'השתק קול';
-        TomorrowApp.renderIcons();
-      });
-      document.getElementById('btn-osint').addEventListener('click', () => {
-        if (window.TomorrowOsint) TomorrowOsint.toggle();
-      });
-      document.getElementById('btn-logout').addEventListener('click', () => {
-        try { sessionStorage.removeItem('tomorrow_auth'); } catch {}
-        TomorrowApp.toast?.('🚪 יוצא מהמערכת…', 'info', 1200);
-        setTimeout(() => location.reload(), 350);
-      });
-
-      // ── Mobile hamburger menu — consolidates HUD action buttons ──
-      const ham = document.getElementById('btn-hamburger');
-      const menu = document.getElementById('hamburger-menu');
-      const overlay = document.getElementById('hamburger-overlay');
-      function toggleHam(force) {
-        const next = typeof force === 'boolean' ? force : !menu.classList.contains('open');
-        menu.classList.toggle('open', next);
-        overlay.classList.toggle('open', next);
-        ham?.classList.toggle('active', next);
-        menu.setAttribute('aria-hidden', next ? 'false' : 'true');
-        ham?.setAttribute('aria-expanded', next ? 'true' : 'false');
-      }
-      ham?.addEventListener('click', () => toggleHam());
-      overlay?.addEventListener('click', () => toggleHam(false));
-      document.getElementById('btn-close-hamburger')?.addEventListener('click', () => toggleHam(false));
-      document.addEventListener('keydown', e => { if (e.key === 'Escape' && menu.classList.contains('open')) toggleHam(false); });
-      menu.querySelectorAll('.hm-item').forEach(item => {
-        item.addEventListener('click', () => {
-          const target = document.getElementById(item.dataset.trigger);
-          toggleHam(false);
-          if (target) setTimeout(() => target.click(), 220);   // wait for menu fade
-        });
-      });
-    });
-  </script>
+  <!-- UI wiring (timeline + control buttons) — external for strict CSP -->
+  <script src="wiring.js"></script>
 </body>
 </html>

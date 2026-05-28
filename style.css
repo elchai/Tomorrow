@@ -45,12 +45,17 @@ html, body {
   font-family: var(--font-he);
   overflow-x: hidden; overflow-y: auto;
 }
-body { padding-top: calc(var(--hud-h) + var(--demo-ribbon-h)); }  /* clear DEMO ribbon + fixed HUD */
+body {
+  /* Clear DEMO ribbon + fixed HUD. Add safe-area insets for notches/home-indicator. */
+  padding-top: calc(var(--hud-h) + var(--demo-ribbon-h) + env(safe-area-inset-top, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
 
 /* DEMO ribbon — always visible top strip, makes the "fictional data" claim impossible to miss */
 .demo-ribbon {
   position: fixed; top: 0; left: 0; right: 0; z-index: 60;
-  height: var(--demo-ribbon-h);
+  height: calc(var(--demo-ribbon-h) + env(safe-area-inset-top, 0px));
+  padding-top: env(safe-area-inset-top, 0px);
   display: flex; align-items: center; justify-content: center; gap: 8px;
   background: repeating-linear-gradient(135deg,
     #ffd400 0 14px, #1a1300 14px 28px);
@@ -177,7 +182,9 @@ body::before {
 
 /* ===================== HUD ===================== */
 #hud {
-  position: fixed; top: var(--demo-ribbon-h); left: 0; right: 0; z-index: 50; height: var(--hud-h);
+  position: fixed;
+  top: calc(var(--demo-ribbon-h) + env(safe-area-inset-top, 0px));
+  left: 0; right: 0; z-index: 50; height: var(--hud-h);
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 18px; background: linear-gradient(180deg, rgba(11,19,34,.95), rgba(7,12,24,.9));
   border-bottom: 1px solid var(--line);
@@ -607,8 +614,13 @@ body.sim-on .sim-stat { display: block; animation: simStatFade .3s ease; }
   .station-chip { flex-shrink: 0; }
 }
 
-/* ===== Mobile (≤768px) — stack the dashboard, sticky compact HUD ===== */
-@media (max-width: 768px) {
+/* ===== Small-tablet (768–820, e.g. iPad portrait) — rail stays, panels narrow ===== */
+@media (max-width: 820px) and (min-width: 601px) {
+  #layout { grid-template-columns: var(--rail-w) 200px 1fr 180px; }
+}
+
+/* ===== Mobile (≤600px) — stack the dashboard, sticky compact HUD ===== */
+@media (max-width: 600px) {
   :root { --rail-w: 0px; }   /* no rail on mobile — hamburger replaces it */
   .nav-rail { display: none !important; }
 
@@ -994,7 +1006,7 @@ input:checked + .slider-round .slider-knob {
 .app-footer-link:hover {
   color: #fff; background: rgba(0, 229, 255, .12); border-bottom-color: var(--cyan);
 }
-@media (max-width: 768px) {
+@media (max-width: 600px) {
   .app-footer-inner { flex-direction: column; gap: 6px; text-align: center; font-size: 12px; }
 }
 
@@ -1039,7 +1051,7 @@ input:checked + .slider-round .slider-knob {
   font-family: var(--font-mono); font-size: 10px; color: var(--text-faint); text-align: center; flex-shrink: 0; }
 
 /* mobile only — show hamburger, hide individual HUD action buttons that the menu replaces */
-@media (max-width: 768px) {
+@media (max-width: 600px) {
   .hamburger-btn { display: flex; }
   #btn-analytics, #btn-intel, #btn-lpr { display: none !important; }
 

@@ -17,6 +17,24 @@ window.TomorrowOsint = (function () {
 
   function map() { return window.TomorrowMap && TomorrowMap.getMap(); }
 
+  // --- Security hardening (P1-1 sec) ---
+  // OSINT signals come from a (future) live scanner that ingests Telegram text.
+  // Every field that lands inside innerHTML must be HTML-escaped, and every URL
+  // that lands inside href must be on a strict allowlist — `javascript:` and
+  // `data:` URIs would otherwise become click-to-XSS in the OSINT popups.
+  function escapeHtml(v) {
+    if (v == null) return '';
+    return String(v)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+  function safeUrl(u) {
+    if (typeof u !== 'string') return null;
+    // Allow only https://t.me/... (the only legitimate OSINT source today).
+    if (/^https:\/\/t\.me\/[A-Za-z0-9_+/-]+$/.test(u)) return u;
+    return null;
+  }
+
   function distanceMeters(lat1, lng1, lat2, lng2) {
     const R = 6371000, toRad = d => d * Math.PI / 180;
     const dφ = toRad(lat2 - lat1), dλ = toRad(lng2 - lng1);
@@ -26,17 +44,19 @@ window.TomorrowOsint = (function () {
 
   // best URL for a signal: deep-link to the specific message if we have it, else channel.
   // Falls back to deriving `https://t.me/<handle>` from `@handle` if neither was provided.
+  // Every candidate is run through safeUrl() — anything that isn't https://t.me/... is rejected.
   function bestUrl(s) {
-    if (s.msg_url) return s.msg_url;
-    if (s.source_url) return s.source_url;
-    if (s.source && s.source.startsWith('@')) return 'https://t.me/' + s.source.slice(1);
-    return null;
+    return safeUrl(s.msg_url)
+      || safeUrl(s.source_url)
+      || (s.source && typeof s.source === 'string' && s.source.startsWith('@')
+          ? safeUrl('https://t.me/' + s.source.slice(1))
+          : null);
   }
   function srcLink(s, extraClass = '') {
     const url = bestUrl(s);
-    const label = s.source || 'מקור';
+    const label = escapeHtml(s.source || 'מקור');
     if (!url) return label;
-    return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="src-link ${extraClass}" title="פתח את ההודעה בטלגרם">${label}<i data-lucide="external-link"></i></a>`;
+    return `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" class="src-link ${escapeHtml(extraClass)}" title="פתח את ההודעה בטלגרם">${label}<i data-lucide="external-link"></i></a>`;
   }
 
   function timeAgo(s) {
@@ -104,33 +124,41 @@ window.TomorrowOsint = (function () {
       className: '', iconSize: [30, 30], iconAnchor: [15, 15]
     });
     const mk = L.marker([sig.lat, sig.lng], { icon, zIndexOffset: 700 }).addTo(m);
+    // All signal-derived fields are escapeHtml'd before interpolation. crime.name
+     // comes from CONFIG and is safe, but we still treat it as data for consistency.
+    const safeCrimeName = escapeHtml(crime.name);
+    const safeZone = escapeHtml(sig.zone);
+    const safeText = escapeHtml(sig.text_he);
+    const lat = Number(sig.lat).toFixed(4);
+    const lng = Number(sig.lng).toFixed(4);
+    const conf = Math.round(Math.max(0, Math.min(1, Number(sig.confidence) || 0)) * 100);
     mk.bindPopup(`
       <div class="tac-popup" dir="rtl" style="--rc:#00e5ff">
         <div class="tp-code">OSINT · ${srcLink(sig)}</div>
-        <div class="tp-name" style="color:#00e5ff"><i data-lucide="radio-tower"></i><span>${crime.name}</span></div>
-        <div class="tp-zone"><i data-lucide="map-pin"></i><span>${sig.zone}</span></div>
-        <div class="os-text">"${sig.text_he}"</div>
-        
+        <div class="tp-name" style="color:#00e5ff"><i data-lucide="radio-tower"></i><span>${safeCrimeName}</span></div>
+        <div class="tp-zone"><i data-lucide="map-pin"></i><span>${safeZone}</span></div>
+        <div class="os-text">"${safeText}"</div>
+
         <!-- NLP entity extraction breakdown -->
         <div style="margin-top: 8px; font-size: 11px; color: var(--text-dim); background: rgba(0, 229, 255, 0.03); border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 4px; padding: 6px 8px; line-height: 1.45;">
           <div style="font-weight:700; color:var(--cyan); margin-bottom:4px;">עיבוד ישויות NLP גולמיות:</div>
           <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
             <span>סיווג אירוע חזוי:</span>
-            <span style="font-weight:700; color:#fff;">${crime.name}</span>
+            <span style="font-weight:700; color:#fff;">${safeCrimeName}</span>
           </div>
           <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
             <span>נ״צ גאוגרפי שחולץ:</span>
-            <span style="font-family:var(--font-mono); color:#fff;">${sig.lat.toFixed(4)}, ${sig.lng.toFixed(4)}</span>
+            <span style="font-family:var(--font-mono); color:#fff;">${lat}, ${lng}</span>
           </div>
           <div style="display:flex; justify-content:space-between;">
             <span>מקור היתוך מידע:</span>
-            <span style="color:#fff;">פיד מודיעין OSINT</span>
+            <span style="color:#fff;">פיד מודיעין OSINT (דמו)</span>
           </div>
         </div>
 
         <div class="tp-row" style="margin-top: 10px;">
-          <span class="tp-window"><i data-lucide="clock"></i>${timeAgo(sig)}</span>
-          <span class="risk-chip" style="--rc:#00e5ff">מהימנות ${Math.round(sig.confidence * 100)}%</span>
+          <span class="tp-window"><i data-lucide="clock"></i>${escapeHtml(timeAgo(sig))}</span>
+          <span class="risk-chip" style="--rc:#00e5ff">מהימנות ${conf}%</span>
         </div>
       </div>`, { className: 'tac-popup-wrap' });
     mk.on('popupopen', () => TomorrowApp.renderIcons());

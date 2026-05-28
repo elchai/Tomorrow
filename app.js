@@ -21,17 +21,45 @@ window.TomorrowApp = (function () {
   let saveTimer = null;
 
   // ---------- Persistence ----------
+  // The blob is wrapped with a schema version + saved-at timestamp. On load we
+  // validate both: wrong version → discard (forces fresh state on app upgrade);
+  // stale forecast (> FORECAST_TTL_MS) → drop only the forecast slice so the
+  // model re-rolls but station selection + settings + sim score survive.
+  const SCHEMA_VERSION = 1;
+  const FORECAST_TTL_MS = 60 * 60 * 1000;   // 1 hour — see P1 bug fix
+
   function loadState() {
     try {
       const raw = localStorage.getItem(CONFIG.STORAGE_KEY);
-      if (raw) Object.assign(State, JSON.parse(raw));
+      if (!raw) return;
+      const parsed = JSON.parse(raw);
+      // Legacy unversioned blob → discard.
+      if (!parsed || typeof parsed !== 'object' || parsed.__version !== SCHEMA_VERSION) {
+        console.warn('loadState: schema mismatch — starting fresh');
+        return;
+      }
+      const payload = parsed.state || {};
+      // Forecast TTL: stale forecasts hide regressions ("everything 100% covered forever")
+      if (parsed.__savedAt && Date.now() - parsed.__savedAt > FORECAST_TTL_MS) {
+        delete payload.forecast;          // prediction.init() will re-roll
+      }
+      // Whitelist known keys to defang any localStorage poisoning from sibling
+      // apps that share the elchai.github.io origin (P2-6 sec).
+      const allowed = ['current_station_id', 'forecast', 'units', 'intel_log',
+                       'forecast_hour', 'active_events', 'sim', 'settings'];
+      for (const k of allowed) {
+        if (k in payload) State[k] = payload[k];
+      }
     } catch (e) { console.warn('loadState failed', e); }
   }
 
   function saveState() {
     if (saveTimer) clearTimeout(saveTimer);
     saveTimer = setTimeout(() => {
-      try { localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(State)); }
+      try {
+        const wrapped = { __version: SCHEMA_VERSION, __savedAt: Date.now(), state: State };
+        localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(wrapped));
+      }
       catch (e) { console.warn('saveState failed', e); }
     }, CONFIG.SYNC_DEBOUNCE_MS);
   }

@@ -15,13 +15,13 @@ window.TomorrowLpr = (function () {
     {
       id: 'lpr-7012', plate: '12-345-67', mins_ago: 2,
       camera: { name: 'מצלמה 14 · אלנבי × רוטשילד', lat: 32.0640, lng: 34.7725 },
-      status: 'stolen',   model: 'Hyundai i20 לבן',  match_src: 'stolencar · גניבת רכב 2026-05-20',
+      status: 'stolen',   model: 'Hyundai i20 לבן',  match_src: 'דמו · stolencar · גניבת רכב 2026-05-20',
       dispatchable: true
     },
     {
       id: 'lpr-7011', plate: '88-219-44', mins_ago: 6,
       camera: { name: 'מצלמה 22 · דיזנגוף סנטר',   lat: 32.0760, lng: 34.7751 },
-      status: 'flagged',  model: 'Kia Picanto אפור', match_src: 'מודיעין · רכב משמש בעבירות חוזרות',
+      status: 'flagged',  model: 'Kia Picanto אפור', match_src: 'דמו · מודיעין · רכב משמש בעבירות חוזרות',
       dispatchable: true
     },
     {
@@ -33,13 +33,13 @@ window.TomorrowLpr = (function () {
     {
       id: 'lpr-7009', plate: '63-882-91', mins_ago: 18,
       camera: { name: 'מצלמה 31 · נווה שאנן',       lat: 32.0590, lng: 34.7790 },
-      status: 'stolen',   model: 'Mazda 3 כסוף',     match_src: 'stolencar · גניבת רכב 2026-05-22',
+      status: 'stolen',   model: 'Mazda 3 כסוף',     match_src: 'דמו · stolencar · גניבת רכב 2026-05-22',
       dispatchable: true
     },
     {
       id: 'lpr-7008', plate: '77-114-58', mins_ago: 27,
       camera: { name: 'מצלמה 17 · פלורנטין',         lat: 32.0570, lng: 34.7700 },
-      status: 'flagged',  model: 'Volkswagen Polo אדום', match_src: 'BOLO · התראת מפקד',
+      status: 'flagged',  model: 'Volkswagen Polo אדום', match_src: 'דמו · BOLO · התראת מפקד',
       dispatchable: true
     }
   ];

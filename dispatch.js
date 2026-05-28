@@ -205,6 +205,7 @@ window.TomorrowDispatch = (function () {
           unit.text = 'זמינה · בתחנה';
           unit.dest = null;
           unit.hotspot_id = null;
+          delete unit.lpr_alert_id;        // P1 bug fix: don't leak the alert id across return cycles
           renderUnits();
           TomorrowApp.logEvent('status', 4, `🚔 ${unit.callsign} חזרה לתחנת האם · זמינה לשיגור`);
         }
