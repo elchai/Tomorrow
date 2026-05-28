@@ -634,7 +634,19 @@ body.sim-on .sim-stat { display: block; animation: simStatFade .3s ease; }
 /* ===== Mobile (≤600px) — stack the dashboard, sticky compact HUD ===== */
 @media (max-width: 600px) {
   :root { --rail-w: 0px; }   /* no rail on mobile — hamburger replaces it */
-  .nav-rail { display: none !important; }
+  /* Hide the rail visually but keep it in the DOM tree so descendants like
+     the locale popup (which uses position:fixed to break out of its
+     ancestor box) remain renderable. display:none would hide them too. */
+  .nav-rail {
+    position: absolute !important;
+    width: 0 !important; height: 0 !important;
+    padding: 0 !important; margin: 0 !important;
+    border: 0 !important; box-shadow: none !important;
+    overflow: visible !important;
+    pointer-events: none;
+  }
+  .nav-rail .nav-rail-btn { display: none !important; }
+  .nav-rail .lang-wrap { pointer-events: auto; }
 
   /* allow page scroll on mobile (desktop locks body to hidden) */
   html, body { overflow-y: auto; overflow-x: hidden; height: auto; }
@@ -670,10 +682,18 @@ body.sim-on .sim-stat { display: block; animation: simStatFade .3s ease; }
   .panel-left, .panel-right { width: 100%; max-height: none; display: flex; border: none; border-top: 1px solid var(--line-soft); }
   .panel-left { order: 2; }
   .panel-right { order: 3; }
-  /* page scrolls — forecast flows; units/intel keep an inner scroll cap */
-  #forecast-list { flex: 0 0 auto; max-height: none; overflow: visible; }
+  /* page scrolls — forecast flows; units/intel keep an inner scroll cap.
+     !important + height:auto overrides the inline `flex: 1 1 0; min-height: 0`
+     on #forecast-list — without that, on mobile the list collapses to 0
+     height inside the auto-height panel and its cards visibly overlap the
+     Strategic Events block underneath. */
+  #forecast-list { flex: 0 0 auto !important; height: auto !important; min-height: 0 !important; max-height: none !important; overflow: visible !important; }
   .units-scroll  { flex: 0 0 auto; max-height: 320px; overflow-y: auto; }
   .intel-scroll  { flex: 0 0 auto; max-height: 280px; overflow-y: auto; }
+
+  /* Strategic events block: drop the desktop fixed height so it flows
+     naturally beneath the forecast list on mobile. */
+  #strategic-events-list { height: auto !important; max-height: none !important; overflow: visible !important; }
 
   /* Touch targets — Apple HIG / Material 44px minimums */
   button, .btn, .fc-dispatch, .station-chip, .icon-btn, .sim-btn, .mute-btn, .osint-toggle {
@@ -865,21 +885,69 @@ input:checked + .slider-round .slider-knob {
    Logical `inset-inline-start: 100%` would also "work" but the containing-
    block math gets fragile inside the absolutely-positioned rail; explicit
    `[dir]` selectors are unambiguous. */
-.lang-popup {
+/* ===================== LOCALE POPUP (Language + Region) ===================== */
+.locale-popup {
   position: absolute;
   bottom: 0;
   z-index: 3000;
   background: rgba(8, 16, 35, 0.98);
   border: 1px solid var(--police);
-  border-radius: 8px;
+  border-radius: 10px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, .6), 0 0 18px rgba(43, 143, 255, .25);
-  padding: 6px;
-  display: flex; flex-direction: column; gap: 2px;
-  min-width: 220px;
+  padding: 14px;
+  display: flex; flex-direction: column; gap: 14px;
+  min-width: 280px;
 }
-/* Open toward the map (away from the screen edge the nav-rail sits on) */
-html[dir="ltr"] .lang-popup { left:  calc(100% + 6px); }
-html[dir="rtl"] .lang-popup { right: calc(100% + 6px); }
+.locale-popup[hidden] { display: none; }
+html[dir="ltr"] .locale-popup { left:  calc(100% + 6px); }
+html[dir="rtl"] .locale-popup { right: calc(100% + 6px); }
+
+.locale-section { display: flex; flex-direction: column; gap: 6px; }
+.locale-section-head {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--font-he); font-weight: 700; font-size: 11px;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--text-faint);
+}
+.locale-section-head svg { width: 14px; height: 14px; color: var(--cyan); }
+
+.locale-options { display: flex; flex-direction: column; gap: 4px; }
+.locale-opt {
+  display: flex; align-items: center; gap: 10px;
+  background: transparent; border: 1px solid var(--line); border-radius: 6px;
+  color: var(--text); font: 500 13px/1.2 var(--font-ui);
+  padding: 9px 12px; cursor: pointer; text-align: left;
+  transition: background .15s, border-color .15s;
+  white-space: nowrap;
+}
+.locale-opt:hover:not(:disabled) { background: rgba(43, 143, 255, .12); border-color: var(--police); }
+.locale-opt.is-selected { background: rgba(43, 143, 255, .22); border-color: var(--police-br); color: #fff;
+  box-shadow: 0 0 0 1px var(--police-br) inset; }
+.locale-opt:disabled, .locale-opt.is-disabled { cursor: not-allowed; opacity: .55; }
+.locale-opt .locale-opt-name { flex: 0 1 auto; }
+.locale-opt .lang-soon {
+  margin-inline-start: auto;
+  font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+  letter-spacing: .5px; color: var(--high);
+  background: rgba(255, 122, 24, 0.10);
+  border: 1px solid rgba(255, 122, 24, 0.35);
+  border-radius: 3px; padding: 2px 6px; text-transform: uppercase;
+  white-space: nowrap; flex: 0 0 auto;
+}
+
+.locale-actions { display: flex; gap: 8px; justify-content: flex-end;
+  padding-top: 8px; border-top: 1px solid var(--line-soft); }
+.locale-btn {
+  font: 700 12px/1 var(--font-ui); letter-spacing: .04em;
+  padding: 9px 16px; border-radius: 5px; cursor: pointer;
+  border: 1px solid var(--line); background: transparent; color: var(--text);
+  transition: background .15s, border-color .15s, box-shadow .2s;
+}
+.locale-cancel:hover { background: rgba(255, 255, 255, .04); border-color: var(--text-faint); }
+.locale-apply {
+  background: var(--police); border-color: var(--police-br); color: #fff;
+}
+.locale-apply:hover { box-shadow: 0 0 14px rgba(43, 143, 255, .55); }
 .lang-popup[hidden] { display: none; }
 .lang-popup .lang-opt {
   display: flex; align-items: center; gap: 10px;
@@ -1163,6 +1231,17 @@ html[dir="rtl"] .drawer-panel.open   { transform: translateX(0); }
 @media (max-width: 600px) {
   .hamburger-btn { display: flex; }
   #btn-analytics, #btn-intel, #btn-lpr { display: none !important; }
+
+  /* On mobile there's no nav-rail, so the locale popup can't anchor to it.
+     Re-position to a centered viewport modal instead. */
+  .locale-popup {
+    position: fixed !important;
+    left: 50% !important; right: auto !important;
+    top: 50% !important; bottom: auto !important;
+    transform: translate(-50%, -50%) !important;
+    width: min(340px, 92vw);
+    z-index: 3500;
+  }
 
   /* On mobile there's no nav-rail, so drawers fill from the inline-start edge
      of the viewport (left in LTR, right in RTL) with no rail offset. */

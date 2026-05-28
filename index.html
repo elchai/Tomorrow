@@ -119,11 +119,8 @@
       <li class="hm-item" data-trigger="btn-layers"><i data-lucide="layers"></i><span data-i18n="menu.layers">Context Layers (RTM)</span></li>
       <li class="hm-item" data-trigger="btn-mute"><i data-lucide="volume-2"></i><span data-i18n="menu.sound">Sound / Mute</span></li>
 
-      <!-- Language picker (mobile only — desktop uses the rail button) -->
-      <li class="hm-section-head"><i data-lucide="globe"></i><span data-i18n="login.language">Language</span></li>
-      <li class="hm-lang-item" data-lang="en"><span>English</span></li>
-      <li class="hm-lang-item" data-lang="he"><span>עברית</span></li>
-      <li class="hm-lang-item is-disabled" data-lang="pt"><span>Português</span><span class="lang-soon" data-i18n="lang.soon">Coming soon</span></li>
+      <!-- Mobile: single Locale entry that opens the combined desktop popup -->
+      <li class="hm-item hm-item-locale" data-trigger="btn-locale"><i data-lucide="globe"></i><span data-i18n="locale.title">Language &amp; Region</span></li>
 
       <li class="hm-item hm-item-logout" data-trigger="btn-logout"><i data-lucide="log-out"></i><span data-i18n="menu.logout">Logout</span></li>
     </ul>
@@ -137,19 +134,44 @@
     <aside id="nav-rail" class="nav-rail">
       <!-- buttons (Analytics, Intel, LPR) get relocated here by app.js post-init, inserted ABOVE .nav-rail-bottom -->
       <div class="nav-rail-bottom">
-        <!-- Language picker — opens a popup with EN / HE / PT (coming soon) -->
+        <!-- Locale picker — combined Language + Region panel -->
         <div class="lang-wrap">
-          <button id="btn-lang-cycle" class="icon-btn nav-rail-btn" data-i18n-attr="title:login.language;aria-label:login.language" aria-haspopup="menu" aria-expanded="false">
+          <button id="btn-locale" class="icon-btn nav-rail-btn" data-i18n-attr="title:locale.title;aria-label:locale.title" aria-haspopup="dialog" aria-expanded="false">
             <i data-lucide="globe"></i>
             <span class="nav-rail-lang-code">EN</span>
           </button>
-          <div id="lang-popup" class="lang-popup" role="menu" hidden dir="ltr">
-            <button class="lang-opt" data-lang="en" role="menuitem">English</button>
-            <button class="lang-opt" data-lang="he" role="menuitem">עברית</button>
-            <button class="lang-opt" data-lang="pt" role="menuitem" disabled aria-disabled="true">
-              <span class="lang-opt-name">Português</span>
-              <span class="lang-soon" data-i18n="lang.soon">Coming soon</span>
-            </button>
+          <div id="locale-popup" class="locale-popup" role="dialog" hidden dir="ltr">
+
+            <div class="locale-section">
+              <div class="locale-section-head">
+                <i data-lucide="languages"></i>
+                <span data-i18n="login.language">Language</span>
+              </div>
+              <div class="locale-options" data-group="lang">
+                <button class="locale-opt" data-value="en" role="menuitemradio">English</button>
+                <button class="locale-opt" data-value="he" role="menuitemradio">עברית</button>
+                <button class="locale-opt is-disabled" data-value="pt" role="menuitemradio" disabled aria-disabled="true">
+                  <span class="locale-opt-name">Português</span>
+                  <span class="lang-soon" data-i18n="lang.soon">Coming soon</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="locale-section">
+              <div class="locale-section-head">
+                <i data-lucide="map-pin"></i>
+                <span data-i18n="login.country">Region</span>
+              </div>
+              <div class="locale-options" data-group="country">
+                <button class="locale-opt" data-value="israel" role="menuitemradio">🇮🇱 ישראל · תל אביב</button>
+                <button class="locale-opt" data-value="brazil" role="menuitemradio">🇧🇷 Brasil · São Paulo</button>
+              </div>
+            </div>
+
+            <div class="locale-actions">
+              <button class="locale-btn locale-cancel" data-i18n="locale.cancel">Cancel</button>
+              <button class="locale-btn locale-apply" data-i18n="locale.apply">Apply</button>
+            </div>
           </div>
         </div>
         <button id="btn-logout" class="icon-btn nav-rail-btn" data-i18n-attr="title:hud.logout;aria-label:hud.logout">

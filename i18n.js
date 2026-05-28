@@ -52,6 +52,9 @@ window.TomorrowI18n = (function () {
       'login.language':       'Language',
       'login.country':        'Region',
       'lang.soon':            'Coming soon',
+      'locale.title':         'Language & Region',
+      'locale.apply':         'Apply',
+      'locale.cancel':        'Cancel',
 
       // HUD
       'hud.threat':           'DTI',
@@ -472,6 +475,9 @@ window.TomorrowI18n = (function () {
       'login.language':       'שפה',
       'login.country':        'מדינה',
       'lang.soon':            'בקרוב',
+      'locale.title':         'שפה ואזור',
+      'locale.apply':         'החל',
+      'locale.cancel':        'ביטול',
 
       'hud.threat':           'DTI',
       'hud.threatLow':        'רגישות רגילה',
@@ -763,6 +769,9 @@ window.TomorrowI18n = (function () {
       'login.language':       'Idioma',
       'login.country':        'Região',
       'lang.soon':            'Em breve',
+      'locale.title':         'Idioma & Região',
+      'locale.apply':         'Aplicar',
+      'locale.cancel':        'Cancelar',
 
       'hud.threat':           'DTI',
       'hud.threatLow':        'Sensibilidade Normal',
