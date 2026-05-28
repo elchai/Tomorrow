@@ -944,6 +944,86 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-05-28T10:20:43.511Z"
+    },
+    {
+      "id": "bug-060",
+      "timestamp": "2026-05-28T10:52:17.005Z",
+      "error_message": "CSS fix: background",
+      "file": "style.css",
+      "root_cause": "background: /* Brochure-style topographic contour overlay — very low alpha so dashboard → radial-gradient(ellipse at 30% 0%, rgba(26,109,255,0.10), transparent 55%),",
+      "fix": "Changed background: /* Brochure-style topographic contour overlay — very low alpha so dashboard → radial-gradient(ellipse at 30% 0%, rgba(26,109,255,0.10), transparent 55%),",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 8,
+      "last_seen": "2026-05-28T10:53:28.122Z"
+    },
+    {
+      "id": "bug-061",
+      "timestamp": "2026-05-28T10:53:02.883Z",
+      "error_message": "Wrong reference: accent should be cyan",
+      "file": "style.css",
+      "root_cause": "Used \"accent\" instead of \"cyan\"",
+      "fix": "Changed accent → cyan",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T10:53:02.883Z"
+    },
+    {
+      "id": "bug-062",
+      "timestamp": "2026-05-28T10:53:59.113Z",
+      "error_message": "Significant refactor of ",
+      "file": "index.html",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 5→14 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T10:53:59.113Z"
+    },
+    {
+      "id": "bug-063",
+      "timestamp": "2026-05-28T10:55:40.261Z",
+      "error_message": "Missing error handling in unknown",
+      "file": "wiring.js",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block | Also: // Same \"wipe persisted demo data\" trick as the in-app popup; // user never sees a HE log entry while EN UI is active.",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-28T10:55:49.881Z"
+    },
+    {
+      "id": "bug-064",
+      "timestamp": "2026-05-28T10:56:20.489Z",
+      "error_message": "Wrong return value",
+      "file": "i18n.js",
+      "root_cause": "Was returning: { t, setLang, getLang, getSupported, getMeta, appl",
+      "fix": "Now returns: { t, setLang, getLang, getSupported, getAllDefined",
+      "tags": [
+        "auto-detected",
+        "return-value",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T10:56:20.489Z"
     }
   ]
 }

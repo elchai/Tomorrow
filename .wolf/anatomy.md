@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-28T10:21:43.462Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-28T10:56:54.786Z
 > Files: 59 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../.claude/projects/c--Users-User-Desktop-DEV-Tomorrow/memory/
@@ -10,7 +10,7 @@
 
 ## ./
 
-- `_audit_smoke.mjs` — URL: shot (~462 tok)
+- `_audit_smoke.mjs` — URL: shot (~517 tok)
 - `.gitignore` — Git ignore rules (~264 tok)
 - `analytics.js` — State: init, injectHUDButton, buildPanel (~8552 tok)
 - `app.js` — State: loadState, saveState, getCurrentStation + 19 more (~9147 tok)
@@ -19,8 +19,8 @@
 - `config.js` — VERSION: activeCountry, get_MAP_CENTER, get_MAP_ZOOM + 6 more (~2639 tok)
 - `countries.js` — Declares STORAGE_COUNTRY (~4772 tok)
 - `dispatch.js` — State: distanceMeters, bezier, calcHeadingDeg + 9 more (~5681 tok)
-- `i18n.js` — Declares STORAGE_LANG (~12360 tok)
-- `index.html` — TOMORROW · רשת ניבוי פשיעה (~3823 tok)
+- `i18n.js` — Declares STORAGE_LANG (~19720 tok)
+- `index.html` — TOMORROW · רשת ניבוי פשיעה (~3990 tok)
 - `intel.js` — so: getTargets, init, injectHUDButton + 7 more (~1904 tok)
 - `layers.js` — layerGroups: init, buildBarsLayer, buildAtmsLayer + 6 more (~3873 tok)
 - `LICENSE` — Declares for (~585 tok)
@@ -31,8 +31,8 @@
 - `README.md` — Project documentation (~458 tok)
 - `signals.sample.json` (~845 tok)
 - `sounds.js` — ensure: note, sweep, uiClick + 7 more (~868 tok)
-- `style.css` — Styles: 52 rules, 27 vars (~17573 tok)
-- `wiring.js` — langPicker: refreshNowHour, toggleHam (~1715 tok)
+- `style.css` — Styles: 60 rules, 27 vars (~17682 tok)
+- `wiring.js` — langPicker: refreshNowHour, toggleHam (~2345 tok)
 
 ## .claude/
 

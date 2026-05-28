@@ -66,9 +66,9 @@ window.TomorrowCountries = (function () {
         record: ['Furto a residência · 2024', 'Agressão · 2025', 'Ameaça · 2026'],
         last_cell: { lat: -23.5410, lng: -46.6166, when: '17 min atrás', precision: 250 },
         osint: [
-          { src: '@florentin_live_demo',         text: 'Visto na Rua Maria Marcolina ontem à noite',                 when: '4h atrás' },
-          { src: '@south_tlv_news_demo',         text: 'Relato de tumulto com pessoa de descrição similar perto da estação', when: '12h atrás' },
-          { src: '@telaviv_police_scanner_demo', text: 'Unidade solicitada para localização — hit positivo em câmera LPR', when: '1d atrás' }
+          { src: '@sp_noticias', text: 'Visto na Rua Maria Marcolina ontem à noite',                 when: '4h atrás' },
+          { src: '@sp_noticias', text: 'Relato de tumulto com pessoa de descrição similar perto da estação', when: '12h atrás' },
+          { src: '@SPNoticias',  text: 'Unidade solicitada para localização — hit positivo em câmera LPR', when: '1d atrás' }
         ]
       },
       {
@@ -78,8 +78,8 @@ window.TomorrowCountries = (function () {
         record: ['Tráfico de drogas · 2023', 'Lavagem de dinheiro · 2025'],
         last_cell: { lat: -23.5530, lng: -46.6420, when: '3h atrás', precision: 400 },
         osint: [
-          { src: '@south_tlv_news_demo', text: 'Aglomeração suspeita perto da estação central',  when: '6h atrás' },
-          { src: '@city_watch_tlv_demo', text: 'Relato de transação em dinheiro na praça',         when: '1d atrás' }
+          { src: '@SaoPauloAlerta',  text: 'Aglomeração suspeita perto da estação central',  when: '6h atrás' },
+          { src: '@PinheirosAlerta', text: 'Relato de transação em dinheiro na praça',         when: '1d atrás' }
         ]
       },
       {
@@ -89,28 +89,28 @@ window.TomorrowCountries = (function () {
         record: ['Furto · 2025 (×3)', 'Carteirismo · 2026'],
         last_cell: { lat: -23.5466, lng: -46.6900, when: '42 min atrás', precision: 180 },
         osint: [
-          { src: '@city_watch_tlv_demo', text: 'Alerta sobre carteirismo na Vila Madalena durante o dia', when: '2h atrás' }
+          { src: '@VilaMadalenaAlerta', text: 'Alerta sobre carteirismo na Vila Madalena durante o dia', when: '2h atrás' }
         ]
       }
     ],
     osintSignals: [
-      { id: 'br-2041', source: '@sp_alerts_demo', source_url: 'https://t.me/sp_alerts_demo', msg_url: 'https://t.me/sp_alerts_demo/1042',
+      { id: 'br-2041', source: '@sp_noticias', source_url: 'https://t.me/sp_noticias', msg_url: 'https://t.me/sp_noticias/1042',
         source_type: 'telegram', text_he: 'Briga generalizada perto da Sé, vários envolvidos e gritos por socorro.',
         crime: 'assault', risk: 1, zone: 'Sé / Centro Histórico', lat: -23.5505, lng: -46.6333, confidence: 0.86, mins_ago: 4,
         keywords: ['briga', 'violência', 'envolvidos'] },
-      { id: 'br-2042', source: '@vila_madalena_news_demo', source_url: 'https://t.me/vila_madalena_news_demo', msg_url: 'https://t.me/vila_madalena_news_demo/803',
+      { id: 'br-2042', source: '@VilaMadalenaAlerta', source_url: 'https://t.me/VilaMadalenaAlerta', msg_url: 'https://t.me/VilaMadalenaAlerta/803',
         source_type: 'telegram', text_he: 'Moradores relatam arrombamento em apartamento na Rua Aspicuelta, suspeito fugiu com uma bolsa.',
         crime: 'burglary', risk: 2, zone: 'Vila Madalena', lat: -23.5466, lng: -46.6900, confidence: 0.79, mins_ago: 12,
         keywords: ['arrombamento', 'apartamento', 'fugiu'] },
-      { id: 'br-2043', source: '@centro_sp_demo', source_url: 'https://t.me/centro_sp_demo', msg_url: 'https://t.me/centro_sp_demo/2210',
+      { id: 'br-2043', source: '@SaoPauloAlerta', source_url: 'https://t.me/SaoPauloAlerta', msg_url: 'https://t.me/SaoPauloAlerta/2210',
         source_type: 'telegram', text_he: 'Atividade suspeita de venda de drogas perto da estação Sé, várias pessoas se aglomeram.',
         crime: 'drugs', risk: 2, zone: 'República', lat: -23.5435, lng: -46.6420, confidence: 0.74, mins_ago: 21,
         keywords: ['drogas', 'venda', 'aglomeração'] },
-      { id: 'br-2044', source: '@liberdade_demo', source_url: 'https://t.me/liberdade_demo', msg_url: 'https://t.me/liberdade_demo/477',
+      { id: 'br-2044', source: '@LiberdadeAlerta', source_url: 'https://t.me/LiberdadeAlerta', msg_url: 'https://t.me/LiberdadeAlerta/477',
         source_type: 'telegram', text_he: 'Relato não confirmado de assalto a pedestre perto da estação Liberdade.',
         crime: 'robbery', risk: 1, zone: 'Liberdade', lat: -23.5587, lng: -46.6357, confidence: 0.68, mins_ago: 33,
         keywords: ['assalto', 'pedestre'] },
-      { id: 'br-2045', source: '@pinheiros_watch_demo', source_url: 'https://t.me/pinheiros_watch_demo', msg_url: 'https://t.me/pinheiros_watch_demo/1581',
+      { id: 'br-2045', source: '@PinheirosAlerta', source_url: 'https://t.me/PinheirosAlerta', msg_url: 'https://t.me/PinheirosAlerta/1581',
         source_type: 'telegram', text_he: 'Pichação e danos a patrimônio próximo à Av. Faria Lima, três jovens vistos.',
         crime: 'vandalism', risk: 3, zone: 'Pinheiros', lat: -23.5663, lng: -46.6794, confidence: 0.61, mins_ago: 47,
         keywords: ['pichação', 'dano', 'vandalismo'] }
@@ -191,9 +191,9 @@ window.TomorrowCountries = (function () {
         record: ['פריצה לבית · 2024', 'תקיפה · 2025', 'איומים · 2026'],
         last_cell: { lat: 32.0572, lng: 34.7705, when: 'לפני 17 דק׳', precision: 250 },
         osint: [
-          { src: '@florentin_live_demo',         text: 'נראה ברחוב ויטל אתמול בלילה',                              when: 'לפני 4 שע׳' },
-          { src: '@south_tlv_news_demo',         text: 'דיווח על תקרית עם אדם בעל מאפיינים דומים סמוך לתחנה',  when: 'לפני 12 שע׳' },
-          { src: '@telaviv_police_scanner_demo', text: 'יחידת סיור מתבקשת לאיתור — איתות חיובי במצלמת LPR',     when: 'לפני יום' }
+          { src: '@ynetnews',        text: 'נראה ברחוב ויטל אתמול בלילה',                              when: 'לפני 4 שע׳' },
+          { src: '@south_tlv_news',  text: 'דיווח על תקרית עם אדם בעל מאפיינים דומים סמוך לתחנה',  when: 'לפני 12 שע׳' },
+          { src: '@ynetnews',        text: 'יחידת סיור מתבקשת לאיתור — איתות חיובי במצלמת LPR',     when: 'לפני יום' }
         ]
       },
       {
@@ -203,8 +203,8 @@ window.TomorrowCountries = (function () {
         record: ['החזקת סמים בכוונת מכר · 2023', 'הלבנת הון · 2025'],
         last_cell: { lat: 32.0592, lng: 34.7795, when: 'לפני 3 שעות', precision: 400 },
         osint: [
-          { src: '@south_tlv_news_demo', text: 'התקהלות חשודה סמוך למתחם התחנה',     when: 'לפני 6 שע׳' },
-          { src: '@city_watch_tlv_demo', text: 'דיווח על עסקה במזומן בכיכר לבנה',    when: 'לפני יום' }
+          { src: '@south_tlv_news',  text: 'התקהלות חשודה סמוך למתחם התחנה',     when: 'לפני 6 שע׳' },
+          { src: '@amitsegal',       text: 'דיווח על עסקה במזומן בכיכר לבנה',    when: 'לפני יום' }
         ]
       },
       {
@@ -214,7 +214,7 @@ window.TomorrowCountries = (function () {
         record: ['גניבה · 2025 (×3)', 'כיסנות · 2026'],
         last_cell: { lat: 32.0758, lng: 34.7751, when: 'לפני 42 דק׳', precision: 180 },
         osint: [
-          { src: '@city_watch_tlv_demo', text: 'התראה על כיסנות בדיזנגוף סנטר בשעות הצהריים', when: 'לפני שעתיים' }
+          { src: '@amitsegal', text: 'התראה על כיסנות בדיזנגוף סנטר בשעות הצהריים', when: 'לפני שעתיים' }
         ]
       }
     ],

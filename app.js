@@ -158,10 +158,10 @@ window.TomorrowApp = (function () {
   }
 
   // ---------- Intel log ----------
-  function logEvent(category, urgency, text) {
+  function logEvent(category, urgency, text, i18nKey = null, i18nVars = null) {
     const entry = {
       time: new Date().toLocaleTimeString((window.TomorrowI18n ? TomorrowI18n.getMeta().locale : 'en-US'), { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-      category, urgency, text
+      category, urgency, text, i18nKey, i18nVars
     };
     State.intel_log.unshift(entry);
     if (State.intel_log.length > 200) State.intel_log.pop();
@@ -176,12 +176,28 @@ window.TomorrowApp = (function () {
       list.innerHTML = `<div class="empty-state">${window.TomorrowI18n ? TomorrowI18n.t('log.empty') : 'No recorded activity'}</div>`;
       return;
     }
-    list.innerHTML = State.intel_log.slice(0, 40).map(e => `
-      <div class="intel-row urgency-${e.urgency}">
-        <span class="intel-time">${e.time}</span>
-        <span class="intel-text">${e.text}</span>
-      </div>
-    `).join('');
+    list.innerHTML = State.intel_log.slice(0, 40).map(e => {
+      let displayText = e.text;
+      if (e.i18nKey && window.TomorrowI18n) {
+        const vars = {};
+        if (e.i18nVars) {
+          for (const [k, v] of Object.entries(e.i18nVars)) {
+            if (typeof v === 'string' && (v.startsWith('factor.') || v.startsWith('units.') || v.startsWith('toast.') || v.startsWith('event.') || v.startsWith('crime.') || /[\u0590-\u05FF]/.test(v) || v.startsWith('תחנת') || v.startsWith('מרחב'))) {
+              vars[k] = TomorrowI18n.t(v);
+            } else {
+              vars[k] = v;
+            }
+          }
+        }
+        displayText = TomorrowI18n.t(e.i18nKey, vars);
+      }
+      return `
+        <div class="intel-row urgency-${e.urgency}">
+          <span class="intel-time">${e.time}</span>
+          <span class="intel-text">${displayText}</span>
+        </div>
+      `;
+    }).join('');
     renderIcons();   // intel rows may embed lucide icons (e.g. external-link on OSINT source links)
   }
 
@@ -763,6 +779,7 @@ window.TomorrowApp = (function () {
     document.addEventListener('tomorrow-lang-change', () => {
       renderStationChips();
       updateThreatLevel();
+      renderIntelLog();
       // Drawers/feeds rebuild themselves the next time they're opened.
     });
     showLogin(startSystem);   // login gate → boot → modules

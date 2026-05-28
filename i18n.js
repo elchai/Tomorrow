@@ -11,7 +11,12 @@
 window.TomorrowI18n = (function () {
 
   const STORAGE_LANG = 'tomorrow_lang';
-  const SUPPORTED = ['en', 'he', 'pt'];
+  // 'pt' is recognised (translations are baked in) but marked "coming soon" in
+  // the picker — it's NOT in SUPPORTED so setLang('pt') rejects and the user
+  // can't actually flip to it from the UI yet. Translations stay ready for
+  // when we re-enable.
+  const SUPPORTED = ['en', 'he'];
+  const ALL_DEFINED = ['en', 'he', 'pt'];
 
   // Per-language metadata: html lang + dir.
   const META = {
@@ -46,6 +51,7 @@ window.TomorrowI18n = (function () {
       'login.wrongCode':      'Invalid access code',
       'login.language':       'Language',
       'login.country':        'Region',
+      'lang.soon':            'Coming soon',
 
       // HUD
       'hud.threat':           'DTI',
@@ -465,6 +471,7 @@ window.TomorrowI18n = (function () {
       'login.wrongCode':      'קוד גישה שגוי',
       'login.language':       'שפה',
       'login.country':        'מדינה',
+      'lang.soon':            'בקרוב',
 
       'hud.threat':           'DTI',
       'hud.threatLow':        'רגישות רגילה',
@@ -755,6 +762,7 @@ window.TomorrowI18n = (function () {
       'login.wrongCode':      'Senha inválida',
       'login.language':       'Idioma',
       'login.country':        'Região',
+      'lang.soon':            'Em breve',
 
       'hud.threat':           'DTI',
       'hud.threatLow':        'Sensibilidade Normal',
@@ -1140,6 +1148,7 @@ window.TomorrowI18n = (function () {
 
   function getLang() { return current; }
   function getSupported() { return SUPPORTED.slice(); }
+  function getAllDefined() { return ALL_DEFINED.slice(); }
   function getMeta(lang) { return META[lang || current] || META.en; }
 
   // Substitute {name} placeholders.
@@ -1194,7 +1203,7 @@ window.TomorrowI18n = (function () {
     return true;
   }
 
-  return { t, setLang, getLang, getSupported, getMeta, applyDom };
+  return { t, setLang, getLang, getSupported, getAllDefined, getMeta, applyDom };
 })();
 
 // Global translation shortcut available early

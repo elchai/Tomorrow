@@ -31,7 +31,7 @@
         <select id="lang-picker" class="locale-select" aria-label="Language">
           <option value="en">English</option>
           <option value="he">עברית</option>
-          <option value="pt">Português</option>
+          <option value="pt" disabled>Português · Coming soon</option>
         </select>
       </label>
       <label class="locale-row">
@@ -130,11 +130,20 @@
     <aside id="nav-rail" class="nav-rail">
       <!-- buttons (Analytics, Intel, LPR) get relocated here by app.js post-init, inserted ABOVE .nav-rail-bottom -->
       <div class="nav-rail-bottom">
-        <!-- Language cycle button (en → he → pt → en …) -->
-        <button id="btn-lang-cycle" class="icon-btn nav-rail-btn" data-i18n-attr="title:login.language;aria-label:login.language">
-          <i data-lucide="globe"></i>
-          <span class="nav-rail-lang-code">EN</span>
-        </button>
+        <!-- Language picker — opens a popup with EN / HE / PT (coming soon) -->
+        <div class="lang-wrap">
+          <button id="btn-lang-cycle" class="icon-btn nav-rail-btn" data-i18n-attr="title:login.language;aria-label:login.language" aria-haspopup="menu" aria-expanded="false">
+            <i data-lucide="globe"></i>
+            <span class="nav-rail-lang-code">EN</span>
+          </button>
+          <div id="lang-popup" class="lang-popup" role="menu" hidden>
+            <button class="lang-opt" data-lang="en" role="menuitem">English</button>
+            <button class="lang-opt" data-lang="he" role="menuitem" lang="he" dir="rtl">עברית</button>
+            <button class="lang-opt" data-lang="pt" role="menuitem" disabled aria-disabled="true">
+              Português <span class="lang-soon" data-i18n="lang.soon">Coming soon</span>
+            </button>
+          </div>
+        </div>
         <button id="btn-logout" class="icon-btn nav-rail-btn" data-i18n-attr="title:hud.logout;aria-label:hud.logout">
           <i data-lucide="log-out"></i>
           <span class="nav-rail-label" data-i18n="hud.logout">Logout</span>

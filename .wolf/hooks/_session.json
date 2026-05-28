@@ -48,8 +48,8 @@
       "first_read": "2026-05-28T07:10:27.278Z"
     },
     "c:/Users/User/Desktop/DEV/Tomorrow/style.css": {
-      "count": 24,
-      "tokens": 17554,
+      "count": 25,
+      "tokens": 17573,
       "first_read": "2026-05-28T07:11:27.329Z"
     },
     "c:/Users/User/Desktop/DEV/Tomorrow/signals.sample.json": {
@@ -171,6 +171,31 @@
       "count": 1,
       "tokens": 0,
       "first_read": "2026-05-28T10:22:16.226Z"
+    },
+    "c:/Users/User/Desktop/DEV/Tomorrow/i18n.js": {
+      "count": 3,
+      "tokens": 19603,
+      "first_read": "2026-05-28T10:54:18.744Z"
+    },
+    "c:/Users/User/Desktop/DEV/Tomorrow/wiring.js": {
+      "count": 1,
+      "tokens": 1715,
+      "first_read": "2026-05-28T10:55:21.739Z"
+    },
+    "c:/Users/User/Desktop/DEV/Tomorrow/.wolf/designqc-captures/revert_login.jpg": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-05-28T10:57:32.206Z"
+    },
+    "c:/Users/User/Desktop/DEV/Tomorrow/.wolf/designqc-captures/revert_dashboard.jpg": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-05-28T10:57:41.187Z"
+    },
+    "c:/Users/User/Desktop/DEV/Tomorrow/.wolf/designqc-captures/revert_lang_popup.jpg": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-05-28T10:57:49.794Z"
     }
   },
   "files_written": [
@@ -1745,33 +1770,171 @@
       "action": "create",
       "tokens": 495,
       "at": "2026-05-28T10:21:43.471Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/style.css",
+      "action": "edit",
+      "tokens": 95,
+      "at": "2026-05-28T10:52:04.233Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/style.css",
+      "action": "edit",
+      "tokens": 58,
+      "at": "2026-05-28T10:52:17.002Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/style.css",
+      "action": "edit",
+      "tokens": 44,
+      "at": "2026-05-28T10:52:27.600Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/style.css",
+      "action": "edit",
+      "tokens": 110,
+      "at": "2026-05-28T10:52:37.571Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/style.css",
+      "action": "edit",
+      "tokens": 80,
+      "at": "2026-05-28T10:52:46.233Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/style.css",
+      "action": "edit",
+      "tokens": 72,
+      "at": "2026-05-28T10:52:54.461Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/style.css",
+      "action": "edit",
+      "tokens": 52,
+      "at": "2026-05-28T10:53:02.879Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/style.css",
+      "action": "edit",
+      "tokens": 110,
+      "at": "2026-05-28T10:53:12.282Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/style.css",
+      "action": "edit",
+      "tokens": 41,
+      "at": "2026-05-28T10:53:20.582Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/style.css",
+      "action": "edit",
+      "tokens": 40,
+      "at": "2026-05-28T10:53:28.118Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/style.css",
+      "action": "edit",
+      "tokens": 76,
+      "at": "2026-05-28T10:53:36.896Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/index.html",
+      "action": "edit",
+      "tokens": 258,
+      "at": "2026-05-28T10:53:59.109Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/index.html",
+      "action": "edit",
+      "tokens": 74,
+      "at": "2026-05-28T10:54:07.293Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/i18n.js",
+      "action": "edit",
+      "tokens": 40,
+      "at": "2026-05-28T10:54:26.563Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/i18n.js",
+      "action": "edit",
+      "tokens": 44,
+      "at": "2026-05-28T10:54:45.628Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/i18n.js",
+      "action": "edit",
+      "tokens": 35,
+      "at": "2026-05-28T10:54:57.168Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/style.css",
+      "action": "edit",
+      "tokens": 555,
+      "at": "2026-05-28T10:55:14.320Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/wiring.js",
+      "action": "edit",
+      "tokens": 763,
+      "at": "2026-05-28T10:55:40.258Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/wiring.js",
+      "action": "edit",
+      "tokens": 159,
+      "at": "2026-05-28T10:55:49.877Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/i18n.js",
+      "action": "edit",
+      "tokens": 107,
+      "at": "2026-05-28T10:56:07.163Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/i18n.js",
+      "action": "edit",
+      "tokens": 65,
+      "at": "2026-05-28T10:56:14.038Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/i18n.js",
+      "action": "edit",
+      "tokens": 24,
+      "at": "2026-05-28T10:56:20.486Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/_audit_smoke.mjs",
+      "action": "create",
+      "tokens": 554,
+      "at": "2026-05-28T10:56:54.797Z"
     }
   ],
   "edit_counts": {
     "layers.js": 15,
-    "index.html": 25,
+    "index.html": 27,
     "config.js": 6,
     "app.js": 23,
     "analytics.js": 27,
     "prediction.js": 11,
     "osint.js": 12,
-    "style.css": 37,
+    "style.css": 49,
     "signals.sample.json": 1,
     "intel.js": 9,
-    "_audit_smoke.mjs": 11,
+    "_audit_smoke.mjs": 12,
     ".gitignore": 1,
     "LICENSE": 1,
-    "wiring.js": 7,
+    "wiring.js": 9,
     "dispatch.js": 20,
     "lpr.js": 8,
     "../../../.claude/projects/c--Users-User-Desktop-DEV-Tomorrow/memory/feedback_audit_driven_sprints.md": 1,
     "../../../.claude/projects/c--Users-User-Desktop-DEV-Tomorrow/memory/MEMORY.md": 1,
-    "i18n.js": 43,
+    "i18n.js": 49,
     "countries.js": 3
   },
-  "anatomy_hits": 15,
-  "anatomy_misses": 19,
-  "repeated_reads_warned": 68,
+  "anatomy_hits": 17,
+  "anatomy_misses": 22,
+  "repeated_reads_warned": 71,
   "cerebrum_warnings": 0,
   "stop_count": 6
 }

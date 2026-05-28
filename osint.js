@@ -152,8 +152,9 @@ window.TomorrowOsint = (function () {
     const lat = Number(sig.lat).toFixed(4);
     const lng = Number(sig.lng).toFixed(4);
     const conf = Math.round(Math.max(0, Math.min(1, Number(sig.confidence) || 0)) * 100);
+    const popupDir = window.TomorrowI18n ? TomorrowI18n.getMeta().dir : 'ltr';
     mk.bindPopup(`
-      <div class="tac-popup" dir="rtl" style="--rc:#00e5ff">
+      <div class="tac-popup" dir="${popupDir}" style="--rc:#00e5ff">
         <div class="tp-code">OSINT · ${srcLink(sig)}</div>
         <div class="tp-name" style="color:#00e5ff"><i data-lucide="radio-tower"></i><span>${safeCrimeName}</span></div>
         <div class="tp-zone"><i data-lucide="map-pin"></i><span>${safeZone}</span></div>
@@ -222,12 +223,18 @@ window.TomorrowOsint = (function () {
     list.slice(0, 8).forEach(sig => {
       const crime = CONFIG.crimeType(sig.crime);
       const tr = (k, v) => (window.TomorrowI18n ? TomorrowI18n.t(k, v) : k);
+      const link = srcLink(sig);
       TomorrowApp.logEvent('osint', sig.risk, tr('osint.logLine', {
-        src: srcLink(sig),
+        src: link,
         crime: CONFIG.crimeName(sig.crime),
+        zone: window.T ? T(sig.zone) : sig.zone,
+        conf: Math.round(sig.confidence * 100)
+      }), 'osint.logLine', {
+        src: link,
+        crime: 'crime.' + sig.crime,
         zone: sig.zone,
         conf: Math.round(sig.confidence * 100)
-      }));
+      });
     });
 
     // reflect the boost in the forecast + map

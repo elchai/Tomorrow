@@ -18,23 +18,69 @@ document.addEventListener('DOMContentLoaded', () => {
     if (langPicker) {
       langPicker.value = TomorrowI18n.getLang();
       langPicker.addEventListener('change', () => {
+        // Same "wipe persisted demo data" trick as the in-app popup so the
+        // user never sees a HE log entry while EN UI is active.
+        try { localStorage.removeItem('tomorrow_state_v2'); } catch (_) { /* ignore */ }
         TomorrowI18n.setLang(langPicker.value);
+        // Pre-login screens don't need a reload — boot hasn't started yet.
       });
     }
-    // In-app language cycle button (lives in the nav-rail). Click rotates en → he → pt → en.
+    // In-app language picker — popup with EN / HE / PT. PT is shown but
+    // disabled ("coming soon") so the live demo only switches between
+    // English and Hebrew. Clicking the rail button opens the popup;
+    // clicking an option (or anywhere outside) closes it.
     const cycleBtn = document.getElementById('btn-lang-cycle');
-    if (cycleBtn) {
+    const popup    = document.getElementById('lang-popup');
+    if (cycleBtn && popup) {
       const codeEl = cycleBtn.querySelector('.nav-rail-lang-code');
-      const refresh = () => { if (codeEl) codeEl.textContent = TomorrowI18n.getLang().toUpperCase(); };
-      refresh();
-      cycleBtn.addEventListener('click', () => {
-        const order = TomorrowI18n.getSupported();
+      const opts   = popup.querySelectorAll('.lang-opt');
+      const refresh = () => {
         const cur = TomorrowI18n.getLang();
-        const next = order[(order.indexOf(cur) + 1) % order.length];
-        TomorrowI18n.setLang(next);
-        refresh();
+        if (codeEl) codeEl.textContent = cur.toUpperCase();
+        opts.forEach(o => o.classList.toggle('active', o.dataset.lang === cur));
+      };
+      const setOpen = (open) => {
+        popup.hidden = !open;
+        cycleBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      };
+      refresh();
+      cycleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setOpen(popup.hidden);
         if (window.TomorrowSounds) TomorrowSounds.uiClick();
       });
+      opts.forEach(opt => {
+        opt.addEventListener('click', (e) => {
+          if (opt.disabled) { e.stopPropagation(); return; }
+          const lang = opt.dataset.lang;
+          // Clearing forecast + intel-log avoids the stale-mixed-language
+          // problem (HE template + PT/EN data, or vice versa) shown in
+          // the user's screenshot. Storage is overwritten by setLang's
+          // saveState path on the very next emission.
+          try {
+            const raw = localStorage.getItem('tomorrow_state_v2');
+            if (raw) {
+              const parsed = JSON.parse(raw);
+              if (parsed && parsed.state) {
+                parsed.state.intel_log = [];
+                parsed.state.forecast = [];
+                parsed.state.units = [];
+                localStorage.setItem('tomorrow_state_v2', JSON.stringify(parsed));
+              }
+            }
+          } catch (_) { /* ignore */ }
+          TomorrowI18n.setLang(lang);
+          setOpen(false);
+          location.reload();   // full reload so every module re-renders cleanly
+        });
+      });
+      // Close when clicking anywhere outside the popup
+      document.addEventListener('click', (e) => {
+        if (!popup.hidden && !popup.contains(e.target) && e.target !== cycleBtn && !cycleBtn.contains(e.target)) {
+          setOpen(false);
+        }
+      });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !popup.hidden) setOpen(false); });
       document.addEventListener('tomorrow-lang-change', refresh);
     }
   }
