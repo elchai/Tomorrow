@@ -1,0 +1,289 @@
+{
+  "session_id": "session-2026-05-28-0919",
+  "started": "2026-05-28T06:19:41.163Z",
+  "files_read": {
+    "c:/Users/User/Desktop/DEV/Tomorrow/docs/audits/2026-05-26-mega-audit/00-index.md": {
+      "count": 1,
+      "tokens": 2786,
+      "first_read": "2026-05-28T07:07:50.718Z"
+    },
+    "c:/Users/User/Desktop/DEV/Tomorrow/.wolf/anatomy.md": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-05-28T07:08:01.360Z"
+    },
+    "c:/Users/User/Desktop/DEV/Tomorrow/layers.js": {
+      "count": 1,
+      "tokens": 3797,
+      "first_read": "2026-05-28T07:08:09.535Z"
+    },
+    "c:/Users/User/Desktop/DEV/Tomorrow/index.html": {
+      "count": 3,
+      "tokens": 3692,
+      "first_read": "2026-05-28T07:08:19.026Z"
+    },
+    "c:/Users/User/Desktop/DEV/Tomorrow/config.js": {
+      "count": 2,
+      "tokens": 2477,
+      "first_read": "2026-05-28T07:08:54.797Z"
+    },
+    "c:/Users/User/Desktop/DEV/Tomorrow/app.js": {
+      "count": 1,
+      "tokens": 7775,
+      "first_read": "2026-05-28T07:09:36.328Z"
+    },
+    "c:/Users/User/Desktop/DEV/Tomorrow/analytics.js": {
+      "count": 1,
+      "tokens": 8426,
+      "first_read": "2026-05-28T07:10:01.981Z"
+    },
+    "c:/Users/User/Desktop/DEV/Tomorrow/prediction.js": {
+      "count": 1,
+      "tokens": 3409,
+      "first_read": "2026-05-28T07:10:14.598Z"
+    },
+    "c:/Users/User/Desktop/DEV/Tomorrow/osint.js": {
+      "count": 1,
+      "tokens": 2329,
+      "first_read": "2026-05-28T07:10:27.278Z"
+    },
+    "c:/Users/User/Desktop/DEV/Tomorrow/style.css": {
+      "count": 4,
+      "tokens": 16317,
+      "first_read": "2026-05-28T07:11:27.329Z"
+    },
+    "c:/Users/User/Desktop/DEV/Tomorrow/signals.sample.json": {
+      "count": 1,
+      "tokens": 800,
+      "first_read": "2026-05-28T07:12:40.706Z"
+    },
+    "c:/Users/User/Desktop/DEV/Tomorrow/intel.js": {
+      "count": 1,
+      "tokens": 2139,
+      "first_read": "2026-05-28T07:13:08.933Z"
+    },
+    "c:/Users/User/Desktop/DEV/Tomorrow/.wolf/designqc-captures/root_desktop_top.jpg": {
+      "count": 2,
+      "tokens": 0,
+      "first_read": "2026-05-28T07:14:57.124Z"
+    },
+    "c:/Users/User/Desktop/DEV/Tomorrow/.wolf/designqc-captures/smoke_dashboard.jpg": {
+      "count": 1,
+      "tokens": 0,
+      "first_read": "2026-05-28T07:17:43.063Z"
+    }
+  },
+  "files_written": [
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/layers.js",
+      "action": "edit",
+      "tokens": 44,
+      "at": "2026-05-28T07:08:14.180Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/index.html",
+      "action": "edit",
+      "tokens": 33,
+      "at": "2026-05-28T07:08:38.634Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/config.js",
+      "action": "edit",
+      "tokens": 63,
+      "at": "2026-05-28T07:09:07.831Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/config.js",
+      "action": "edit",
+      "tokens": 21,
+      "at": "2026-05-28T07:09:13.051Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/index.html",
+      "action": "edit",
+      "tokens": 17,
+      "at": "2026-05-28T07:09:21.768Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/index.html",
+      "action": "edit",
+      "tokens": 24,
+      "at": "2026-05-28T07:09:27.400Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/app.js",
+      "action": "edit",
+      "tokens": 155,
+      "at": "2026-05-28T07:09:42.793Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/analytics.js",
+      "action": "edit",
+      "tokens": 10,
+      "at": "2026-05-28T07:10:05.814Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/prediction.js",
+      "action": "edit",
+      "tokens": 149,
+      "at": "2026-05-28T07:10:23.378Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/osint.js",
+      "action": "edit",
+      "tokens": 66,
+      "at": "2026-05-28T07:10:34.881Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/index.html",
+      "action": "edit",
+      "tokens": 30,
+      "at": "2026-05-28T07:10:56.896Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/index.html",
+      "action": "edit",
+      "tokens": 58,
+      "at": "2026-05-28T07:11:10.881Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/index.html",
+      "action": "edit",
+      "tokens": 83,
+      "at": "2026-05-28T07:11:18.547Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/style.css",
+      "action": "edit",
+      "tokens": 18,
+      "at": "2026-05-28T07:11:31.752Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/style.css",
+      "action": "edit",
+      "tokens": 217,
+      "at": "2026-05-28T07:11:40.785Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/style.css",
+      "action": "edit",
+      "tokens": 31,
+      "at": "2026-05-28T07:11:50.297Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/style.css",
+      "action": "edit",
+      "tokens": 71,
+      "at": "2026-05-28T07:12:00.487Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/style.css",
+      "action": "edit",
+      "tokens": 146,
+      "at": "2026-05-28T07:12:19.213Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/signals.sample.json",
+      "action": "create",
+      "tokens": 845,
+      "at": "2026-05-28T07:12:57.569Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/intel.js",
+      "action": "edit",
+      "tokens": 6,
+      "at": "2026-05-28T07:13:12.979Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/intel.js",
+      "action": "edit",
+      "tokens": 6,
+      "at": "2026-05-28T07:13:17.379Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/intel.js",
+      "action": "edit",
+      "tokens": 8,
+      "at": "2026-05-28T07:13:21.726Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/intel.js",
+      "action": "edit",
+      "tokens": 6,
+      "at": "2026-05-28T07:13:26.956Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/analytics.js",
+      "action": "edit",
+      "tokens": 25,
+      "at": "2026-05-28T07:13:38.145Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/analytics.js",
+      "action": "edit",
+      "tokens": 30,
+      "at": "2026-05-28T07:13:43.273Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/analytics.js",
+      "action": "edit",
+      "tokens": 25,
+      "at": "2026-05-28T07:13:48.759Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/analytics.js",
+      "action": "edit",
+      "tokens": 30,
+      "at": "2026-05-28T07:13:54.604Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/analytics.js",
+      "action": "edit",
+      "tokens": 25,
+      "at": "2026-05-28T07:14:00.031Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/_audit_smoke.mjs",
+      "action": "create",
+      "tokens": 476,
+      "at": "2026-05-28T07:16:26.647Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/_audit_smoke.mjs",
+      "action": "create",
+      "tokens": 550,
+      "at": "2026-05-28T07:17:08.272Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/_audit_smoke.mjs",
+      "action": "edit",
+      "tokens": 44,
+      "at": "2026-05-28T07:17:21.866Z"
+    },
+    {
+      "file": "c:/Users/User/Desktop/DEV/Tomorrow/.gitignore",
+      "action": "edit",
+      "tokens": 68,
+      "at": "2026-05-28T07:19:12.466Z"
+    }
+  ],
+  "edit_counts": {
+    "layers.js": 1,
+    "index.html": 6,
+    "config.js": 2,
+    "app.js": 1,
+    "analytics.js": 6,
+    "prediction.js": 1,
+    "osint.js": 1,
+    "style.css": 5,
+    "signals.sample.json": 1,
+    "intel.js": 4,
+    "_audit_smoke.mjs": 3,
+    ".gitignore": 1
+  },
+  "anatomy_hits": 11,
+  "anatomy_misses": 3,
+  "repeated_reads_warned": 7,
+  "cerebrum_warnings": 0,
+  "stop_count": 1
+}

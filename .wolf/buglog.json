@@ -1,0 +1,133 @@
+{
+  "version": 1,
+  "bugs": [
+    {
+      "id": "bug-001",
+      "timestamp": "2026-05-28T07:08:14.186Z",
+      "error_message": "Wrong return value",
+      "file": "layers.js",
+      "root_cause": "Was returning: Math.sqrt((lat1 - lat2) ** 2 + (lat1 - lat2) ** 2)",
+      "fix": "Now returns: Math.hypot(dLat, dLng) * 111000;",
+      "tags": [
+        "auto-detected",
+        "return-value",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T07:08:14.186Z"
+    },
+    {
+      "id": "bug-002",
+      "timestamp": "2026-05-28T07:08:38.637Z",
+      "error_message": "Incorrect value in code",
+      "file": "index.html",
+      "root_cause": "Had \"btn-sim\"",
+      "fix": "Changed to \"btn-layers\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-28T07:10:56.898Z"
+    },
+    {
+      "id": "bug-003",
+      "timestamp": "2026-05-28T07:10:05.816Z",
+      "error_message": "Incorrect value in code",
+      "file": "analytics.js",
+      "root_cause": "Had 'var(--cyan)'",
+      "fix": "Changed to '#00e5ff'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 5,
+      "last_seen": "2026-05-28T07:14:00.033Z"
+    },
+    {
+      "id": "bug-004",
+      "timestamp": "2026-05-28T07:10:34.885Z",
+      "error_message": "Wrong return value",
+      "file": "osint.js",
+      "root_cause": "Was returning: { init, toggle, renderMarkers, loadSignals };",
+      "fix": "Now returns: { init, toggle, renderMarkers, loadSignals, applyB",
+      "tags": [
+        "auto-detected",
+        "return-value",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T07:10:34.885Z"
+    },
+    {
+      "id": "bug-005",
+      "timestamp": "2026-05-28T07:11:40.788Z",
+      "error_message": "CSS fix: padding-top",
+      "file": "style.css",
+      "root_cause": "padding-top: var(--hud-h) → calc(var(--hud-h) + var(--demo-ribbon-h))",
+      "fix": "Changed padding-top: var(--hud-h) → calc(var(--hud-h) + var(--demo-ribbon-h))",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-28T07:11:50.299Z"
+    },
+    {
+      "id": "bug-006",
+      "timestamp": "2026-05-28T07:12:19.215Z",
+      "error_message": "Significant refactor of ",
+      "file": "style.css",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 3→6 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T07:12:19.215Z"
+    },
+    {
+      "id": "bug-007",
+      "timestamp": "2026-05-28T07:13:12.982Z",
+      "error_message": "Wrong reference: florentin_live should be florentin_live_demo",
+      "file": "intel.js",
+      "root_cause": "Used \"florentin_live\" instead of \"florentin_live_demo\"",
+      "fix": "Changed florentin_live → florentin_live_demo",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 4,
+      "last_seen": "2026-05-28T07:13:26.958Z"
+    },
+    {
+      "id": "bug-008",
+      "timestamp": "2026-05-28T07:17:21.869Z",
+      "error_message": "Incorrect value in code",
+      "file": "_audit_smoke.mjs",
+      "root_cause": "Had 'C:/Users/User/AppData/Roaming/npm/node_modules/op",
+      "fix": "Changed to 'file:///C:/Users/User/AppData/Roaming/npm/node_mo",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "mjs"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T07:17:21.869Z"
+    }
+  ]
+}
