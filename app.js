@@ -130,8 +130,9 @@ window.TomorrowApp = (function () {
     const dateEl = document.getElementById('hud-date');
     function tick() {
       const now = new Date();
-      if (el) el.textContent = now.toLocaleTimeString('he-IL', { hour12: false });
-      if (dateEl) dateEl.textContent = now.toLocaleDateString('he-IL', { weekday: 'long', day: '2-digit', month: '2-digit' });
+      const loc = (window.TomorrowI18n ? TomorrowI18n.getMeta().locale : 'en-US');
+      if (el) el.textContent = now.toLocaleTimeString(loc, { hour12: false });
+      if (dateEl) dateEl.textContent = now.toLocaleDateString(loc, { weekday: 'long', day: '2-digit', month: '2-digit' });
     }
     tick();
     setInterval(tick, 1000);
@@ -159,7 +160,7 @@ window.TomorrowApp = (function () {
   // ---------- Intel log ----------
   function logEvent(category, urgency, text) {
     const entry = {
-      time: new Date().toLocaleTimeString('he-IL', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+      time: new Date().toLocaleTimeString((window.TomorrowI18n ? TomorrowI18n.getMeta().locale : 'en-US'), { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
       category, urgency, text
     };
     State.intel_log.unshift(entry);
@@ -172,7 +173,7 @@ window.TomorrowApp = (function () {
     const list = document.getElementById('intel-feed');
     if (!list) return;
     if (State.intel_log.length === 0) {
-      list.innerHTML = '<div class="empty-state">אין פעילות מתועדת</div>';
+      list.innerHTML = `<div class="empty-state">${window.TomorrowI18n ? TomorrowI18n.t('log.empty') : 'No recorded activity'}</div>`;
       return;
     }
     list.innerHTML = State.intel_log.slice(0, 40).map(e => `
@@ -272,7 +273,7 @@ window.TomorrowApp = (function () {
         overlay.classList.add('done');
         setTimeout(() => { overlay.style.display = 'none'; onPass(); }, 800);
       } else {
-        err.textContent = 'קוד גישה שגוי // ACCESS DENIED';
+        err.textContent = window.TomorrowI18n ? TomorrowI18n.t('access.denied') : 'Invalid access code // ACCESS DENIED';
         input.classList.add('error');
         input.value = '';
         setTimeout(() => { err.textContent = ''; input.classList.remove('error'); }, 2000);
@@ -332,13 +333,13 @@ window.TomorrowApp = (function () {
             State.active_events.push(key);
           }
           const ev = CONFIG.STRATEGIC_EVENTS.find(x => x.key === key);
-          logEvent('system', 2, `📅 אירוע אסטרטגי הופעל: ${ev.name}`);
-          toast(`📅 אירוע הופעל: ${ev.name}`, 'info');
+          logEvent('system', 2, window.TomorrowI18n ? TomorrowI18n.t('event.strategicOnLog', { name: ev.name }) : `Strategic event activated: ${ev.name}`);
+          toast(window.TomorrowI18n ? TomorrowI18n.t('event.strategicOn', { name: ev.name }) : `Event activated: ${ev.name}`, 'info');
         } else {
           State.active_events = State.active_events.filter(k => k !== key);
           const ev = CONFIG.STRATEGIC_EVENTS.find(x => x.key === key);
-          logEvent('system', 3, `📅 אירוע אסטרטגי הושבת: ${ev.name}`);
-          toast(`📅 אירוע הושבת: ${ev.name}`, 'info');
+          logEvent('system', 3, window.TomorrowI18n ? TomorrowI18n.t('event.strategicOffLog', { name: ev.name }) : `Strategic event deactivated: ${ev.name}`);
+          toast(window.TomorrowI18n ? TomorrowI18n.t('event.strategicOff', { name: ev.name }) : `Event deactivated: ${ev.name}`, 'info');
         }
         
         saveState();
@@ -377,8 +378,8 @@ window.TomorrowApp = (function () {
     const rail = document.getElementById('nav-rail');
     if (!rail) return;
     const map = [
-      { id: 'btn-analytics', label: 'אנליטיקה' },
-      { id: 'btn-intel',     label: 'מודיעין'  },
+      { id: 'btn-analytics', label: window.TomorrowI18n ? TomorrowI18n.t('rail.analytics') : 'Analytics' },
+      { id: 'btn-intel',     label: window.TomorrowI18n ? TomorrowI18n.t('rail.intel')     : 'Intel'  },
       { id: 'btn-lpr',       label: 'LPR'      }
     ];
     map.forEach(({ id, label }) => {
@@ -433,7 +434,7 @@ window.TomorrowApp = (function () {
 
   function printPatrolOrder(hId) {
     const h = State.forecast.find(x => x.id === parseInt(hId));
-    if (!h) { toast('⚠ מוקד חיזוי לא נמצא', 'warning'); return; }
+    if (!h) { toast(window.TomorrowI18n ? TomorrowI18n.t('toast.hotspotNotFound') : '⚠ Hotspot not found', 'warning'); return; }
     
     const r = CONFIG.RISK[h.risk];
     const station = CONFIG.station(h.station_id) || nearestStation(h.lat, h.lng);
@@ -442,13 +443,13 @@ window.TomorrowApp = (function () {
     
     // Calculate Explainable weights
     const baseW = Math.round(CONFIG.FACTORS.base * 20);
-    const fitW = h.factors.includes('שעת שיא לעבירה') ? CONFIG.FACTORS.fit : 5;
+    const fitW = h.factors.includes('peakHour') ? CONFIG.FACTORS.fit : 5;
     const histW = CONFIG.FACTORS.hist;
     const osintW = h.osint ? CONFIG.FACTORS.osint : 0;
     
-    let lightingW = h.factors.includes('אזור תאורה ציבורית לקויה') ? 16 : 0;
-    let barsW = h.factors.includes('קרבה למוקדי חיכוך / חיי לילה') ? 14 : 0;
-    let atmsW = h.factors.includes('קרבה לכספומט / מוקד פיננסי') ? 12 : 0;
+    let lightingW = h.factors.includes('poorLighting') ? 16 : 0;
+    let barsW = h.factors.includes('barsNearby') ? 14 : 0;
+    let atmsW = h.factors.includes('atmsNearby') ? 12 : 0;
     
     // Strategic events weights
     let eventBoost = 0;
@@ -739,7 +740,10 @@ window.TomorrowApp = (function () {
     const tag = document.getElementById('version-tag');
     if (tag) tag.textContent = v;
     const foot = document.getElementById('hm-version');
-    if (foot) foot.textContent = `TOMORROW ${v} · נבנה ע״י אלחי פיין`;
+    if (foot) {
+      const builtBy = window.TomorrowI18n ? TomorrowI18n.t('app.builtBy') : 'Built by Elchai Fine';
+      foot.textContent = `TOMORROW ${v} · ${builtBy}`;
+    }
   }
 
   function init() {

@@ -148,7 +148,7 @@ window.TomorrowDispatch = (function () {
           // Arrival at crime scene
           onSceneSecure(toLatLng[0], toLatLng[1], color);
           if (window.TomorrowSounds) TomorrowSounds.arrival();
-          TomorrowApp.logEvent('status', 3, `${unit.callsign} הגיעה ל${unit.dest || 'יעד'} · ETA ריאלי ${etaMin.toFixed(0)} דק׳`);
+          TomorrowApp.logEvent('status', 3, window.TomorrowI18n ? TomorrowI18n.t('toast.arrived', { cs: unit.callsign, target: unit.dest || '—', min: etaMin.toFixed(0) }) : `${unit.callsign} arrived at ${unit.dest || '—'}`);
 
           // on-scene phase: unit dwells at the target
           unit.status = 'onscene';
@@ -180,7 +180,7 @@ window.TomorrowDispatch = (function () {
               unit.status = 'returning';
               unit.text = (window.TomorrowI18n ? TomorrowI18n.t('units.returning') : 'returning to station') + ' · ' + station.name;
               renderUnits();
-              TomorrowApp.logEvent('status', 2, `${unit.callsign} סיימה טיפול · בדרך חזרה לתחנה`);
+              TomorrowApp.logEvent('status', 2, window.TomorrowI18n ? TomorrowI18n.t('toast.returning', { cs: unit.callsign }) : `${unit.callsign} returning`);
               dispatchVehicle(unit, toLatLng, [station.lat, station.lng], color, onArrive, true);
             } else {
               unit.status = 'available';
@@ -299,9 +299,10 @@ window.TomorrowDispatch = (function () {
 
   // ---------- High-level: dispatch units to a predicted hotspot ----------
   function dispatchToHotspot(h) {
-    if (!h) { TomorrowApp.toast('⚠ לא נבחר מוקד חיזוי', 'warning'); return; }
+    const tr = (k, v) => (window.TomorrowI18n ? TomorrowI18n.t(k, v) : k);
+    if (!h) { TomorrowApp.toast(tr('toast.noHotspot'), 'warning'); return; }
     const station = CONFIG.station(h.station_id) || TomorrowApp.nearestStation(h.lat, h.lng);
-    if (!station) { TomorrowApp.toast('⚠ לא נמצאה תחנה זמינה', 'warning'); return; }
+    if (!station) { TomorrowApp.toast(tr('toast.noStation'), 'warning'); return; }
 
     const recommended = CONFIG.responseCard(h.crime, h.risk);
     const r = CONFIG.RISK[h.risk];
@@ -309,7 +310,7 @@ window.TomorrowDispatch = (function () {
 
     // Allocate units using our smart multi-station algorithm
     const chosen = findAvailableUnits(station.id, recommended, to);
-    if (chosen.length === 0) { TomorrowApp.toast(`⚠ אין ניידות זמינות בכל המרחב`, 'warning'); return; }
+    if (chosen.length === 0) { TomorrowApp.toast(tr('toast.noUnits'), 'warning'); return; }
 
     h.dispatched = true;
     if (window.TomorrowMap) { TomorrowMap.markDispatched(h); TomorrowMap.focusHotspot(h); }
@@ -320,16 +321,16 @@ window.TomorrowDispatch = (function () {
     const mutualCount = chosen.length - primaryCount;
 
     if (mutualCount > 0) {
-      TomorrowApp.toast(`🚓 סיוע הדדי: ${chosen.length} צוותים הוקצו (מתוכם ${mutualCount} מתחנה שכנה) לתא #${h.id} ב${h.zone}`, 'success');
-      TomorrowApp.logEvent('dispatch', h.risk, `הקצאת ${chosen.length} צוותי סיור מונחה לתא #${h.id} ב${h.zone} (${h.probability}%) - כולל ${mutualCount} צוותי סיוע הדדי`);
+      TomorrowApp.toast(tr('toast.dispatchMutual', { n: chosen.length, mut: mutualCount, id: h.id, zone: h.zone }), 'success');
+      TomorrowApp.logEvent('dispatch', h.risk, tr('toast.dispatchLogMutual', { n: chosen.length, id: h.id, zone: h.zone, pct: h.probability, mut: mutualCount }));
     } else {
-      TomorrowApp.toast(`🚓 פריסת סיור: ${chosen.length} צוותים הוקצו לתא #${h.id} ב${h.zone}`, 'success');
-      TomorrowApp.logEvent('dispatch', h.risk, `הקצאת ${chosen.length} צוותי סיור מונחה לתא #${h.id} ב${h.zone} (${h.probability}%)`);
+      TomorrowApp.toast(tr('toast.dispatch', { n: chosen.length, id: h.id, zone: h.zone }), 'success');
+      TomorrowApp.logEvent('dispatch', h.risk, tr('toast.dispatchLog', { n: chosen.length, id: h.id, zone: h.zone, pct: h.probability }));
     }
 
     chosen.forEach((u, idx) => {
       u.status = 'dispatched';
-      u.text = `בדרך ל${h.zone}`;
+      u.text = window.TomorrowI18n ? TomorrowI18n.t('toast.enroute', { zone: h.zone }) : `en route to ${h.zone}`;
       u.dest = h.zone;
       u.hotspot_id = h.id;
       // starting point is the unit's actual home station!
@@ -344,9 +345,10 @@ window.TomorrowDispatch = (function () {
   // "Saturate" — flood an area with extra patrols (preventive presence)
   function saturateArea() {
     const fc = TomorrowPrediction.getVisibleForecast().filter(h => h.risk <= 2);
-    if (fc.length === 0) { TomorrowApp.toast('אין מוקדים בסיכון גבוה לרוויה', 'info'); return; }
-    TomorrowApp.toast(`🛡️ סיור מונע מוגבר על ${fc.length} מוקדים`, 'success');
-    TomorrowApp.logEvent('dispatch', 2, `הפעלת סיור מונע מוגבר על ${fc.length} מוקדי סיכון גבוה`);
+    const tr2 = (k, v) => (window.TomorrowI18n ? TomorrowI18n.t(k, v) : k);
+    if (fc.length === 0) { TomorrowApp.toast(tr2('toast.saturationEmpty'), 'info'); return; }
+    TomorrowApp.toast(tr2('toast.saturation', { n: fc.length }), 'success');
+    TomorrowApp.logEvent('dispatch', 2, tr2('toast.saturationLog', { n: fc.length }));
     fc.slice(0, 4).forEach((h, i) => setTimeout(() => dispatchToHotspot(h), i * 900));
   }
 
@@ -354,13 +356,14 @@ window.TomorrowDispatch = (function () {
   function dispatchToLpr(a) {
     if (!a) return;
     const station = TomorrowApp.nearestStation(a.camera.lat, a.camera.lng);
-    if (!station) { TomorrowApp.toast('⚠ לא נמצאה תחנה זמינה בסביבת המצלמה', 'warning'); return; }
+    const trL = (k, v) => (window.TomorrowI18n ? TomorrowI18n.t(k, v) : k);
+    if (!station) { TomorrowApp.toast(trL('toast.lprNoStation'), 'warning'); return; }
 
     // Allocate 1 available patrol unit (using smart cross-station mutual aid if needed)
     const recommended = ['patrol'];
     const chosen = findAvailableUnits(station.id, recommended, [a.camera.lat, a.camera.lng]);
     if (chosen.length === 0) {
-      TomorrowApp.toast(`⚠ אין ניידות פנויות להזנקת LPR ב${station.name} או בסביבתה`, 'warning');
+      TomorrowApp.toast(trL('toast.lprNoUnits', { st: station.name }), 'warning');
       return;
     }
 
@@ -371,7 +374,7 @@ window.TomorrowDispatch = (function () {
 
     // Lock unit as dispatched
     u.status = 'dispatched';
-    u.text = `מרדף LPR · ${a.camera.name}`;
+    u.text = trL('toast.lprChase', { cam: a.camera.name });
     u.dest = a.camera.name;
     u.lpr_alert_id = a.id;
 
@@ -388,11 +391,13 @@ window.TomorrowDispatch = (function () {
 
     const isMutual = u.station_id !== station.id;
     if (isMutual) {
-      TomorrowApp.toast(`🚓 סיוע הדדי LPR: צוות ${u.callsign} מתחנת ${uStation.name} הוזנק למצלמה ב${a.camera.name}`, 'success');
-      TomorrowApp.logEvent('dispatch', 2, `🚨 סיוע הדדי LPR: הזנקת צוות ${u.callsign} לתפיסת רכב ${a.status === 'stolen' ? 'גנוב' : 'מסומן'} · לוחית ${a.plate} · ${a.camera.name}`);
+      const statusLbl = trL(a.status === 'stolen' ? 'lpr.status.stolen' : 'lpr.status.flagged');
+      TomorrowApp.toast(trL('toast.lprMutual', { cs: u.callsign, st: uStation.name, cam: a.camera.name }), 'success');
+      TomorrowApp.logEvent('dispatch', 2, trL('toast.lprLogMutual', { cs: u.callsign, status: statusLbl, plate: a.plate, cam: a.camera.name }));
     } else {
-      TomorrowApp.toast(`🚓 שיגור LPR: צוות ${u.callsign} הוזנק מ${uStation.name} למצלמה ב${a.camera.name}`, 'success');
-      TomorrowApp.logEvent('dispatch', 1, `🚨 שיגור LPR: הזנקת צוות ${u.callsign} לתפיסת רכב ${a.status === 'stolen' ? 'גנוב' : 'מסומן'} · לוחית ${a.plate} · ${a.camera.name}`);
+      const statusLbl = trL(a.status === 'stolen' ? 'lpr.status.stolen' : 'lpr.status.flagged');
+      TomorrowApp.toast(trL('toast.lpr', { cs: u.callsign, st: uStation.name, cam: a.camera.name }), 'success');
+      TomorrowApp.logEvent('dispatch', 1, trL('toast.lprLog', { cs: u.callsign, status: statusLbl, plate: a.plate, cam: a.camera.name }));
     }
 
     if (window.TomorrowSounds) TomorrowSounds.dispatch();

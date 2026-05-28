@@ -85,9 +85,9 @@ window.TomorrowLayers = (function () {
       });
       L.marker([b.lat, b.lng], { icon })
         .bindPopup(`<div class="tac-popup" dir="rtl" style="--rc:#ffd000; min-width: 180px; padding: 8px 10px 10px;">
-           <div style="font-size:9px; color:var(--text-faint); font-weight:700;">GIS LAYER · מוקדי חיכוך</div>
+           <div style="font-size:9px; color:var(--text-faint); font-weight:700;">${window.T ? T('layers.popup.bars.tag') : 'GIS LAYER · Friction'}</div>
            <div style="font-size:13px; font-weight:700; color:#ffd000; margin-top:3px;"><i data-lucide="beer" style="width:13px; height:13px; margin-inline-end:4px; vertical-align:middle;"></i>${b.name}</div>
-           <div style="font-size:11px; color:var(--text-dim); margin-top:5px;">ריכוז חיי לילה וצריכת אלכוהול המגבירים פוטנציאל לתגרה והפרת סדר בשעות הלילה.</div>
+           <div style="font-size:11px; color:var(--text-dim); margin-top:5px;">${window.T ? T('layers.popup.bars.desc') : ''}</div>
          </div>`, { className: 'tac-popup-wrap' })
         .on('popupopen', () => TomorrowApp.renderIcons())
         .addTo(layerGroups.bars);
@@ -107,9 +107,9 @@ window.TomorrowLayers = (function () {
       });
       L.marker([a.lat, a.lng], { icon })
         .bindPopup(`<div class="tac-popup" dir="rtl" style="--rc:#00e5ff; min-width: 180px; padding: 8px 10px 10px;">
-           <div style="font-size:9px; color:var(--text-faint); font-weight:700;">GIS LAYER · מוקד פיננסי</div>
+           <div style="font-size:9px; color:var(--text-faint); font-weight:700;">${window.T ? T('layers.popup.atms.tag') : 'GIS LAYER · Financial'}</div>
            <div style="font-size:13px; font-weight:700; color:#00e5ff; margin-top:3px;"><i data-lucide="banknote" style="width:13px; height:13px; margin-inline-end:4px; vertical-align:middle;"></i>${a.name}</div>
-           <div style="font-size:11px; color:var(--text-dim); margin-top:5px;">כספומט פעיל בריכוז גבוה של עסקאות מזומן. מהווה נקודת תורפה לעבירות שוד וגניבת רכוש.</div>
+           <div style="font-size:11px; color:var(--text-dim); margin-top:5px;">${window.T ? T('layers.popup.atms.desc') : ''}</div>
          </div>`, { className: 'tac-popup-wrap' })
         .on('popupopen', () => TomorrowApp.renderIcons())
         .addTo(layerGroups.atms);
@@ -128,9 +128,9 @@ window.TomorrowLayers = (function () {
         className: 'rtm-dark-circle'
       })
       .bindPopup(`<div class="tac-popup" dir="rtl" style="--rc:#ff1f4b; min-width: 180px; padding: 8px 10px 10px;">
-         <div style="font-size:9px; color:var(--text-faint); font-weight:700;">GIS LAYER · תאורת רחוב לקויה</div>
+         <div style="font-size:9px; color:var(--text-faint); font-weight:700;">${window.T ? T('layers.popup.dark.tag') : 'GIS LAYER · Dark'}</div>
          <div style="font-size:13px; font-weight:700; color:#ff1f4b; margin-top:3px;"><i data-lucide="moon" style="width:13px; height:13px; margin-inline-end:4px; vertical-align:middle;"></i>${d.name}</div>
-         <div style="font-size:11px; color:var(--text-dim); margin-top:5px;">שטח עם כיסוי מצלמות ותאורה ציבורית לקויים. מגביר משמעותית את סיכויי הסוואה לעבירות רכוש ופשע אלים.</div>
+         <div style="font-size:11px; color:var(--text-dim); margin-top:5px;">${window.T ? T('layers.popup.dark.desc') : ''}</div>
        </div>`, { className: 'tac-popup-wrap' })
       .on('popupopen', () => TomorrowApp.renderIcons())
       .addTo(layerGroups.dark);
@@ -180,24 +180,24 @@ window.TomorrowLayers = (function () {
       `;
       modal.innerHTML = `
         <div style="font-size:12px; font-weight:700; color:#fff; border-bottom:1px solid var(--line-soft); padding-bottom:6px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
-          <span>שכבות מידע סביבתיות (RTM)</span>
+          <span>${window.T ? T('layers.modalTitle') : 'Environmental information layers (RTM)'}</span>
           <button id="btn-close-layers" style="background:transparent; border:none; color:var(--text-dim); cursor:pointer;"><i data-lucide="x" style="width:14px; height:14px;"></i></button>
         </div>
         <div style="display:flex; flex-direction:column; gap:8px;">
           <label style="display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text); cursor:pointer;">
             <input type="checkbox" id="chk-layer-bars" ${activeStatus.bars ? 'checked' : ''} style="accent-color: var(--police);" />
             <span style="width:10px; height:10px; border-radius:50%; background:#ffd000; box-shadow: 0 0 6px #ffd000;"></span>
-            <span>מוקדי חיכוך וחיי לילה (ברים)</span>
+            <span>${window.T ? T('layers.barsLayer') : 'Friction hotspots (bars)'}</span>
           </label>
           <label style="display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text); cursor:pointer;">
             <input type="checkbox" id="chk-layer-atms" ${activeStatus.atms ? 'checked' : ''} style="accent-color: var(--police);" />
             <span style="width:10px; height:10px; border-radius:50%; background:#00e5ff; box-shadow: 0 0 6px #00e5ff;"></span>
-            <span>מוקדים פיננסיים (כספומטים)</span>
+            <span>${window.T ? T('layers.atmsLayer') : 'Financial hotspots (ATMs)'}</span>
           </label>
           <label style="display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text); cursor:pointer;">
             <input type="checkbox" id="chk-layer-dark" ${activeStatus.dark ? 'checked' : ''} style="accent-color: var(--police);" />
             <span style="width:10px; height:10px; border-radius:50%; background:#ff1f4b; box-shadow: 0 0 6px #ff1f4b; border:1px dashed #fff;"></span>
-            <span>אזורי תאורה לקויה (חשכה)</span>
+            <span>${window.T ? T('layers.darkLayer') : 'Poorly-lit zones (dark)'}</span>
           </label>
         </div>
       `;
@@ -265,7 +265,7 @@ window.TomorrowLayers = (function () {
         });
         if (isNear) {
           results.boost += 14;
-          results.factors.push('קרבה למוקדי חיכוך / חיי לילה');
+          results.factors.push('barsNearby');
         }
       }
     }
@@ -280,7 +280,7 @@ window.TomorrowLayers = (function () {
         });
         if (isNear) {
           results.boost += 12;
-          results.factors.push('קרבה לכספומט / מוקד פיננסי');
+          results.factors.push('atmsNearby');
         }
       }
     }
@@ -293,7 +293,7 @@ window.TomorrowLayers = (function () {
       });
       if (isInside) {
         results.boost += 16;
-        results.factors.push('אזור תאורה ציבורית לקויה');
+        results.factors.push('poorLighting');
       }
     }
 

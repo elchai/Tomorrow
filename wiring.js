@@ -21,6 +21,22 @@ document.addEventListener('DOMContentLoaded', () => {
         TomorrowI18n.setLang(langPicker.value);
       });
     }
+    // In-app language cycle button (lives in the nav-rail). Click rotates en → he → pt → en.
+    const cycleBtn = document.getElementById('btn-lang-cycle');
+    if (cycleBtn) {
+      const codeEl = cycleBtn.querySelector('.nav-rail-lang-code');
+      const refresh = () => { if (codeEl) codeEl.textContent = TomorrowI18n.getLang().toUpperCase(); };
+      refresh();
+      cycleBtn.addEventListener('click', () => {
+        const order = TomorrowI18n.getSupported();
+        const cur = TomorrowI18n.getLang();
+        const next = order[(order.indexOf(cur) + 1) % order.length];
+        TomorrowI18n.setLang(next);
+        refresh();
+        if (window.TomorrowSounds) TomorrowSounds.uiClick();
+      });
+      document.addEventListener('tomorrow-lang-change', refresh);
+    }
   }
   // ── Country picker — saves the choice + reloads so every module re-reads ──
   if (window.TomorrowCountries) {
@@ -52,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // If the slider was at "now", follow the rollover.
       if (TomorrowState.forecast_hour == null) {
         slider.value = nowHour;
-        readout.textContent = 'עכשיו';
+        readout.textContent = window.TomorrowI18n ? TomorrowI18n.t('forecast.now') : 'now';
       }
     }
   }
@@ -79,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btn = e.currentTarget;
     btn.innerHTML = `<i data-lucide="${m ? 'volume-x' : 'volume-2'}"></i>`;
     btn.classList.toggle('muted', m);
-    btn.title = m ? 'הפעל קול' : 'השתק קול';
+    btn.title = window.TomorrowI18n ? TomorrowI18n.t(m ? 'hud.muteOn' : 'hud.muteOff') : (m ? 'Sound on' : 'Sound off');
     TomorrowApp.renderIcons();
   });
   document.getElementById('btn-osint').addEventListener('click', () => {
@@ -87,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   document.getElementById('btn-logout').addEventListener('click', () => {
     try { sessionStorage.removeItem('tomorrow_auth'); } catch (_) { /* ignore */ }
-    TomorrowApp.toast?.('🚪 יוצא מהמערכת…', 'info', 1200);
+    TomorrowApp.toast?.(window.TomorrowI18n ? TomorrowI18n.t('toast.logout') : 'Logging out…', 'info', 1200);
     setTimeout(() => location.reload(), 350);
   });
 

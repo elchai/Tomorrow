@@ -130,6 +130,11 @@
     <aside id="nav-rail" class="nav-rail">
       <!-- buttons (Analytics, Intel, LPR) get relocated here by app.js post-init, inserted ABOVE .nav-rail-bottom -->
       <div class="nav-rail-bottom">
+        <!-- Language cycle button (en → he → pt → en …) -->
+        <button id="btn-lang-cycle" class="icon-btn nav-rail-btn" data-i18n-attr="title:login.language;aria-label:login.language">
+          <i data-lucide="globe"></i>
+          <span class="nav-rail-lang-code">EN</span>
+        </button>
         <button id="btn-logout" class="icon-btn nav-rail-btn" data-i18n-attr="title:hud.logout;aria-label:hud.logout">
           <i data-lucide="log-out"></i>
           <span class="nav-rail-label" data-i18n="hud.logout">Logout</span>
@@ -222,7 +227,7 @@
       <span class="app-footer-tag" data-i18n="footer.tag">TOMORROW · Crime Prediction Network</span>
       <span class="app-footer-credit">
         <span data-i18n="app.poweredBy">Powered by</span>
-        <a href="https://www.daghazahav.com" target="_blank" rel="noopener noreferrer" class="app-footer-link">דג הזהב</a>
+        <a href="https://www.daghazahav.com" target="_blank" rel="noopener noreferrer" class="app-footer-link" data-i18n="app.brand">Dag Hazahav</a>
         · <span data-i18n="app.builtBy">Built by Elchai Fine</span> ·
         <a href="mailto:elchaifinn@gmail.com" rel="noopener noreferrer" class="app-footer-link" data-i18n="app.contact">Contact</a>
       </span>

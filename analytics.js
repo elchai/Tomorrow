@@ -52,27 +52,14 @@ window.TomorrowAnalytics = (function () {
   function buildPanel() {
     panelEl = document.createElement('aside');
     panelEl.id = 'analytics-panel';
-    panelEl.className = 'panel';
-    panelEl.style.cssText = `
-      position: fixed;
-      top: calc(var(--demo-ribbon-h) + var(--hud-h));
-      bottom: 0;
-      right: -310px;
-      width: 300px;
-      z-index: 1000;
-      border-left: 1px solid var(--line);
-      transition: right 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
-      background: linear-gradient(180deg, rgba(11, 19, 34, 0.98), rgba(7, 12, 24, 0.98));
-      box-shadow: -10px 0 30px rgba(0, 0, 0, 0.55);
-      display: flex;
-      flex-direction: column;
-      direction: rtl;
-    `;
+    // Use the shared drawer-panel class so direction-aware open/close
+    // (inline-start positioning + transform) lives in one place in style.css.
+    panelEl.className = 'panel drawer-panel';
 
     panelEl.innerHTML = `
       <div class="panel-head" style="flex-shrink: 0;">
         <span class="panel-title"><i data-lucide="bar-chart-3"></i><span>${T('analytics.title')}</span></span>
-        <button id="btn-close-analytics" class="icon-btn" style="border:none; background:transparent; cursor:pointer;" title="סגור"><i data-lucide="x"></i></button>
+        <button id="btn-close-analytics" class="icon-btn" style="border:none; background:transparent; cursor:pointer;"><i data-lucide="x"></i></button>
       </div>
 
       <!-- B2B Tabs Header -->
@@ -86,38 +73,38 @@ window.TomorrowAnalytics = (function () {
         
         <!-- KPIs Row -->
         <div style="margin-bottom: 18px; flex-shrink: 0;">
-          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-faint); margin-bottom: 8px;">מדדי ביצוע (KPIs)</div>
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-faint); margin-bottom: 8px;">${T('analytics.kpis')}</div>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
             <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--line-soft); border-radius: 6px; padding: 10px; text-align: center;">
               <span style="display:block; font-size: 22px; font-family: var(--font-mono); font-weight:700; color: var(--low);" id="an-prevent-rate">0%</span>
-              <span style="font-size: 10px; color: var(--text-dim);">כיסוי סיור מונחה</span>
+              <span style="font-size: 10px; color: var(--text-dim);">${T('analytics.coverage')}</span>
             </div>
             <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--line-soft); border-radius: 6px; padding: 10px; text-align: center;">
               <span style="display:block; font-size: 22px; font-family: var(--font-mono); font-weight:700; color: var(--cyan);" id="an-utilization">0%</span>
-              <span style="font-size: 10px; color: var(--text-dim);">ניצולת כוחות</span>
+              <span style="font-size: 10px; color: var(--text-dim);">${T('analytics.utilization')}</span>
             </div>
           </div>
         </div>
 
         <!-- 24h Trend Chart -->
         <div style="margin-bottom: 18px; flex-shrink: 0;">
-          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-faint); margin-bottom: 8px;">מגמת פשיעה צפויה (24h)</div>
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-faint); margin-bottom: 8px;">${T('analytics.trend')}</div>
           <canvas id="an-canvas-trend" width="268" height="110" style="background: rgba(0,0,0,0.2); border: 1px solid var(--line-soft); border-radius: 4px; display:block;"></canvas>
         </div>
 
         <!-- Crime Mix Chart -->
         <div style="margin-bottom: 18px; flex-shrink: 0;">
-          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-faint); margin-bottom: 8px;">פילוח סוגי עבירה</div>
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-faint); margin-bottom: 8px;">${T('analytics.crimeMix')}</div>
           <canvas id="an-canvas-mix" width="268" height="110" style="background: rgba(0,0,0,0.2); border: 1px solid var(--line-soft); border-radius: 4px; display:block;"></canvas>
         </div>
 
         <!-- Predictive Weights Controller -->
         <div style="border-top: 1px solid var(--line-soft); padding-top: 14px; flex-shrink: 0;">
-          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-faint); margin-bottom: 10px;">מקרן סיכון טקטי (Weights)</div>
-          
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-faint); margin-bottom: 10px;">${T('analytics.weights')}</div>
+
           <div style="margin-bottom: 10px;">
             <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
-              <span>בסיס עבירה</span>
+              <span>${T('analytics.weight.base')}</span>
               <span style="font-family: var(--font-mono); color: var(--cyan);" id="lbl-weight-base">0.5</span>
             </div>
             <input type="range" id="sld-weight-base" min="0.10" max="1.50" step="0.05" value="0.5" style="width:100%; accent-color: var(--police);" />
@@ -125,7 +112,7 @@ window.TomorrowAnalytics = (function () {
 
           <div style="margin-bottom: 10px;">
             <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
-              <span>שעות שיא</span>
+              <span>${T('analytics.weight.fit')}</span>
               <span style="font-family: var(--font-mono); color: var(--cyan);" id="lbl-weight-fit">35</span>
             </div>
             <input type="range" id="sld-weight-fit" min="10" max="80" step="1" value="35" style="width:100%; accent-color: var(--police);" />
@@ -133,7 +120,7 @@ window.TomorrowAnalytics = (function () {
 
           <div style="margin-bottom: 10px;">
             <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
-              <span>משקל היסטורי</span>
+              <span>${T('analytics.weight.hist')}</span>
               <span style="font-family: var(--font-mono); color: var(--cyan);" id="lbl-weight-hist">25</span>
             </div>
             <input type="range" id="sld-weight-hist" min="5" max="60" step="1" value="25" style="width:100%; accent-color: var(--police);" />
@@ -141,7 +128,7 @@ window.TomorrowAnalytics = (function () {
 
           <div style="margin-bottom: 10px;">
             <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
-              <span>אות מודיעין (OSINT)</span>
+              <span>${T('analytics.weight.osint')}</span>
               <span style="font-family: var(--font-mono); color: var(--cyan);" id="lbl-weight-osint">16</span>
             </div>
             <input type="range" id="sld-weight-osint" min="5" max="40" step="1" value="16" style="width:100%; accent-color: var(--police);" />
@@ -154,62 +141,62 @@ window.TomorrowAnalytics = (function () {
         
         <!-- B2B ROC-AUC & Precision Metrics -->
         <div style="margin-bottom: 16px; flex-shrink: 0;">
-          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-faint); margin-bottom: 8px;">מדדי הערכת מודל (סטטיסטיקה מדעית)</div>
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-faint); margin-bottom: 8px;">${T('analytics.evalMetrics')}</div>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px;">
             <div style="background: rgba(0, 229, 255, 0.02); border: 1px solid rgba(0, 229, 255, 0.15); border-radius: 6px; padding: 8px; text-align: center;">
               <span style="display:block; font-size: 20px; font-family: var(--font-mono); font-weight:700; color: var(--cyan);" id="val-roc-auc">0.88</span>
-              <span style="font-size: 9.5px; color: var(--text-dim);">כושר הפרדה (ROC-AUC)</span>
+              <span style="font-size: 9.5px; color: var(--text-dim);">${T('analytics.rocAuc')}</span>
             </div>
             <div style="background: rgba(56, 224, 138, 0.02); border: 1px solid rgba(56, 224, 138, 0.15); border-radius: 6px; padding: 8px; text-align: center;">
               <span style="display:block; font-size: 20px; font-family: var(--font-mono); font-weight:700; color: var(--low);" id="val-precision">84.2%</span>
-              <span style="font-size: 9.5px; color: var(--text-dim);">מדד דיוק (Precision)</span>
+              <span style="font-size: 9.5px; color: var(--text-dim);">${T('analytics.precision')}</span>
             </div>
           </div>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
             <div style="background: rgba(255, 122, 24, 0.02); border: 1px solid rgba(255, 122, 24, 0.15); border-radius: 6px; padding: 8px; text-align: center;">
               <span style="display:block; font-size: 20px; font-family: var(--font-mono); font-weight:700; color: var(--high);" id="val-recall">79.5%</span>
-              <span style="font-size: 9.5px; color: var(--text-dim);">מדד רגישות (Recall)</span>
+              <span style="font-size: 9.5px; color: var(--text-dim);">${T('analytics.recall')}</span>
             </div>
             <div style="background: rgba(26, 109, 255, 0.02); border: 1px solid rgba(26, 109, 255, 0.15); border-radius: 6px; padding: 8px; text-align: center;">
               <span style="display:block; font-size: 20px; font-family: var(--font-mono); font-weight:700; color: var(--police-br);" id="val-f1">0.82</span>
-              <span style="font-size: 9.5px; color: var(--text-dim);">ציון מצרפי (F1)</span>
+              <span style="font-size: 9.5px; color: var(--text-dim);">${T('analytics.f1')}</span>
             </div>
           </div>
         </div>
 
         <!-- Confusion Matrix Grid -->
         <div style="margin-bottom: 16px; flex-shrink: 0;">
-          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-faint); margin-bottom: 8px;">מטריצת טעויות (השוואת תחזית מול מציאות)</div>
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-faint); margin-bottom: 8px;">${T('analytics.confusion')}</div>
           <div style="display: grid; grid-template-columns: 80px 1fr 1fr; gap: 4px; font-size: 9.5px; text-align: center; line-height: 1.25;">
             <div></div>
-            <div style="font-weight: 700; color: var(--text-dim); padding: 2px;">חזוי: אמת</div>
-            <div style="font-weight: 700; color: var(--text-dim); padding: 2px;">חזוי: שקט</div>
-            
-            <div style="font-weight: 700; color: var(--text-dim); text-align: right; align-self: center;">בפועל: פשע</div>
+            <div style="font-weight: 700; color: var(--text-dim); padding: 2px;">${T('analytics.pred.crime')}</div>
+            <div style="font-weight: 700; color: var(--text-dim); padding: 2px;">${T('analytics.pred.calm')}</div>
+
+            <div style="font-weight: 700; color: var(--text-dim); align-self: center;">${T('analytics.actual.crime')}</div>
             <div style="background: rgba(56, 224, 138, 0.06); border: 1px solid rgba(56, 224, 138, 0.2); padding: 6px 4px; border-radius: 4px;">
               <span style="display:block; font-family: var(--font-mono); font-weight: 700; font-size: 13px; color:#fff;" id="matrix-tp">42</span>
-              <span style="color: var(--low); font-size: 8px;">זיהוי אמת (TP)</span>
+              <span style="color: var(--low); font-size: 8px;">${T('analytics.tp')}</span>
             </div>
             <div style="background: rgba(255, 31, 75, 0.06); border: 1px solid rgba(255, 31, 75, 0.2); padding: 6px 4px; border-radius: 4px;">
               <span style="display:block; font-family: var(--font-mono); font-weight: 700; font-size: 13px; color:#fff;" id="matrix-fn">11</span>
-              <span style="color: var(--critical); font-size: 8px;">סיווג חסר (FN)</span>
+              <span style="color: var(--critical); font-size: 8px;">${T('analytics.fn')}</span>
             </div>
 
-            <div style="font-weight: 700; color: var(--text-dim); text-align: right; align-self: center;">בפועל: שקט</div>
+            <div style="font-weight: 700; color: var(--text-dim); align-self: center;">${T('analytics.actual.calm')}</div>
             <div style="background: rgba(255, 122, 24, 0.06); border: 1px solid rgba(255, 122, 24, 0.2); padding: 6px 4px; border-radius: 4px;">
               <span style="display:block; font-family: var(--font-mono); font-weight: 700; font-size: 13px; color:#fff;" id="matrix-fp">8</span>
-              <span style="color: var(--high); font-size: 8px;">התרעת שווא (FP)</span>
+              <span style="color: var(--high); font-size: 8px;">${T('analytics.fp')}</span>
             </div>
             <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--line-soft); padding: 6px 4px; border-radius: 4px;">
               <span style="display:block; font-family: var(--font-mono); font-weight: 700; font-size: 13px; color:#fff;" id="matrix-tn">179</span>
-              <span style="color: var(--text-dim); font-size: 8px;">שקט תקין (TN)</span>
+              <span style="color: var(--text-dim); font-size: 8px;">${T('analytics.tn')}</span>
             </div>
           </div>
         </div>
 
         <!-- ROC Curve Canvas -->
         <div style="margin-bottom: 16px; flex-shrink: 0;">
-          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-faint); margin-bottom: 8px;">עקומת ביצועים ROC (כיול מודל)</div>
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-faint); margin-bottom: 8px;">${T('analytics.rocCurve')}</div>
           <canvas id="an-canvas-roc" width="268" height="120" style="background: rgba(0,0,0,0.25); border: 1px solid var(--line-soft); border-radius: 4px; display:block;"></canvas>
         </div>
 
@@ -228,14 +215,9 @@ window.TomorrowAnalytics = (function () {
 
   function toggle() {
     isOpen = !isOpen;
-    // honor the side nav-rail width (set as CSS var; 0 on mobile)
-    const railOpen = getComputedStyle(document.documentElement).getPropertyValue('--rail-w').trim() || '0px';
-    panelEl.style.right = isOpen ? railOpen : '-310px';
-    panelEl.classList.toggle('open', isOpen);  // CSS hook for mobile-fixed override
-
+    panelEl.classList.toggle('open', isOpen);
     const btn = document.getElementById('btn-analytics');
     if (btn) btn.classList.toggle('active', isOpen);
-
     if (window.TomorrowSounds) TomorrowSounds.uiClick();
     if (isOpen) refresh();
   }
@@ -458,7 +440,7 @@ window.TomorrowAnalytics = (function () {
       ctx.fillStyle = 'rgba(255,255,255,0.3)';
       ctx.font = '12px Heebo';
       ctx.textAlign = 'center';
-      ctx.fillText('אין נתוני פשיעה זמינים', W / 2, H / 2);
+      ctx.fillText(T('analytics.noCrimeData'), W / 2, H / 2);
       return;
     }
 
@@ -471,7 +453,7 @@ window.TomorrowAnalytics = (function () {
       const cConf = CONFIG.crimeType(k);
       return {
         key: k,
-        name: cConf.name,
+        name: CONFIG.crimeName(k),                          // localized via i18n with fallback
         color: cConf.color || '#1a6dff',
         count: crimeCounts[k]
       };
@@ -681,7 +663,7 @@ window.TomorrowAnalytics = (function () {
 
         // Notification and logs
         TomorrowApp.toast(T('analytics.backtest.doneToast'), 'success');
-        TomorrowApp.logEvent('model', 2, `📊 אימות מודל (Backtest) מול 30 ימי עבר בוצע בהצלחה: ROC-AUC = ${finalRoc}, Precision = ${finalPrec}%, Recall = ${finalRec}%`);
+        TomorrowApp.logEvent('model', 2, T('analytics.backtestLog', { roc: finalRoc, prec: finalPrec, rec: finalRec }));
         
         if (window.TomorrowSounds && TomorrowSounds.online) {
           TomorrowSounds.online();

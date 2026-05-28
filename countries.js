@@ -93,6 +93,28 @@ window.TomorrowCountries = (function () {
         ]
       }
     ],
+    osintSignals: [
+      { id: 'br-2041', source: '@sp_alerts_demo', source_url: 'https://t.me/sp_alerts_demo', msg_url: 'https://t.me/sp_alerts_demo/1042',
+        source_type: 'telegram', text_he: 'Briga generalizada perto da Sé, vários envolvidos e gritos por socorro.',
+        crime: 'assault', risk: 1, zone: 'Sé / Centro Histórico', lat: -23.5505, lng: -46.6333, confidence: 0.86, mins_ago: 4,
+        keywords: ['briga', 'violência', 'envolvidos'] },
+      { id: 'br-2042', source: '@vila_madalena_news_demo', source_url: 'https://t.me/vila_madalena_news_demo', msg_url: 'https://t.me/vila_madalena_news_demo/803',
+        source_type: 'telegram', text_he: 'Moradores relatam arrombamento em apartamento na Rua Aspicuelta, suspeito fugiu com uma bolsa.',
+        crime: 'burglary', risk: 2, zone: 'Vila Madalena', lat: -23.5466, lng: -46.6900, confidence: 0.79, mins_ago: 12,
+        keywords: ['arrombamento', 'apartamento', 'fugiu'] },
+      { id: 'br-2043', source: '@centro_sp_demo', source_url: 'https://t.me/centro_sp_demo', msg_url: 'https://t.me/centro_sp_demo/2210',
+        source_type: 'telegram', text_he: 'Atividade suspeita de venda de drogas perto da estação Sé, várias pessoas se aglomeram.',
+        crime: 'drugs', risk: 2, zone: 'República', lat: -23.5435, lng: -46.6420, confidence: 0.74, mins_ago: 21,
+        keywords: ['drogas', 'venda', 'aglomeração'] },
+      { id: 'br-2044', source: '@liberdade_demo', source_url: 'https://t.me/liberdade_demo', msg_url: 'https://t.me/liberdade_demo/477',
+        source_type: 'telegram', text_he: 'Relato não confirmado de assalto a pedestre perto da estação Liberdade.',
+        crime: 'robbery', risk: 1, zone: 'Liberdade', lat: -23.5587, lng: -46.6357, confidence: 0.68, mins_ago: 33,
+        keywords: ['assalto', 'pedestre'] },
+      { id: 'br-2045', source: '@pinheiros_watch_demo', source_url: 'https://t.me/pinheiros_watch_demo', msg_url: 'https://t.me/pinheiros_watch_demo/1581',
+        source_type: 'telegram', text_he: 'Pichação e danos a patrimônio próximo à Av. Faria Lima, três jovens vistos.',
+        crime: 'vandalism', risk: 3, zone: 'Pinheiros', lat: -23.5663, lng: -46.6794, confidence: 0.61, mins_ago: 47,
+        keywords: ['pichação', 'dano', 'vandalismo'] }
+    ],
     lprAlerts: [
       {
         id: 'lpr-7012', plate: 'ABC-1234', mins_ago: 2,
@@ -196,6 +218,7 @@ window.TomorrowCountries = (function () {
         ]
       }
     ],
+    osintSignals: null,   // Israel falls back to the bundled signals.sample.json (Hebrew text).
     lprAlerts: [
       { id: 'lpr-7012', plate: '12-345-67', mins_ago: 2, camera: { name: 'מצלמה 14 · אלנבי × רוטשילד', lat: 32.0640, lng: 34.7725 }, status: 'stolen',  model: 'Hyundai i20 לבן',  match_src: 'דמו · stolencar · גניבת רכב 2026-05-20', dispatchable: true },
       { id: 'lpr-7011', plate: '88-219-44', mins_ago: 6, camera: { name: 'מצלמה 22 · דיזנגוף סנטר',   lat: 32.0760, lng: 34.7751 }, status: 'flagged', model: 'Kia Picanto אפור', match_src: 'דמו · מודיעין · רכב משמש בעבירות חוזרות', dispatchable: true },

@@ -71,9 +71,12 @@ window.TomorrowPrediction = (function () {
   function factorTags(crime, hour) {
     const tags = [];
     const day = new Date().getDay();
-    if (crime.peak_hours.includes(hour)) tags.push('שעת שיא לעבירה');
-    if ((day === 4 || day === 5) && (hour >= 21 || hour <= 3)) tags.push('סופ״ש · חיי לילה');
-    if (hour >= 0 && hour <= 5) tags.push('שעות חשכה');
+    // Canonical (English) factor IDs — translated at render time via the
+    // factor.* i18n keys. Keep these IDs stable; layers.js + app.js print
+    // order match them by string equality.
+    if (crime.peak_hours.includes(hour)) tags.push('peakHour');
+    if ((day === 4 || day === 5) && (hour >= 21 || hour <= 3)) tags.push('weekendNight');
+    if (hour >= 0 && hour <= 5) tags.push('darkHours');
     return tags;
   }
 
@@ -208,7 +211,7 @@ window.TomorrowPrediction = (function () {
               const e = TomorrowApp.nearestEta(h.lat, h.lng, h.station_id);
               return e ? `<div class="fc-eta"><i data-lucide="timer"></i><span class="fc-eta-min">${e.eta} ${tr('forecast.eta')}</span><span class="fc-eta-from">${e.station.name} · ${e.km.toFixed(1)} km</span></div>` : '';
             })()}
-            ${h.factors.length ? `<div class="fc-factors">${h.factors.map(f => `<span class="factor">${f}</span>`).join('')}</div>` : ''}
+            ${h.factors.length ? `<div class="fc-factors">${h.factors.map(f => `<span class="factor">${tr('factor.' + f) !== 'factor.' + f ? tr('factor.' + f) : f}</span>`).join('')}</div>` : ''}
             <button class="fc-dispatch" data-id="${h.id}"><i data-lucide="navigation"></i><span>${tr('forecast.dispatch')}</span></button>
           </div>`;
       }).join('');

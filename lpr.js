@@ -141,7 +141,7 @@ window.TomorrowLpr = (function () {
       a.status = newStatus;
       if (newStatus === 'secured') {
         a.dispatchable = false;
-        a.match_src = `טופל בהצלחה ע״י צוות ${callsign || 'סיור'}`;
+        a.match_src = window.TomorrowI18n ? TomorrowI18n.t('toast.lprResolved', { cs: callsign || '—' }) : `Resolved successfully by ${callsign || 'patrol'}`;
         a.mins_ago = 0;
       }
       updateBadge();

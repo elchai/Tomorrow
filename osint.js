@@ -54,40 +54,60 @@ window.TomorrowOsint = (function () {
   }
   function srcLink(s, extraClass = '') {
     const url = bestUrl(s);
-    const label = escapeHtml(s.source || 'מקור');
+    const label = escapeHtml(s.source || (window.T ? T('osint.source') : 'Source'));
     if (!url) return label;
-    return `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" class="src-link ${escapeHtml(extraClass)}" title="פתח את ההודעה בטלגרם">${label}<i data-lucide="external-link"></i></a>`;
+    const linkTitle = escapeHtml(window.T ? T('osint.openInTelegram') : 'Open message on Telegram');
+    return `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" class="src-link ${escapeHtml(extraClass)}" title="${linkTitle}">${label}<i data-lucide="external-link"></i></a>`;
   }
 
   function timeAgo(s) {
-    if (s.mins_ago != null) {
-      const m = s.mins_ago;
-      return m < 60 ? `לפני ${m} דק׳` : `לפני ${Math.round(m / 60)} שע׳`;
-    }
-    if (s.ts) {
-      const m = Math.max(0, Math.round((Date.now() - new Date(s.ts).getTime()) / 60000));
-      return m < 60 ? `לפני ${m} דק׳` : `לפני ${Math.round(m / 60)} שע׳`;
-    }
-    return 'עכשיו';
+    const tr = (k, v) => (window.TomorrowI18n ? TomorrowI18n.t(k, v) : k);
+    const fmt = (m) => m < 60
+      ? tr('time.minsAgo', { n: m })
+      : tr('time.hoursAgo', { n: Math.round(m / 60) });
+    if (s.mins_ago != null) return fmt(s.mins_ago);
+    if (s.ts) return fmt(Math.max(0, Math.round((Date.now() - new Date(s.ts).getTime()) / 60000)));
+    return tr('time.now');
   }
 
   // ---------- Load ----------
   async function loadSignals() {
-    const url = CONFIG.FIREBASE_URL
-      ? `${CONFIG.FIREBASE_URL.replace(/\/$/, '')}/${CONFIG.SIGNALS_PATH}.json`
-      : CONFIG.SIGNALS_SAMPLE;
+    // 1) Live source — Firebase, if configured.
+    if (CONFIG.FIREBASE_URL) {
+      const url = `${CONFIG.FIREBASE_URL.replace(/\/$/, '')}/${CONFIG.SIGNALS_PATH}.json`;
+      try {
+        const res = await fetch(url, { cache: 'no-store' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        const list = Array.isArray(data) ? data
+          : data.signals ? data.signals
+          : Object.values(data).filter(v => v && typeof v === 'object' && v.lat);
+        State.signals = list;
+        return { list, live: true };
+      } catch (e) {
+        console.warn('OSINT live load failed:', e.message);
+      }
+    }
+    // 2) Country-bundled signals (countries.js) take priority over the global
+    //    signals.sample.json. They keep the demo OSINT feed in the right
+    //    language per region.
+    const country = window.TomorrowCountries && TomorrowCountries.get();
+    if (country && Array.isArray(country.osintSignals) && country.osintSignals.length) {
+      State.signals = country.osintSignals;
+      return { list: country.osintSignals, live: false };
+    }
+    // 3) Fallback: bundled signals.sample.json (Hebrew text — Israel default).
     try {
-      const res = await fetch(url, { cache: 'no-store' });
+      const res = await fetch(CONFIG.SIGNALS_SAMPLE, { cache: 'no-store' });
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const data = await res.json();
-      // Firebase returns an object map; sample file wraps in {signals:[...]}
-      let list = Array.isArray(data) ? data
+      const list = Array.isArray(data) ? data
         : data.signals ? data.signals
         : Object.values(data).filter(v => v && typeof v === 'object' && v.lat);
       State.signals = list;
-      return { list, live: !!CONFIG.FIREBASE_URL };
+      return { list, live: false };
     } catch (e) {
-      console.warn('OSINT load failed:', e.message);
+      console.warn('OSINT sample load failed:', e.message);
       State.signals = State.signals || [];
       return { list: State.signals, live: false };
     }
@@ -201,7 +221,13 @@ window.TomorrowOsint = (function () {
     // surface each signal in the operational log
     list.slice(0, 8).forEach(sig => {
       const crime = CONFIG.crimeType(sig.crime);
-      TomorrowApp.logEvent('osint', sig.risk, `📡 אות OSINT · ${srcLink(sig)}: ${crime.name} ב${sig.zone} (מהימנות ${Math.round(sig.confidence * 100)}%)`);
+      const tr = (k, v) => (window.TomorrowI18n ? TomorrowI18n.t(k, v) : k);
+      TomorrowApp.logEvent('osint', sig.risk, tr('osint.logLine', {
+        src: srcLink(sig),
+        crime: CONFIG.crimeName(sig.crime),
+        zone: sig.zone,
+        conf: Math.round(sig.confidence * 100)
+      }));
     });
 
     // reflect the boost in the forecast + map

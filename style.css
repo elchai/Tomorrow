@@ -836,7 +836,15 @@ input:checked + .slider-round .slider-knob {
 
 /* Pushed-to-bottom section of the rail (logout etc.) */
 .nav-rail-bottom { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--line-soft);
-  width: 100%; display: flex; justify-content: center; }
+  width: 100%; display: flex; flex-direction: column; align-items: center; gap: 8px; padding-bottom: 6px; }
+
+/* Language cycle button — shows current 2-letter code under the globe icon */
+#btn-lang-cycle.nav-rail-btn { position: relative; flex-direction: column; gap: 0; padding: 6px 4px; height: auto; }
+#btn-lang-cycle .nav-rail-lang-code {
+  display: block !important;
+  font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+  letter-spacing: .5px; color: var(--cyan); margin-top: 2px; line-height: 1;
+}
 /* Logout button takes the destructive color hint */
 #btn-logout.nav-rail-btn { color: var(--text-faint) !important; }
 #btn-logout.nav-rail-btn:hover { background: rgba(255, 31, 75, .14) !important;
@@ -847,31 +855,36 @@ input:checked + .slider-round .slider-knob {
 .hm-item.hm-item-logout svg { color: var(--critical); }
 .hm-item.hm-item-logout:hover { background: rgba(255, 31, 75, .12); color: var(--critical); }
 
-/* ===================== DRAWER PANELS (Intel, LPR — shared base) ===================== */
+/* ===================== DRAWER PANELS (Intel, LPR — shared base) =====================
+   Drawers always anchor next to the nav-rail on the leading (inline-start)
+   edge — that means LEFT in LTR (English / Portuguese) and RIGHT in RTL
+   (Hebrew). Logical properties handle inset; transform direction flips per
+   `dir` attribute because translateX is physical.
+*/
 .drawer-panel {
-  /* Fixed (not absolute) so the drawer stays viewport-pinned regardless of how
-     tall #layout grows. Critical after the P0-7 footer fix, which switched
-     #layout from `height` to `min-height`. */
   position: fixed;
   top: calc(var(--demo-ribbon-h) + var(--hud-h));
   bottom: 0;
-  right: var(--rail-w);
+  inset-inline-start: var(--rail-w);
   width: 320px;
   max-width: 92vw;
   z-index: 1000;
-  border-left: 1px solid rgba(43, 143, 255, 0.2);
+  border-inline-start: 1px solid rgba(43, 143, 255, 0.2);
   background: linear-gradient(180deg, rgba(11, 19, 34, 0.94), rgba(7, 12, 24, 0.94));
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.55);
+  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.55);
   display: flex;
   flex-direction: column;
-  direction: rtl;
-  /* Closed: drawer sits fully off-screen, leaving rail untouched. */
-  transform: translateX(calc(100% + var(--rail-w)));
   transition: transform 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
 }
-.drawer-panel.open { transform: translateX(0); }
+/* Closed positions — toward the leading edge so drawer disappears past the nav-rail.
+   In LTR drawer is at left:rail-w so we translate negatively. In RTL it's the opposite.
+   Same-specificity selectors for .open so it wins via cascade order. */
+html[dir="ltr"] .drawer-panel        { transform: translateX(calc(-100% - var(--rail-w))); }
+html[dir="rtl"] .drawer-panel        { transform: translateX(calc(100% + var(--rail-w))); }
+html[dir="ltr"] .drawer-panel.open   { transform: translateX(0); }
+html[dir="rtl"] .drawer-panel.open   { transform: translateX(0); }
 
 /* HUD badge (small count chip glued to an icon button) */
 .icon-btn .hud-badge {
@@ -1059,35 +1072,17 @@ input:checked + .slider-round .slider-knob {
   .hamburger-btn { display: flex; }
   #btn-analytics, #btn-intel, #btn-lpr { display: none !important; }
 
-  /* Drawers must be viewport-pinned on mobile — #layout is `min-height` (grows
-     with content) so absolute positioning inside it makes drawers float far
-     below the fold. Fixed positioning anchors them to the viewport, which is
-     what the user actually sees. */
+  /* On mobile there's no nav-rail, so drawers fill from the inline-start edge
+     of the viewport (left in LTR, right in RTL) with no rail offset. */
   .drawer-panel {
-    position: fixed;
-    top: calc(var(--demo-ribbon-h) + var(--hud-h));
-    bottom: 0;
-    right: 0;                    /* no rail on mobile */
+    inset-inline-start: 0;
     width: min(360px, 92vw);
     max-width: 100vw;
-    z-index: 2500;               /* above hamburger overlay (2998) is wrong — keep below it */
-  }
-  .drawer-panel.open { transform: translateX(0); }
-  /* Closed: slide entirely off-screen to the right */
-  .drawer-panel:not(.open) { transform: translateX(100%); }
-
-  /* Analytics drawer uses inline right-animation on desktop. On mobile, override
-     it to the same fixed-viewport pattern as the other drawers. */
-  #analytics-panel {
-    position: fixed !important;
-    top: calc(var(--demo-ribbon-h) + var(--hud-h)) !important;
-    bottom: 0 !important;
-    right: 0 !important;
-    width: min(360px, 92vw) !important;
-    transition: transform 0.3s cubic-bezier(0.1, 0.9, 0.2, 1) !important;
-    transform: translateX(100%);
     z-index: 2500;
   }
-  #analytics-panel.open { transform: translateX(0); }
+  html[dir="ltr"] .drawer-panel        { transform: translateX(-100%); }
+  html[dir="rtl"] .drawer-panel        { transform: translateX(100%); }
+  html[dir="ltr"] .drawer-panel.open   { transform: translateX(0); }
+  html[dir="rtl"] .drawer-panel.open   { transform: translateX(0); }
 }
 
