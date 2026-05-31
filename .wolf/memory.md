@@ -445,3 +445,28 @@
 | 12:10 | Edited i18n.js | 4→5 lines | ~72 |
 | 12:10 | Edited i18n.js | 4→5 lines | ~67 |
 | 12:10 | Edited i18n.js | 4→5 lines | ~73 |
+| 12:12 | Created archive.js | — | ~1955 |
+| 12:12 | Edited app.js | added 1 condition(s) | ~171 |
+| 12:12 | Edited app.js | 2→4 lines | ~86 |
+| 12:13 | Edited index.html | 2→3 lines | ~30 |
+| 12:14 | Created insights.js | — | ~2052 |
+| 12:14 | Edited i18n.js | expanded (+20 lines) | ~557 |
+| 12:15 | Edited i18n.js | expanded (+20 lines) | ~499 |
+| 12:15 | Edited i18n.js | expanded (+20 lines) | ~581 |
+| 12:15 | Edited style.css | modified media() | ~530 |
+| 12:15 | Edited index.html | 2→3 lines | ~31 |
+| 12:15 | Edited app.js | added 1 condition(s) | ~37 |
+| 12:16 | Created settings.js | — | ~2012 |
+| 12:16 | Edited index.html | reduced (-6 lines) | ~34 |
+| 12:16 | Edited index.html | 2→3 lines | ~30 |
+| 12:16 | Edited app.js | added 1 condition(s) | ~34 |
+| 12:17 | Edited i18n.js | expanded (+24 lines) | ~354 |
+| 12:17 | Edited i18n.js | expanded (+24 lines) | ~352 |
+| 12:17 | Edited i18n.js | expanded (+24 lines) | ~378 |
+| 12:17 | Edited style.css | expanded (+36 lines) | ~506 |
+| 12:17 | Created manifest.json | — | ~170 |
+| 12:18 | Created sw.js | — | ~626 |
+| 12:18 | Edited index.html | 2→4 lines | ~60 |
+| 12:18 | Edited wiring.js | added 1 condition(s) | ~120 |
+| 12:18 | Created _smoke_server.mjs | — | ~255 |
+| 12:19 | Created _smoke_final.mjs | — | ~1104 |

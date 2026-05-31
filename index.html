@@ -7,6 +7,8 @@
   <title>TOMORROW · רשת ניבוי פשיעה</title>
   <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon.png">
   <link rel="apple-touch-icon" href="assets/favicon.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0a1a3e">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -356,13 +358,7 @@
       <section class="tab-content" id="tab-training"></section>
       <section class="tab-content" id="tab-integrations"></section>
       <section class="tab-content" id="tab-syslog"></section>
-      <section class="tab-content" id="tab-settings">
-        <div class="tab-placeholder">
-          <i data-lucide="settings"></i>
-          <h2 data-i18n="placeholder.settings">Settings — coming in Sprint C</h2>
-          <p data-i18n="placeholder.body">Default tab, theme, data export, about.</p>
-        </div>
-      </section>
+      <section class="tab-content" id="tab-settings"></section>
 
     </main><!-- /#tab-host -->
   </div><!-- /#app-container -->
@@ -403,11 +399,14 @@
   <script src="intel.js"></script>
   <script src="lpr.js"></script>
   <script src="syslog.js"></script>
+  <script src="archive.js"></script>
   <script src="officers.js"></script>
   <script src="shifts.js"></script>
   <script src="fleet.js"></script>
   <script src="training.js"></script>
   <script src="integrations.js"></script>
+  <script src="insights.js"></script>
+  <script src="settings.js"></script>
   <script src="router.js"></script>
 
   <!-- UI wiring (timeline + control buttons) — external for strict CSP -->

@@ -49,7 +49,9 @@ window.TomorrowApp = (function () {
       // Whitelist known keys to defang any localStorage poisoning from sibling
       // apps that share the elchai.github.io origin (P2-6 sec).
       const allowed = ['current_station_id', 'forecast', 'units', 'intel_log',
-                       'forecast_hour', 'active_events', 'sim', 'settings', 'activeTab'];
+                       'forecast_hour', 'active_events', 'sim', 'settings', 'activeTab',
+                       'history', 'shifts', 'officers', 'officers_country',
+                       'vehicles', 'vehicles_country'];
       for (const k of allowed) {
         if (k in payload) State[k] = payload[k];
       }
@@ -60,6 +62,11 @@ window.TomorrowApp = (function () {
     if (saveTimer) clearTimeout(saveTimer);
     saveTimer = setTimeout(() => {
       try {
+        // Archive compaction before serializing so localStorage stays under 5MB.
+        if (window.TomorrowArchive) {
+          TomorrowArchive.compact();
+          TomorrowArchive.purgeIfOverLimit();
+        }
         const wrapped = { __version: SCHEMA_VERSION, __savedAt: Date.now(), state: State };
         localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(wrapped));
       }
@@ -384,6 +391,8 @@ window.TomorrowApp = (function () {
       if (window.TomorrowFleet) TomorrowFleet.init();
       if (window.TomorrowTraining) TomorrowTraining.init();
       if (window.TomorrowIntegrations) TomorrowIntegrations.init();
+      if (window.TomorrowInsights) TomorrowInsights.init();
+      if (window.TomorrowSettings) TomorrowSettings.init();
       renderStrategicEvents();
       updateThreatLevel();
       renderIcons();   // convert any remaining static [data-lucide] in the HUD/timeline

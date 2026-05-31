@@ -229,4 +229,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── Router init — must run last so all tab modules have registered ──
   if (window.TomorrowRouter) TomorrowRouter.init();
+
+  // ── PWA service worker (offline cache) — http(s) only, never file:// ──
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch(() => { /* silent */ });
+    });
+  }
 });

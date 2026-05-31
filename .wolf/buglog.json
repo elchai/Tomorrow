@@ -1712,6 +1712,54 @@
       "related_bugs": [],
       "occurrences": 3,
       "last_seen": "2026-05-31T09:08:40.143Z"
+    },
+    {
+      "id": "bug-108",
+      "timestamp": "2026-05-31T09:13:02.592Z",
+      "error_message": "Incorrect value in code",
+      "file": "index.html",
+      "root_cause": "Had \"officers.js\"",
+      "fix": "Changed to \"archive.js\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-05-31T09:16:44.475Z"
+    },
+    {
+      "id": "bug-109",
+      "timestamp": "2026-05-31T09:17:39.437Z",
+      "error_message": "CSS fix: display, height",
+      "file": "style.css",
+      "root_cause": "display: flex !important → flex; height: calc(100vh - var(--hud-h) - var(--demo-ribbon-h)) → 18px",
+      "fix": "Changed display: flex !important → flex; height: calc(100vh - var(--hud-h) - var(--demo-ribbon-h)) → 18px",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-31T09:17:39.437Z"
+    },
+    {
+      "id": "bug-110",
+      "timestamp": "2026-05-31T09:18:29.163Z",
+      "error_message": "Missing error handling in unknown",
+      "file": "wiring.js",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-31T09:18:29.163Z"
     }
   ]
 }
