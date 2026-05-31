@@ -1024,6 +1024,694 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-05-28T10:56:20.489Z"
+    },
+    {
+      "id": "bug-065",
+      "timestamp": "2026-05-28T11:07:56.897Z",
+      "error_message": "CSS fix: text-align",
+      "file": "style.css",
+      "root_cause": "text-align: start → left",
+      "fix": "Changed text-align: start → left",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-05-28T11:14:50.792Z"
+    },
+    {
+      "id": "bug-066",
+      "timestamp": "2026-05-28T11:08:44.403Z",
+      "error_message": "Wrong reference: center should be start",
+      "file": "style.css",
+      "root_cause": "Used \"center\" instead of \"start\"",
+      "fix": "Changed center → start",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T11:08:44.403Z"
+    },
+    {
+      "id": "bug-067",
+      "timestamp": "2026-05-28T11:10:40.591Z",
+      "error_message": "Missing guard clause",
+      "file": "_audit_smoke.mjs",
+      "root_cause": "No early return/throw for edge case: action === 'popup'",
+      "fix": "Added guard clause: if (action === 'popup')",
+      "tags": [
+        "auto-detected",
+        "guard-clause",
+        "mjs"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T11:10:40.591Z"
+    },
+    {
+      "id": "bug-068",
+      "timestamp": "2026-05-28T11:13:18.048Z",
+      "error_message": "Incorrect value in code",
+      "file": "map.js",
+      "root_cause": "Had \"TomorrowDispatch.dispatchToHotspot(TomorrowState.",
+      "fix": "Changed to \"${h.id}\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T11:13:18.048Z"
+    },
+    {
+      "id": "bug-069",
+      "timestamp": "2026-05-28T11:13:33.120Z",
+      "error_message": "Incorrect value in code",
+      "file": "intel.js",
+      "root_cause": "Had \"TomorrowMap.getMap().flyTo([${t.last_cell.lat}, $",
+      "fix": "Changed to \"${t.last_cell.lat}\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T11:13:33.120Z"
+    },
+    {
+      "id": "bug-070",
+      "timestamp": "2026-05-28T11:15:04.249Z",
+      "error_message": "Wrong reference: 200px should be 220px",
+      "file": "style.css",
+      "root_cause": "Used \"200px\" instead of \"220px\"",
+      "fix": "Changed 200px → 220px",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T11:15:04.249Z"
+    },
+    {
+      "id": "bug-071",
+      "timestamp": "2026-05-28T11:15:23.280Z",
+      "error_message": "Wrong operator: || should be !==",
+      "file": "_audit_smoke.mjs",
+      "root_cause": "Used \"||\" instead of \"!==\"",
+      "fix": "Changed operator || → !==",
+      "tags": [
+        "auto-detected",
+        "operator-fix",
+        "mjs"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T11:15:23.280Z"
+    },
+    {
+      "id": "bug-072",
+      "timestamp": "2026-05-28T11:24:06.857Z",
+      "error_message": "Significant refactor of ",
+      "file": "scanner/firebase.js",
+      "root_cause": "17 lines replaced/restructured",
+      "fix": "Rewrote 30→49 lines (17 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T11:24:06.857Z"
+    },
+    {
+      "id": "bug-073",
+      "timestamp": "2026-05-28T11:24:47.993Z",
+      "error_message": "Significant refactor of ",
+      "file": "scanner/channels.js",
+      "root_cause": "10 lines replaced/restructured",
+      "fix": "Rewrote 12→28 lines (10 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T11:24:47.993Z"
+    },
+    {
+      "id": "bug-074",
+      "timestamp": "2026-05-28T11:26:30.808Z",
+      "error_message": "Significant refactor of ",
+      "file": "config.js",
+      "root_cause": "4 lines replaced/restructured",
+      "fix": "Rewrote 6→10 lines (4 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T11:26:30.808Z"
+    },
+    {
+      "id": "bug-075",
+      "timestamp": "2026-05-28T11:35:23.808Z",
+      "error_message": "CSS fix: z-index",
+      "file": "style.css",
+      "root_cause": "z-index: 100 → 1500",
+      "fix": "Changed z-index: 100 → 1500",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-28T11:38:59.136Z"
+    },
+    {
+      "id": "bug-076",
+      "timestamp": "2026-05-28T11:35:56.644Z",
+      "error_message": "Wrong operator: && should be ===",
+      "file": "wiring.js",
+      "root_cause": "Used \"&&\" instead of \"===\"",
+      "fix": "Changed operator && → ===",
+      "tags": [
+        "auto-detected",
+        "operator-fix",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T11:35:56.644Z"
+    },
+    {
+      "id": "bug-077",
+      "timestamp": "2026-05-28T11:39:26.671Z",
+      "error_message": "Missing error handling in unknown",
+      "file": "wiring.js",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T11:39:26.671Z"
+    },
+    {
+      "id": "bug-078",
+      "timestamp": "2026-05-28T11:44:04.423Z",
+      "error_message": "Significant refactor of ",
+      "file": "index.html",
+      "root_cause": "7 lines replaced/restructured",
+      "fix": "Rewrote 15→40 lines (7 removed) | Also: <!-- Language picker (mobile only — desktop uses t; <li class=\"hm-section-head\"><i data-lucide=\"globe\"",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-28T11:44:16.551Z"
+    },
+    {
+      "id": "bug-079",
+      "timestamp": "2026-05-28T11:45:13.082Z",
+      "error_message": "Significant refactor of ",
+      "file": "style.css",
+      "root_cause": "8 lines replaced/restructured",
+      "fix": "Rewrote 15→63 lines (8 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T11:45:13.082Z"
+    },
+    {
+      "id": "bug-080",
+      "timestamp": "2026-05-28T11:45:58.898Z",
+      "error_message": "Null/undefined access in ",
+      "file": "wiring.js",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T11:45:58.898Z"
+    },
+    {
+      "id": "bug-081",
+      "timestamp": "2026-05-28T11:49:58.128Z",
+      "error_message": "CSS fix: max-height, overflow",
+      "file": "style.css",
+      "root_cause": "max-height: 280px → none !important; overflow: visible → visible !important",
+      "fix": "Changed max-height: 280px → none !important; overflow: visible → visible !important",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T11:49:58.128Z"
+    },
+    {
+      "id": "bug-082",
+      "timestamp": "2026-05-28T12:10:12.092Z",
+      "error_message": "Significant refactor of ",
+      "file": "index.html",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 5→9 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T12:10:12.092Z"
+    },
+    {
+      "id": "bug-083",
+      "timestamp": "2026-05-28T12:10:37.959Z",
+      "error_message": "Significant refactor of ",
+      "file": "wiring.js",
+      "root_cause": "9 lines replaced/restructured",
+      "fix": "Rewrote 28→39 lines (9 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T12:10:37.959Z"
+    },
+    {
+      "id": "bug-084",
+      "timestamp": "2026-05-28T12:11:20.819Z",
+      "error_message": "Significant refactor of ",
+      "file": "map.js",
+      "root_cause": "6 lines replaced/restructured",
+      "fix": "Rewrote 16→24 lines (6 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T12:11:20.819Z"
+    },
+    {
+      "id": "bug-085",
+      "timestamp": "2026-05-28T12:14:19.335Z",
+      "error_message": "Wrong reference: renderStrategicEvents should be if",
+      "file": "app.js",
+      "root_cause": "Used \"renderStrategicEvents\" instead of \"if\"",
+      "fix": "Changed renderStrategicEvents → if",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T12:14:19.335Z"
+    },
+    {
+      "id": "bug-086",
+      "timestamp": "2026-05-28T12:16:30.843Z",
+      "error_message": "Significant refactor of ",
+      "file": "index.html",
+      "root_cause": "4 lines replaced/restructured",
+      "fix": "Rewrote 6→4 lines (4 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-28T12:16:30.843Z"
+    },
+    {
+      "id": "bug-087",
+      "timestamp": "2026-05-28T12:16:50.031Z",
+      "error_message": "Incorrect value in code",
+      "file": "i18n.js",
+      "root_cause": "Had 'Built by Elchai Fine'",
+      "fix": "Changed to 'Development:'",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 6,
+      "last_seen": "2026-05-28T12:17:51.986Z"
+    },
+    {
+      "id": "bug-088",
+      "timestamp": "2026-05-31T07:57:04.739Z",
+      "error_message": "Significant refactor of ",
+      "file": "index.html",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 6→6 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-31T07:57:04.739Z"
+    },
+    {
+      "id": "bug-089",
+      "timestamp": "2026-05-31T08:00:20.428Z",
+      "error_message": "CSS fix: opacity, min-height, grid-template-columns",
+      "file": "style.css",
+      "root_cause": "opacity: .55 → .6; min-height: the side effect was a → calc(100vh - var(--hud-h) - 120px); grid-template-columns: var(--rail-w) 320px 1fr 300px → 320px 1fr 300px",
+      "fix": "Changed opacity: .55 → .6; min-height: the side effect was a → calc(100vh - var(--hud-h) - 120px); grid-template-columns: var(--rail-w) 320px 1fr 300px → 320px 1fr 300px",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-31T08:01:23.372Z"
+    },
+    {
+      "id": "bug-090",
+      "timestamp": "2026-05-31T08:02:13.301Z",
+      "error_message": "Significant refactor of ",
+      "file": "style.css",
+      "root_cause": "13 lines replaced/restructured",
+      "fix": "Rewrote 15→25 lines (13 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-31T08:02:13.301Z"
+    },
+    {
+      "id": "bug-091",
+      "timestamp": "2026-05-31T08:04:30.170Z",
+      "error_message": "Missing guard clause",
+      "file": "wiring.js",
+      "root_cause": "No early return/throw for edge case: e.key === 'Escape' && sidebar?.classList.contains('open'",
+      "fix": "Added guard clause: if (e.key === 'Escape' && sidebar?.classList)",
+      "tags": [
+        "auto-detected",
+        "guard-clause",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-31T08:04:30.170Z"
+    },
+    {
+      "id": "bug-092",
+      "timestamp": "2026-05-31T08:33:29.085Z",
+      "error_message": "Null/undefined access in ",
+      "file": "intel.js",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-31T08:33:29.085Z"
+    },
+    {
+      "id": "bug-093",
+      "timestamp": "2026-05-31T08:33:42.433Z",
+      "error_message": "Significant refactor of ",
+      "file": "intel.js",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 6→5 lines (3 removed) | Also: function toggle() {; isOpen = !isOpen;",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-31T08:33:56.587Z"
+    },
+    {
+      "id": "bug-094",
+      "timestamp": "2026-05-31T08:34:41.780Z",
+      "error_message": "Null/undefined access in ",
+      "file": "lpr.js",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-31T08:34:41.780Z"
+    },
+    {
+      "id": "bug-095",
+      "timestamp": "2026-05-31T08:34:53.657Z",
+      "error_message": "Significant refactor of ",
+      "file": "lpr.js",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 8→7 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-31T08:34:53.657Z"
+    },
+    {
+      "id": "bug-096",
+      "timestamp": "2026-05-31T08:36:10.119Z",
+      "error_message": "Missing guard clause",
+      "file": "analytics.js",
+      "root_cause": "No early return/throw for edge case: !panelEl",
+      "fix": "Added guard clause: if (!panelEl)",
+      "tags": [
+        "auto-detected",
+        "guard-clause",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-31T08:36:10.119Z"
+    },
+    {
+      "id": "bug-097",
+      "timestamp": "2026-05-31T08:36:27.079Z",
+      "error_message": "Significant refactor of ",
+      "file": "analytics.js",
+      "root_cause": "20 lines replaced/restructured",
+      "fix": "Rewrote 27→7 lines (20 removed) | Also: document.getElementById('layout').appendChild(pane; // Wire up close button",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-31T08:37:16.007Z"
+    },
+    {
+      "id": "bug-098",
+      "timestamp": "2026-05-31T08:37:27.942Z",
+      "error_message": "Wrong reference: toggle should be refresh",
+      "file": "analytics.js",
+      "root_cause": "Used \"toggle\" instead of \"refresh\"",
+      "fix": "Changed toggle → refresh",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-31T08:37:27.942Z"
+    },
+    {
+      "id": "bug-099",
+      "timestamp": "2026-05-31T08:38:25.790Z",
+      "error_message": "Significant refactor of ",
+      "file": "app.js",
+      "root_cause": "39 lines replaced/restructured",
+      "fix": "Rewrote 56→15 lines (39 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-31T08:38:25.790Z"
+    },
+    {
+      "id": "bug-100",
+      "timestamp": "2026-05-31T08:38:49.560Z",
+      "error_message": "Significant refactor of ",
+      "file": "syslog.js",
+      "root_cause": "21 lines replaced/restructured",
+      "fix": "Rewrote 35→18 lines (21 removed) | Also: <div class=\"panel-head\" style=\"flex-shrink: 0;\">; <span class=\"panel-title\"><i data-lucide=\"scroll-t",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-05-31T08:39:12.143Z"
+    },
+    {
+      "id": "bug-101",
+      "timestamp": "2026-05-31T08:39:34.082Z",
+      "error_message": "Null/undefined access in ",
+      "file": "syslog.js",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "js"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-31T08:39:34.082Z"
+    },
+    {
+      "id": "bug-102",
+      "timestamp": "2026-05-31T08:39:50.320Z",
+      "error_message": "CSS fix: display",
+      "file": "style.css",
+      "root_cause": "display: block → flex",
+      "fix": "Changed display: block → flex",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-31T08:39:50.320Z"
+    },
+    {
+      "id": "bug-103",
+      "timestamp": "2026-05-31T08:55:13.785Z",
+      "error_message": "Significant refactor of ",
+      "file": "index.html",
+      "root_cause": "35 lines replaced/restructured",
+      "fix": "Rewrote 35→5 lines (35 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-31T08:55:13.785Z"
+    },
+    {
+      "id": "bug-104",
+      "timestamp": "2026-05-31T09:00:50.484Z",
+      "error_message": "CSS fix: transform",
+      "file": "style.css",
+      "root_cause": "transform: translateX(0) → translateY(-2px)",
+      "fix": "Changed transform: translateX(0) → translateY(-2px)",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-31T09:00:50.484Z"
+    },
+    {
+      "id": "bug-105",
+      "timestamp": "2026-05-31T09:05:27.175Z",
+      "error_message": "Missing await",
+      "file": "_diag.mjs",
+      "root_cause": "Async call without await — returned Promise instead of value",
+      "fix": "Added await to async call",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "mjs"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-31T09:05:27.175Z"
+    },
+    {
+      "id": "bug-106",
+      "timestamp": "2026-05-31T09:06:04.099Z",
+      "error_message": "Missing error handling in unknown",
+      "file": "_diag.mjs",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "mjs"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-05-31T09:06:04.099Z"
+    },
+    {
+      "id": "bug-107",
+      "timestamp": "2026-05-31T09:08:26.572Z",
+      "error_message": "CSS fix: display",
+      "file": "style.css",
+      "root_cause": "display: block → block !important",
+      "fix": "Changed display: block → block !important",
+      "tags": [
+        "auto-detected",
+        "style-fix",
+        "css"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-05-31T09:08:40.143Z"
     }
   ]
 }

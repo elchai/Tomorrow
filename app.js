@@ -379,6 +379,11 @@ window.TomorrowApp = (function () {
       if (window.TomorrowIntel) TomorrowIntel.init();
       if (window.TomorrowLpr) TomorrowLpr.init();
       if (window.TomorrowSysLog) TomorrowSysLog.init();
+      if (window.TomorrowOfficers) TomorrowOfficers.init();
+      if (window.TomorrowShifts) TomorrowShifts.init();
+      if (window.TomorrowFleet) TomorrowFleet.init();
+      if (window.TomorrowTraining) TomorrowTraining.init();
+      if (window.TomorrowIntegrations) TomorrowIntegrations.init();
       renderStrategicEvents();
       updateThreatLevel();
       renderIcons();   // convert any remaining static [data-lucide] in the HUD/timeline

@@ -1,7 +1,11 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-05-28T10:56:54.786Z
-> Files: 59 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-05-31T09:10:39.699Z
+> Files: 71 tracked | Anatomy hits: 0 | Misses: 0
+
+## ../../../.claude/plans/
+
+- `keen-napping-hennessy.md` — Tomorrow → Police Work Tool (redesign plan) (~4094 tok)
 
 ## ../../../.claude/projects/c--Users-User-Desktop-DEV-Tomorrow/memory/
 
@@ -10,29 +14,39 @@
 
 ## ./
 
-- `_audit_smoke.mjs` — URL: shot (~517 tok)
+- `_audit_smoke.mjs` — URL: smoke (~683 tok)
+- `_diag.mjs` — Declares CHROME (~1201 tok)
+- `_smoke_perTab.mjs` — Per-tab screenshots for visual verification of Sprint B tabs. (~347 tok)
+- `_smoke_server.mjs` — Minimal static server for smoke testing (no dependencies). (~288 tok)
+- `_smoke_sprintb.mjs` — Sprint B smoke test — login → cycle through every tab → snapshot each. (~908 tok)
 - `.gitignore` — Git ignore rules (~264 tok)
-- `analytics.js` — State: init, injectHUDButton, buildPanel (~8552 tok)
-- `app.js` — State: loadState, saveState, getCurrentStation + 19 more (~9147 tok)
+- `analytics.js` — State: init, buildPanel (~8217 tok)
+- `app.js` — State: loadState, saveState, getCurrentStation + 18 more (~8938 tok)
 - `brochure.md` — TOMORROW — B2B Enterprise Product Brochure 🚓 (~2922 tok)
 - `CLAUDE.md` — OpenWolf (~157 tok)
-- `config.js` — VERSION: activeCountry, get_MAP_CENTER, get_MAP_ZOOM + 6 more (~2639 tok)
+- `config.js` — VERSION: activeCountry, get_MAP_CENTER, get_MAP_ZOOM + 6 more (~2694 tok)
 - `countries.js` — Declares STORAGE_COUNTRY (~4772 tok)
 - `dispatch.js` — State: distanceMeters, bezier, calcHeadingDeg + 9 more (~5681 tok)
-- `i18n.js` — Declares STORAGE_LANG (~19720 tok)
-- `index.html` — TOMORROW · רשת ניבוי פשיעה (~3990 tok)
-- `intel.js` — so: getTargets, init, injectHUDButton + 7 more (~1904 tok)
+- `fleet.js` — State: rngFromSeed, seedVehicles, getVehicles + 7 more (~2684 tok)
+- `i18n.js` — Declares STORAGE_LANG (~26238 tok)
+- `index.html` — TOMORROW · רשת ניבוי פשיעה (~5631 tok)
+- `integrations.js` — CONNECTORS: init, status, renderPanel + 4 more (~1964 tok)
+- `intel.js` — so: getTargets, init, renderPanel, renderTarget, refresh (~1734 tok)
 - `layers.js` — layerGroups: init, buildBarsLayer, buildAtmsLayer + 6 more (~3873 tok)
 - `LICENSE` — Declares for (~585 tok)
-- `lpr.js` — getAlerts: init, injectHUDButton, updateBadge + 7 more (~1908 tok)
-- `map.js` — State: init, getMap, placeStations + 8 more (~2657 tok)
+- `lpr.js` — getAlerts: init, updateAlertStatus, refresh, renderPanel, renderAlert (~1504 tok)
+- `map.js` — State: init, getMap, placeStations + 8 more (~3050 tok)
+- `officers.js` — State: rngFromSeed, seedOfficersForCountry, getOfficers + 6 more (~3617 tok)
 - `osint.js` — State: map, escapeHtml, safeUrl + 13 more (~3287 tok)
 - `prediction.js` — State: hashWeight, ZONES, rng + 14 more (~3557 tok)
 - `README.md` — Project documentation (~458 tok)
+- `shifts.js` — State: isoWeek, weekStart, getWeekData + 5 more (~2151 tok)
 - `signals.sample.json` (~845 tok)
 - `sounds.js` — ensure: note, sweep, uiClick + 7 more (~868 tok)
-- `style.css` — Styles: 60 rules, 27 vars (~17682 tok)
-- `wiring.js` — langPicker: refreshNowHour, toggleHam (~2345 tok)
+- `style.css` — Styles: 60 rules, 27 vars (~26002 tok)
+- `syslog.js` — State: init, categoryOf, filterEntries + 5 more (~1276 tok)
+- `training.js` — State: getCertRecords, expiryStatus, init + 6 more (~2409 tok)
+- `wiring.js` — langPicker: offsetToHour, refreshNowHour, toggleSidebar, toggleHam (~3107 tok)
 
 ## .claude/
 
@@ -72,12 +86,13 @@
 ## scanner/
 
 - `.gitignore` — Git ignore rules (~11 tok)
-- `channels.js` (~225 tok)
+- `channels.js` (~495 tok)
 - `classifier.js` — CRIME_KEYWORDS: detectCrime, detectRisk, detectZone, classify (~1331 tok)
-- `firebase.js` — fetch: pushSignal, purgeExpired (~396 tok)
+- `firebase.js` — admin: db, pushSignal, purgeExpired (~571 tok)
 - `index.js` — Declares channels (~370 tok)
-- `package.json` — Node.js package manifest (~167 tok)
+- `package.json` — Node.js package manifest (~169 tok)
 - `README.md` — Project documentation (~482 tok)
+- `SETUP.md` — Tomorrow scanner — חיבור חי לטלגרם (~968 tok)
 - `telegram-client.js` — input: createClient, auth, handleMessage, run (~1090 tok)
 
 ## scripts/mcp-sheets/
