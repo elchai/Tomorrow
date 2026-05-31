@@ -28,53 +28,35 @@ window.TomorrowIntel = (function () {
   });
 
   function init() {
-    injectHUDButton();
-    buildPanel();
-    TomorrowApp.register('intel', {});
-  }
-
-  function injectHUDButton() {
-    const muteBtn = document.getElementById('btn-mute');
-    if (!muteBtn) return;
-    const btn = document.createElement('button');
-    btn.id = 'btn-intel';
-    btn.className = 'icon-btn';
-    btn.title = T('intel.title');
-    btn.style.marginInlineEnd = '8px';
-    btn.innerHTML = '<i data-lucide="scan-face"></i>';
-    muteBtn.parentElement.insertBefore(btn, muteBtn);
-    btn.addEventListener('click', toggle);
-  }
-
-  function buildPanel() {
-    panelEl = document.createElement('aside');
-    panelEl.id = 'intel-panel';
-    panelEl.className = 'panel drawer-panel';
-    panelEl.innerHTML = renderPanel();
-    document.getElementById('layout').appendChild(panelEl);
-
+    panelEl = document.getElementById('tab-intel');
+    if (!panelEl) return;
+    panelEl.classList.add('intel-tab');
+    refresh();
     panelEl.addEventListener('click', e => {
-      if (e.target.closest('#btn-close-intel')) toggle();
       const t = e.target.closest('[data-target-id]');
-      if (t) { activeTargetId = t.dataset.targetId; refresh(); }
-      // Inline onclick on the focus button was blocked by CSP — wire it here.
+      if (t) { activeTargetId = t.dataset.targetId; refresh(); return; }
       const focusBtn = e.target.closest('.intel-focus-btn');
       if (focusBtn && window.TomorrowMap) {
         const lat = parseFloat(focusBtn.dataset.lat);
         const lng = parseFloat(focusBtn.dataset.lng);
         if (!isNaN(lat) && !isNaN(lng)) {
-          TomorrowMap.getMap().flyTo([lat, lng], 17, { duration: 1.1 });
-          close();
+          TomorrowRouter?.switchTab('operations');
+          setTimeout(() => TomorrowMap.getMap().flyTo([lat, lng], 17, { duration: 1.1 }), 250);
         }
       }
+    });
+    // Re-render when language/country changes so dossiers reflect the new
+    // country profile + i18n keys.
+    document.addEventListener('tomorrow-lang-change', refresh);
+    TomorrowApp.register('intel', {
+      onTabActivate: (name) => { if (name === 'intel') refresh(); }
     });
   }
 
   function renderPanel() {
     return `
-      <div class="panel-head" style="flex-shrink: 0;">
-        <span class="panel-title"><i data-lucide="scan-face"></i><span>${T('intel.title')}</span></span>
-        <button id="btn-close-intel" class="icon-btn" style="border:none; background:transparent;"><i data-lucide="x"></i></button>
+      <div class="tab-head">
+        <span class="tab-title"><i data-lucide="scan-face"></i><span>${T('intel.title')}</span></span>
       </div>
 
       <!-- Target picker -->
@@ -157,17 +139,5 @@ window.TomorrowIntel = (function () {
     TomorrowApp.renderIcons();
   }
 
-  function toggle() {
-    isOpen = !isOpen;
-    panelEl.classList.toggle('open', isOpen);
-    const btn = document.getElementById('btn-intel');
-    if (btn) btn.classList.toggle('active', isOpen);
-    if (window.TomorrowSounds) TomorrowSounds.uiClick();
-    if (isOpen) TomorrowApp.renderIcons();
-  }
-
-  function close() { if (isOpen) toggle(); }
-  function open()  { if (!isOpen) toggle(); }
-
-  return { init, toggle, open, close };
+  return { init, refresh };
 })();

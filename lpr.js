@@ -25,66 +25,54 @@ window.TomorrowLpr = (function () {
   });
 
   function init() {
-    injectHUDButton();
-    buildPanel();
-    updateBadge();
-    TomorrowApp.register('lpr', {});
-  }
-
-  function injectHUDButton() {
-    const muteBtn = document.getElementById('btn-mute');
-    if (!muteBtn) return;
-    const btn = document.createElement('button');
-    btn.id = 'btn-lpr';
-    btn.className = 'icon-btn';
-    btn.title = T('lpr.title');
-    btn.style.marginInlineEnd = '8px';
-    btn.innerHTML = `<i data-lucide="camera"></i><span class="hud-badge" id="lpr-badge">0</span>`;
-    muteBtn.parentElement.insertBefore(btn, muteBtn);
-    btn.addEventListener('click', toggle);
-  }
-
-  function updateBadge() {
-    const el = document.getElementById('lpr-badge');
-    if (!el) return;
-    const hot = ALERTS.filter(a => a.status === 'stolen' || a.status === 'flagged').length;
-    el.textContent = hot;
-    el.classList.toggle('hot', hot > 0);
-  }
-
-  function buildPanel() {
-    panelEl = document.createElement('aside');
-    panelEl.id = 'lpr-panel';
-    panelEl.className = 'panel drawer-panel';
-    panelEl.innerHTML = renderPanel();
-    document.getElementById('layout').appendChild(panelEl);
-
+    panelEl = document.getElementById('tab-lpr');
+    if (!panelEl) return;
+    panelEl.classList.add('lpr-tab');
+    refresh();
     panelEl.addEventListener('click', e => {
-      if (e.target.closest('#btn-close-lpr')) toggle();
       const focusBtn = e.target.closest('[data-focus]');
       if (focusBtn) {
         const a = ALERTS.find(x => x.id === focusBtn.dataset.focus);
         if (a && window.TomorrowMap) {
-          TomorrowMap.getMap().flyTo([a.camera.lat, a.camera.lng], 17, { duration: 1.1 });
-          toggle();
+          TomorrowRouter?.switchTab('operations');
+          setTimeout(() => TomorrowMap.getMap().flyTo([a.camera.lat, a.camera.lng], 17, { duration: 1.1 }), 250);
         }
       }
       const dispatchBtn = e.target.closest('[data-dispatch]');
       if (dispatchBtn) {
         const a = ALERTS.find(x => x.id === dispatchBtn.dataset.dispatch);
-        if (!a) return;
-        if (window.TomorrowDispatch) {
-          TomorrowDispatch.dispatchToLpr(a);
-        }
+        if (a && window.TomorrowDispatch) TomorrowDispatch.dispatchToLpr(a);
       }
     });
+    document.addEventListener('tomorrow-lang-change', refresh);
+    TomorrowApp.register('lpr', {
+      onTabActivate: (name) => { if (name === 'lpr') refresh(); }
+    });
+  }
+
+  function updateAlertStatus(alertId, newStatus, callsign) {
+    const a = ALERTS.find(x => x.id === alertId);
+    if (a) {
+      a.status = newStatus;
+      if (newStatus === 'secured') {
+        a.dispatchable = false;
+        a.match_src = window.TomorrowI18n ? TomorrowI18n.t('toast.lprResolved', { cs: callsign || '—' }) : `Resolved by ${callsign}`;
+        a.mins_ago = 0;
+      }
+      refresh();
+    }
+  }
+
+  function refresh() {
+    if (!panelEl) return;
+    panelEl.innerHTML = renderPanel();
+    TomorrowApp.renderIcons();
   }
 
   function renderPanel() {
     return `
-      <div class="panel-head" style="flex-shrink: 0;">
-        <span class="panel-title"><i data-lucide="camera"></i><span>${T('lpr.title')}</span></span>
-        <button id="btn-close-lpr" class="icon-btn" style="border:none; background:transparent;"><i data-lucide="x"></i></button>
+      <div class="tab-head">
+        <span class="tab-title"><i data-lucide="camera"></i><span>${T('lpr.title')}</span></span>
       </div>
 
       <div class="lpr-summary">
@@ -135,34 +123,5 @@ window.TomorrowLpr = (function () {
     `;
   }
 
-  function updateAlertStatus(alertId, newStatus, callsign) {
-    const a = ALERTS.find(x => x.id === alertId);
-    if (a) {
-      a.status = newStatus;
-      if (newStatus === 'secured') {
-        a.dispatchable = false;
-        a.match_src = window.TomorrowI18n ? TomorrowI18n.t('toast.lprResolved', { cs: callsign || '—' }) : `Resolved successfully by ${callsign || 'patrol'}`;
-        a.mins_ago = 0;
-      }
-      updateBadge();
-      if (panelEl) {
-        panelEl.innerHTML = renderPanel();
-        TomorrowApp.renderIcons();
-      }
-    }
-  }
-
-  function toggle() {
-    isOpen = !isOpen;
-    panelEl.classList.toggle('open', isOpen);
-    const btn = document.getElementById('btn-lpr');
-    if (btn) btn.classList.toggle('active', isOpen);
-    if (window.TomorrowSounds) TomorrowSounds.uiClick();
-    if (isOpen) TomorrowApp.renderIcons();
-  }
-
-  function close() { if (isOpen) toggle(); }
-  function open()  { if (!isOpen) toggle(); }
-
-  return { init, toggle, open, close, updateAlertStatus };
+  return { init, refresh, updateAlertStatus };
 })();

@@ -15,38 +15,21 @@ window.TomorrowSysLog = (function () {
   let activeFilter = 'all';   // 'all' | 'model' | 'osint' | 'dispatch' | 'status' | 'system'
 
   function init() {
-    injectHUDButton();
-    buildPanel();
-    TomorrowApp.register('syslog', { onStationChange: refresh });
-  }
-
-  function injectHUDButton() {
-    const muteBtn = document.getElementById('btn-mute');
-    if (!muteBtn) return;
-    const btn = document.createElement('button');
-    btn.id = 'btn-syslog';
-    btn.className = 'icon-btn';
-    btn.title = T('syslog.title');
-    btn.style.marginInlineEnd = '8px';
-    btn.innerHTML = '<i data-lucide="scroll-text"></i>';
-    muteBtn.parentElement.insertBefore(btn, muteBtn);
-    btn.addEventListener('click', toggle);
-  }
-
-  function buildPanel() {
-    panelEl = document.createElement('aside');
-    panelEl.id = 'syslog-panel';
-    panelEl.className = 'panel drawer-panel';
-    panelEl.innerHTML = renderPanel();
-    document.getElementById('layout').appendChild(panelEl);
-
+    panelEl = document.getElementById('tab-syslog');
+    if (!panelEl) return;
+    panelEl.classList.add('syslog-tab');
+    refresh();
     panelEl.addEventListener('click', e => {
-      if (e.target.closest('#btn-close-syslog')) toggle();
       const chip = e.target.closest('[data-syslog-filter]');
       if (chip) {
         activeFilter = chip.dataset.syslogFilter;
         refresh();
       }
+    });
+    document.addEventListener('tomorrow-lang-change', refresh);
+    TomorrowApp.register('syslog', {
+      onStationChange: refresh,
+      onTabActivate: (name) => { if (name === 'syslog') refresh(); }
     });
   }
 
@@ -82,9 +65,8 @@ window.TomorrowSysLog = (function () {
 
   function renderPanel() {
     return `
-      <div class="panel-head" style="flex-shrink: 0;">
-        <span class="panel-title"><i data-lucide="scroll-text"></i><span>${T('syslog.title')}</span></span>
-        <button id="btn-close-syslog" class="icon-btn" style="border:none; background:transparent;"><i data-lucide="x"></i></button>
+      <div class="tab-head">
+        <span class="tab-title"><i data-lucide="scroll-text"></i><span>${T('syslog.title')}</span></span>
       </div>
 
       <!-- Filter chips -->
@@ -135,21 +117,11 @@ window.TomorrowSysLog = (function () {
     TomorrowApp.renderIcons();
   }
 
-  function toggle() {
-    isOpen = !isOpen;
-    panelEl.classList.toggle('open', isOpen);
-    const btn = document.getElementById('btn-syslog');
-    if (btn) btn.classList.toggle('active', isOpen);
-    if (window.TomorrowSounds) TomorrowSounds.uiClick();
-    if (isOpen) refresh();
-  }
+  // Live-update while the syslog tab is the active one — re-render every
+  // 1.5s so new events stream in without manual refresh.
+  setInterval(() => {
+    if (TomorrowRouter?.getActiveTab() === 'syslog') refresh();
+  }, 1500);
 
-  function close() { if (isOpen) toggle(); }
-  function open()  { if (!isOpen) toggle(); }
-
-  // Live-update while drawer is open: re-render once a second so new events
-  // (model re-runs, OSINT pushes) show up without manual refresh.
-  setInterval(() => { if (isOpen) refresh(); }, 1500);
-
-  return { init, toggle, open, close };
+  return { init, refresh };
 })();

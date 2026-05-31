@@ -15,17 +15,17 @@ window.TomorrowAnalytics = (function () {
   let isBacktesting = false;
 
   function init() {
-    // 1. Inject analytics button in HUD
-    injectHUDButton();
-
-    // 2. Build and inject the side-drawer panel
+    panelEl = document.getElementById('tab-analytics');
+    if (!panelEl) return;
+    panelEl.classList.add('analytics-tab');
     buildPanel();
 
-    // 3. Register module listener for station/forecast changes
     TomorrowApp.register('analytics', {
       onStationChange: refresh,
-      onForecastChange: refresh
+      onForecastChange: refresh,
+      onTabActivate: (name) => { if (name === 'analytics') refresh(); }
     });
+    document.addEventListener('tomorrow-lang-change', () => { buildPanel(); refresh(); });
 
     // 4. Attach listeners to sliders & tabs
     wireUIControls();
@@ -34,32 +34,12 @@ window.TomorrowAnalytics = (function () {
     refresh();
   }
 
-  function injectHUDButton() {
-    const muteBtn = document.getElementById('btn-mute');
-    if (!muteBtn) return;
-    
-    const btn = document.createElement('button');
-    btn.id = 'btn-analytics';
-    btn.className = 'icon-btn';
-    btn.title = T('analytics.title');
-    btn.style.marginInlineEnd = '8px';
-    btn.innerHTML = '<i data-lucide="bar-chart-3"></i>';
-    
-    muteBtn.parentElement.insertBefore(btn, muteBtn);
-    btn.addEventListener('click', toggle);
-  }
-
   function buildPanel() {
-    panelEl = document.createElement('aside');
-    panelEl.id = 'analytics-panel';
-    // Use the shared drawer-panel class so direction-aware open/close
-    // (inline-start positioning + transform) lives in one place in style.css.
-    panelEl.className = 'panel drawer-panel';
-
+    if (!panelEl) panelEl = document.getElementById('tab-analytics');
+    if (!panelEl) return;
     panelEl.innerHTML = `
-      <div class="panel-head" style="flex-shrink: 0;">
-        <span class="panel-title"><i data-lucide="bar-chart-3"></i><span>${T('analytics.title')}</span></span>
-        <button id="btn-close-analytics" class="icon-btn" style="border:none; background:transparent; cursor:pointer;"><i data-lucide="x"></i></button>
+      <div class="tab-head">
+        <span class="tab-title"><i data-lucide="bar-chart-3"></i><span>${T('analytics.title')}</span></span>
       </div>
 
       <!-- B2B Tabs Header -->
@@ -207,19 +187,7 @@ window.TomorrowAnalytics = (function () {
       </div>
     `;
 
-    document.getElementById('layout').appendChild(panelEl);
-
-    // Wire up close button
-    document.getElementById('btn-close-analytics').addEventListener('click', toggle);
-  }
-
-  function toggle() {
-    isOpen = !isOpen;
-    panelEl.classList.toggle('open', isOpen);
-    const btn = document.getElementById('btn-analytics');
-    if (btn) btn.classList.toggle('active', isOpen);
-    if (window.TomorrowSounds) TomorrowSounds.uiClick();
-    if (isOpen) refresh();
+    wireUIControls();
   }
 
   function wireUIControls() {
@@ -672,5 +640,5 @@ window.TomorrowAnalytics = (function () {
     }, stepTime);
   }
 
-  return { init, toggle, refresh };
+  return { init, refresh };
 })();

@@ -389,52 +389,11 @@ window.TomorrowApp = (function () {
     });
   }
 
-  // Move the action buttons that modules injected into the HUD into the side nav-rail,
-  // and give them a visible label. Modules don't need to know about the rail's existence.
-  function relocateActionButtonsToNavRail() {
-    const rail = document.getElementById('nav-rail');
-    if (!rail) return;
-    const map = [
-      { id: 'btn-analytics', label: window.TomorrowI18n ? TomorrowI18n.t('rail.analytics') : 'Analytics' },
-      { id: 'btn-intel',     label: window.TomorrowI18n ? TomorrowI18n.t('rail.intel')     : 'Intel'  },
-      { id: 'btn-lpr',       label: 'LPR'      },
-      { id: 'btn-syslog',    label: window.TomorrowI18n ? TomorrowI18n.t('syslog.title')   : 'System Log' }
-    ];
-    map.forEach(({ id, label }) => {
-      const btn = document.getElementById(id);
-      if (!btn) return;
-      btn.classList.add('nav-rail-btn');
-      btn.style.marginInlineEnd = '';
-      // icon-only design (FireOps-style): label kept in the `title` attribute as tooltip
-      btn.title = label;
-      // remove any leftover label span if it was added by a previous build
-      btn.querySelector('.nav-rail-label')?.remove();
-      // insert ABOVE the .nav-rail-bottom section (which holds the logout button)
-      const bottom = rail.querySelector('.nav-rail-bottom');
-      if (bottom) rail.insertBefore(btn, bottom); else rail.appendChild(btn);
-    });
-    renderIcons();   // re-run lucide on moved buttons
+  // Legacy drawer-mutex/relocate functions kept as no-ops (sidebar replaces them).
+  function relocateActionButtonsToNavRail() { /* no-op — sidebar handles nav now */ }
+  function closeOtherDrawers() { /* no-op — tabs are mutually exclusive by the router */ }
 
-    // Mutual exclusion: opening one drawer closes the others.
-    // Each rail button click runs the module's own toggle first (bubble);
-    // afterward this delegated listener closes any other drawer that's still open,
-    // and tells Leaflet to recompute its size so map tiles don't go gray.
-    // Per-button mutual-exclusion listener (event delegation on rail fails because
-    // lucide replaces children mid-flight and closest() can resolve to detached nodes).
-    ['btn-analytics', 'btn-intel', 'btn-lpr', 'btn-syslog'].forEach(id => {
-      const btn = document.getElementById(id);
-      if (!btn) return;
-      btn.addEventListener('click', () => {
-        // run AFTER the module's own toggle (registered earlier) — close others
-        setTimeout(() => closeOtherDrawers(id), 0);
-        // after the slide-in animation completes, let Leaflet recompute its size
-        setTimeout(() => window.TomorrowMap?.getMap()?.invalidateSize(), 350);
-      });
-    });
-  }
-
-  // Close all drawers EXCEPT the one whose trigger button id is passed (or all of them if no arg).
-  function closeOtherDrawers(exceptBtnId) {
+  function _legacyDrawerCloser_unused() {
     const drawers = [
       { btn: 'btn-analytics', panel: 'analytics-panel', external: () => window.TomorrowAnalytics?.toggle?.() },
       { btn: 'btn-intel',     panel: 'intel-panel',     external: () => window.TomorrowIntel?.close?.() },
