@@ -14,7 +14,8 @@ window.TomorrowState = {
   // defaults match the selected country (TomorrowApp.applyCountryDefaults).
   active_events: [],
   sim: { prevented: 0, occurred: 0 },  // shift-simulation score
-  settings: { demo_seconds: 11, onscene_seconds: 7 }
+  settings: { demo_seconds: 11, onscene_seconds: 7 },
+  activeTab: 'operations'              // router.js writes here so refresh keeps the user where they were
 };
 
 window.TomorrowApp = (function () {
@@ -48,7 +49,7 @@ window.TomorrowApp = (function () {
       // Whitelist known keys to defang any localStorage poisoning from sibling
       // apps that share the elchai.github.io origin (P2-6 sec).
       const allowed = ['current_station_id', 'forecast', 'units', 'intel_log',
-                       'forecast_hour', 'active_events', 'sim', 'settings'];
+                       'forecast_hour', 'active_events', 'sim', 'settings', 'activeTab'];
       for (const k of allowed) {
         if (k in payload) State[k] = payload[k];
       }

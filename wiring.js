@@ -183,28 +183,50 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => location.reload(), 350);
   });
 
-  // ── Mobile hamburger menu — consolidates HUD action buttons ──
+  // ── Mobile sidebar (overlay) — hamburger button toggles it ──
+  // Sidebar replaces the legacy hamburger menu on mobile. Picking a tab from
+  // the sidebar auto-closes the overlay (handled in router via tab-change event).
+  const sidebar = document.getElementById('sidebar');
+  const sidebarOverlay = document.getElementById('sidebar-overlay');
   const ham = document.getElementById('btn-hamburger');
+
+  function toggleSidebar(force) {
+    const next = typeof force === 'boolean' ? force : !sidebar?.classList.contains('open');
+    sidebar?.classList.toggle('open', next);
+    sidebarOverlay?.classList.toggle('open', next);
+    ham?.classList.toggle('active', next);
+    ham?.setAttribute('aria-expanded', next ? 'true' : 'false');
+  }
+  ham?.addEventListener('click', () => toggleSidebar());
+  sidebarOverlay?.addEventListener('click', () => toggleSidebar(false));
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && sidebar?.classList.contains('open')) toggleSidebar(false);
+  });
+  // Auto-close after picking a tab on mobile
+  document.addEventListener('tomorrow-tab-change', () => {
+    if (window.innerWidth <= 600) toggleSidebar(false);
+  });
+
+  // ── Legacy hamburger menu (kept for OSINT/Layers/Mute on mobile) ──
   const menu = document.getElementById('hamburger-menu');
   const overlay = document.getElementById('hamburger-overlay');
   function toggleHam(force) {
+    if (!menu) return;
     const next = typeof force === 'boolean' ? force : !menu.classList.contains('open');
     menu.classList.toggle('open', next);
-    overlay.classList.toggle('open', next);
-    ham?.classList.toggle('active', next);
+    overlay?.classList.toggle('open', next);
     menu.setAttribute('aria-hidden', next ? 'false' : 'true');
-    ham?.setAttribute('aria-expanded', next ? 'true' : 'false');
   }
-  ham?.addEventListener('click', () => toggleHam());
   overlay?.addEventListener('click', () => toggleHam(false));
   document.getElementById('btn-close-hamburger')?.addEventListener('click', () => toggleHam(false));
-  document.addEventListener('keydown', e => { if (e.key === 'Escape' && menu.classList.contains('open')) toggleHam(false); });
-  menu.querySelectorAll('.hm-item').forEach(item => {
+  menu?.querySelectorAll('.hm-item').forEach(item => {
     item.addEventListener('click', () => {
       const target = document.getElementById(item.dataset.trigger);
       toggleHam(false);
-      if (target) setTimeout(() => target.click(), 220);   // wait for menu fade
+      if (target) setTimeout(() => target.click(), 220);
     });
   });
 
+  // ── Router init — must run last so all tab modules have registered ──
+  if (window.TomorrowRouter) TomorrowRouter.init();
 });

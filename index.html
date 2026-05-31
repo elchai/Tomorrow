@@ -128,21 +128,91 @@
     <div class="hm-foot" id="hm-version">TOMORROW v0.6</div>
   </aside>
 
-  <!-- ===== Main layout ===== -->
-  <main id="layout">
+  <!-- Mobile sidebar overlay (clicking dismisses) -->
+  <div id="sidebar-overlay" aria-hidden="true"></div>
 
-    <!-- Side navigation rail (leading edge). Hidden on mobile (hamburger takes over). -->
-    <aside id="nav-rail" class="nav-rail">
-      <!-- buttons (Analytics, Intel, LPR) get relocated here by app.js post-init, inserted ABOVE .nav-rail-bottom -->
-      <div class="nav-rail-bottom">
-        <!-- Locale picker — combined Language + Region panel -->
+  <!-- ===== Main layout ===== -->
+  <div id="app-container">
+    
+    <!-- Sidebar navigation -->
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-brand">
+        <span class="logo-mark"><i data-lucide="radar"></i></span>
+        <span class="logo-text">TOMORROW</span>
+      </div>
+
+      <!-- Section 1: Operations -->
+      <div class="sidebar-section">
+        <div class="sidebar-section-title" data-i18n="sidebar.sec.ops">מבצעים</div>
+        <button class="sidebar-item active" data-tab="operations">
+          <i data-lucide="map"></i>
+          <span data-i18n="menu.operations">מבצעים</span>
+        </button>
+        <button class="sidebar-item" data-tab="intel">
+          <i data-lucide="scan-face"></i>
+          <span data-i18n="menu.intel">תיק יעד מודיעיני</span>
+        </button>
+        <button class="sidebar-item" data-tab="lpr">
+          <i data-lucide="camera"></i>
+          <span data-i18n="menu.lpr">התראות LPR</span>
+        </button>
+        <button class="sidebar-item" data-tab="analytics">
+          <i data-lucide="bar-chart-3"></i>
+          <span data-i18n="menu.analytics">אנליטיקה</span>
+        </button>
+      </div>
+
+      <!-- Section 2: Personnel -->
+      <div class="sidebar-section">
+        <div class="sidebar-section-title" data-i18n="sidebar.sec.personnel">כוח אדם</div>
+        <button class="sidebar-item" data-tab="personnel">
+          <i data-lucide="users"></i>
+          <span data-i18n="menu.personnel">כוח אדם</span>
+        </button>
+        <button class="sidebar-item" data-tab="shifts">
+          <i data-lucide="calendar-days"></i>
+          <span data-i18n="menu.shifts">משמרות</span>
+        </button>
+      </div>
+
+      <!-- Section 3: Logistics -->
+      <div class="sidebar-section">
+        <div class="sidebar-section-title" data-i18n="sidebar.sec.logistics">לוגיסטיקה</div>
+        <button class="sidebar-item" data-tab="fleet">
+          <i data-lucide="car-front"></i>
+          <span data-i18n="menu.fleet">צי רכבים</span>
+        </button>
+        <button class="sidebar-item" data-tab="training">
+          <i data-lucide="award"></i>
+          <span data-i18n="menu.training">הכשרות וכשירויות</span>
+        </button>
+      </div>
+
+      <!-- Section 4: System -->
+      <div class="sidebar-section">
+        <div class="sidebar-section-title" data-i18n="sidebar.sec.system">מערכת</div>
+        <button class="sidebar-item" data-tab="integrations">
+          <i data-lucide="cable"></i>
+          <span data-i18n="menu.integrations">אינטגרציות חיצוניות</span>
+        </button>
+        <button class="sidebar-item" data-tab="syslog">
+          <i data-lucide="scroll-text"></i>
+          <span data-i18n="menu.syslog">יומן מערכת</span>
+        </button>
+        <button class="sidebar-item" data-tab="settings">
+          <i data-lucide="settings"></i>
+          <span data-i18n="menu.settings">הגדרות</span>
+        </button>
+      </div>
+
+      <!-- Sidebar Bottom actions -->
+      <div class="sidebar-bottom">
         <div class="lang-wrap">
-          <button id="btn-locale" class="icon-btn nav-rail-btn" data-i18n-attr="title:locale.title;aria-label:locale.title" aria-haspopup="dialog" aria-expanded="false">
+          <button id="btn-locale" class="icon-btn sidebar-btn" data-i18n-attr="title:locale.title;aria-label:locale.title" aria-haspopup="dialog" aria-expanded="false">
             <i data-lucide="globe"></i>
             <span class="nav-rail-lang-code">EN</span>
           </button>
           <div id="locale-popup" class="locale-popup" role="dialog" hidden dir="ltr">
-
             <div class="locale-section">
               <div class="locale-section-head">
                 <i data-lucide="languages"></i>
@@ -175,12 +245,20 @@
             </div>
           </div>
         </div>
-        <button id="btn-logout" class="icon-btn nav-rail-btn" data-i18n-attr="title:hud.logout;aria-label:hud.logout">
+
+        <button id="btn-logout" class="icon-btn sidebar-btn" data-i18n-attr="title:hud.logout;aria-label:hud.logout">
           <i data-lucide="log-out"></i>
-          <span class="nav-rail-label" data-i18n="hud.logout">Logout</span>
         </button>
       </div>
     </aside>
+
+    <!-- Tab host container -->
+    <main id="tab-host">
+
+      <!-- Operations tab — the original dashboard wraps the map/forecast/units -->
+      <section class="tab-content active" id="tab-operations">
+        <section id="layout">
+
 
     <!-- Left: forecast feed -->
     <aside class="panel panel-left">
@@ -263,7 +341,61 @@
       <div id="intel-feed" class="scroll-list intel-scroll"></div>
     </aside>
 
-  </main>
+        </section><!-- /#layout -->
+      </section><!-- /#tab-operations -->
+
+      <!-- Placeholder tabs — populated by their modules on first activate.
+           Empty until Phase 2+ rebuilds each one. Skeleton kept so the router
+           always has a target to switch into. -->
+      <section class="tab-content" id="tab-intel"></section>
+      <section class="tab-content" id="tab-lpr"></section>
+      <section class="tab-content" id="tab-analytics"></section>
+      <section class="tab-content" id="tab-personnel">
+        <div class="tab-placeholder">
+          <i data-lucide="users"></i>
+          <h2 data-i18n="placeholder.personnel">Personnel directory — coming in Sprint B</h2>
+          <p data-i18n="placeholder.body">This tab will host the officer roster, certifications and shift assignments.</p>
+        </div>
+      </section>
+      <section class="tab-content" id="tab-shifts">
+        <div class="tab-placeholder">
+          <i data-lucide="calendar-days"></i>
+          <h2 data-i18n="placeholder.shifts">Shift management — coming in Sprint B</h2>
+          <p data-i18n="placeholder.body">Weekly roster, manual + auto assignment.</p>
+        </div>
+      </section>
+      <section class="tab-content" id="tab-fleet">
+        <div class="tab-placeholder">
+          <i data-lucide="car-front"></i>
+          <h2 data-i18n="placeholder.fleet">Fleet management — coming in Sprint B</h2>
+          <p data-i18n="placeholder.body">Vehicle registry, maintenance calendar, dispatch availability.</p>
+        </div>
+      </section>
+      <section class="tab-content" id="tab-training">
+        <div class="tab-placeholder">
+          <i data-lucide="award"></i>
+          <h2 data-i18n="placeholder.training">Training & certifications — coming in Sprint B</h2>
+          <p data-i18n="placeholder.body">Course catalog, compliance matrix, expiry tracking.</p>
+        </div>
+      </section>
+      <section class="tab-content" id="tab-integrations">
+        <div class="tab-placeholder">
+          <i data-lucide="cable"></i>
+          <h2 data-i18n="placeholder.integrations">External integrations — coming in Sprint B</h2>
+          <p data-i18n="placeholder.body">Connectors to government APIs (Ministry of Interior, Airport Authority, Prison Service, etc.).</p>
+        </div>
+      </section>
+      <section class="tab-content" id="tab-syslog"></section>
+      <section class="tab-content" id="tab-settings">
+        <div class="tab-placeholder">
+          <i data-lucide="settings"></i>
+          <h2 data-i18n="placeholder.settings">Settings — coming in Sprint C</h2>
+          <p data-i18n="placeholder.body">Default tab, theme, data export, about.</p>
+        </div>
+      </section>
+
+    </main><!-- /#tab-host -->
+  </div><!-- /#app-container -->
 
   <!-- ===== Site footer ===== -->
   <footer id="app-footer" class="app-footer">
@@ -301,6 +433,7 @@
   <script src="intel.js"></script>
   <script src="lpr.js"></script>
   <script src="syslog.js"></script>
+  <script src="router.js"></script>
 
   <!-- UI wiring (timeline + control buttons) — external for strict CSP -->
   <script src="wiring.js"></script>
